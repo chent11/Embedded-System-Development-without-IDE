@@ -1,0 +1,4 @@
+// TODO
+1. try to use CMAKE to build project, but ensure the makefile customizable.
+2. try to use freertos.
+3. need a host software to monitor sensor data.

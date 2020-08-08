@@ -1,0 +1,24 @@
+{
+    "configurations": [
+        {
+            "name": "Mac",
+            "includePath": [
+                "${workspaceFolder}/HAL/Inc",
+                "${workspaceFolder}/HAL/Drivers/STM32F4xx_HAL_Driver/Inc",
+                "${workspaceFolder}/HAL/Drivers/CMSIS/Include/STM32F4xx",
+                "${workspaceFolder}/HAL/Drivers/CMSIS/Include",
+                "${workspaceFolder}/HAL/Drivers/STM32F4xx_HAL_Driver/Inc/Legacy"
+            ],
+            "defines": [
+                "STM32F427xx",
+                "USE_HAL_DRIVER"
+            ],
+            "macFrameworkPath": [],
+            "compilerPath": "/usr/local/bin/arm-none-eabi-gcc",
+            "cStandard": "gnu18",
+            "cppStandard": "gnu++14",
+            "intelliSenseMode": "gcc-arm"
+        }
+    ],
+    "version": 4
+}
