@@ -1,5 +1,6 @@
 #include "stm32f4xx_hal.h"
 #include "stm32f4xx_it.h"
+#include "arm_math.h"
 
 #define ledRed_Pin GPIO_PIN_11
 #define ledRed_GPIO_Port GPIOB
@@ -21,18 +22,32 @@ int main(void) {
     HAL_Init();
     SystemClock_Config();
     MX_GPIO_Init();
+    volatile float32_t x = 0;
+    volatile float32_t y = 0;
+    volatile uint32_t tickstart = HAL_GetTick();
+    volatile uint32_t elapse = 0;
     while (1) {
-        HAL_GPIO_WritePin(ledGreen_GPIO_Port, ledGreen_Pin, GPIO_PIN_RESET);
-        HAL_GPIO_WritePin(ledGreen_GPIO_Port, ledRed_Pin, GPIO_PIN_RESET);
-        HAL_GPIO_WritePin(ledGreen_GPIO_Port, ledBlue_Pin, GPIO_PIN_RESET);
-
-        // for (int i = 0; i < 100; i++);
-        HAL_GPIO_WritePin(ledGreen_GPIO_Port, ledRed_Pin, GPIO_PIN_SET);
-        for (int i = 0; i < 50; i++);
-        HAL_GPIO_WritePin(ledGreen_GPIO_Port, ledGreen_Pin, GPIO_PIN_SET);
-        HAL_GPIO_WritePin(ledGreen_GPIO_Port, ledRed_Pin, GPIO_PIN_SET);
-        HAL_GPIO_WritePin(ledGreen_GPIO_Port, ledBlue_Pin, GPIO_PIN_SET);
-        for (int i = 0; i < 500; i++);
+        
+        HAL_GPIO_WritePin(GPIOB, ledGreen_Pin, GPIO_PIN_RESET);
+        tickstart = HAL_GetTick();
+        for (volatile int i = 0; i < 1000000; i++) {
+          // y = arm_sin_f32(x);
+          x = i/782918.f;
+          y = arm_sin_f32 (x);
+        }
+        volatile double b = sin(1000000.0/782918.0);
+        volatile double a = fabs(b - (double)y);
+        elapse = HAL_GetTick() - tickstart;
+        HAL_GPIO_WritePin(GPIOB, ledGreen_Pin, GPIO_PIN_SET);
+        // HAL_GPIO_WritePin(GPIOB, ledRed_Pin, GPIO_PIN_RESET);
+        tickstart = HAL_GetTick();
+        for (volatile int i = 0; i < 1000000; i++) {
+          x = i/782918.f;
+          // sqrtf(x);
+          y = sinf(x);
+        }
+        a = fabs(b - (double)y);
+        elapse = HAL_GetTick() - tickstart;
     }
 }
 
