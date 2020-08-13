@@ -9,7 +9,7 @@ TARGET = led_test
 # debug build?
 DEBUG = 1
 # optimization
-# OPT = -O0
+OPT = -O0
 
 #######################################
 # paths
@@ -89,7 +89,7 @@ ASFLAGS = $(MCU) $(AS_DEFS) $(AS_INCLUDES) $(OPT) -Wall -fdata-sections -ffuncti
 CFLAGS = $(MCU) $(C_DEFS) $(C_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections
 
 ifeq ($(DEBUG), 1)
-CFLAGS += -g3 -ggdb -Og
+CFLAGS += -g3 -ggdb
 endif
 
 ifneq ($(V),1)
@@ -108,7 +108,7 @@ CFLAGS += -MMD -MP -MF"$(@:%.o=%.d)"
 LDSCRIPT = STM32F427VITx_FLASH.ld
 
 # libraries
-LIBS = -lc -lm -lnosys HAL/Drivers/CMSIS/Lib/GCC/libarm_cortexM4lf_math.a
+LIBS = -lc -lm -lnosys HAL/Drivers/CMSIS/Lib/libarm_cortexM4lf_math.a
 LIBDIR = 
 LDFLAGS = $(MCU) -specs=nano.specs -T$(LDSCRIPT) $(LIBDIR) $(LIBS) -Wl,-Map=$(BUILD_DIR)/$(TARGET).map,--cref -Wl,--gc-sections,--print-memory-usage
 
