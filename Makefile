@@ -6,7 +6,7 @@ TARGET = led_test
 ######################################
 # building variables
 ######################################
-# debug build?
+# debug level (set 0 to turn off debug)
 DEBUG = 1
 # optimization
 OPT = -O0
@@ -16,6 +16,12 @@ OPT = -O0
 #######################################
 # Build path
 BUILD_DIR = build
+# Objects path
+OBJ_DIR = $(BUILD_DIR)/obj
+# Dependencies path
+DEPS_DIR = $(BUILD_DIR)/deps
+# Lst path
+LST_DIR = $(BUILD_DIR)/lst
 
 ######################################
 # source
@@ -39,6 +45,9 @@ HAL/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.c \
 HAL/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.c \
 HAL/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_exti.c
 
+CPP_SOURCES = \
+$(wildcard HAL/Src/*.cpp)
+
 # ASM sources
 ASM_SOURCES = HAL/Src/startup_stm32f427xx.s
 
@@ -47,8 +56,8 @@ ASM_SOURCES = HAL/Src/startup_stm32f427xx.s
 #######################################
 PREFIX = arm-none-eabi-
 
-CC = $(PREFIX)gcc
-AS = $(PREFIX)gcc -x assembler-with-cpp
+CC = $(PREFIX)g++
+AS = $(PREFIX)g++ -x assembler-with-cpp
 CP = $(PREFIX)objcopy
 SZ = $(PREFIX)size
 
@@ -86,10 +95,10 @@ C_INCLUDES =  \
 
 # compile gcc flags
 ASFLAGS = $(MCU) $(AS_DEFS) $(AS_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections
-CFLAGS = $(MCU) $(C_DEFS) $(C_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections
+CFLAGS = $(MCU) $(C_DEFS) $(C_INCLUDES) $(OPT) -Wall -fdata-sections -ffunction-sections -std=c++17
 
-ifeq ($(DEBUG), 1)
-CFLAGS += -g3 -ggdb
+ifneq ($(DEBUG), 0)
+CFLAGS += -g$(DEBUG) -ggdb
 endif
 
 ifneq ($(V),1)
@@ -110,18 +119,21 @@ LDSCRIPT = STM32F427VITx_FLASH.ld
 # libraries
 LIBS = -lc -lm -lnosys HAL/Drivers/CMSIS/Lib/libarm_cortexM4lf_math.a
 LIBDIR = 
-LDFLAGS = $(MCU) -specs=nano.specs -T$(LDSCRIPT) $(LIBDIR) $(LIBS) -Wl,-Map=$(BUILD_DIR)/$(TARGET).map,--cref -Wl,--gc-sections,--print-memory-usage
+LDFLAGS = $(MCU) -specs=nano.specs -specs=nosys.specs -T$(LDSCRIPT) $(LIBDIR) $(LIBS) -Wl,-Map=$(BUILD_DIR)/$(TARGET).map,--cref -Wl,--gc-sections,--print-memory-usage
 
 #######################################
 # BUILD ACTION
 #######################################
-all: $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin
+.PHONY: all clean
 
-# list of objectsall
-OBJECTS = $(addprefix $(BUILD_DIR)/,$(notdir $(C_SOURCES:.c=.o)))
+# list of c objects
+OBJECTS = $(addprefix $(OBJ_DIR)/,$(notdir $(C_SOURCES:.c=.o)))
 vpath %.c $(sort $(dir $(C_SOURCES)))
-# list of ASM program objects
-OBJECTS += $(addprefix $(BUILD_DIR)/,$(notdir $(ASM_SOURCES:.s=.o)))
+# list of cpp objects
+OBJECTS += $(addprefix $(OBJ_DIR)/,$(notdir $(CPP_SOURCES:.cpp=.o)))
+vpath %.cpp $(sort $(dir $(CPP_SOURCES)))
+# list of asm objects
+OBJECTS += $(addprefix $(OBJ_DIR)/,$(notdir $(ASM_SOURCES:.s=.o)))
 vpath %.s $(sort $(dir $(ASM_SOURCES)))
 
 COLOR_BLUE = \033[38;5;81m
@@ -129,32 +141,51 @@ COLOR_GREEN = \033[38;5;2m
 COLOR_RED = \033[38;5;124m
 NO_COLOR   = \033[0m
 
-$(BUILD_DIR)/%.o: %.c Makefile | $(BUILD_DIR) 
-	@echo "  CC        $<"
-	$(Q)$(CC) -c $(CFLAGS) -Wa,-a,-ad,-alms=$(BUILD_DIR)/$(notdir $(<:.c=.lst)) $< -o $@
+.PHONY: build
+build: pre_build
+	@$(MAKE) $(TARGET)
 
-$(BUILD_DIR)/%.o: %.s Makefile | $(BUILD_DIR)
+.PHONY: pre_build
+pre_build: make_dir
+	@echo
+	@printf "  Building [${COLOR_GREEN}$(TARGET)${NO_COLOR}]...\n"
+	@echo
+
+$(TARGET): $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin
+
+$(OBJ_DIR)/%.o: %.c Makefile
+	@echo "  CC        $<"
+	$(Q)$(CC) -c $(CFLAGS) -Wa,-a,-ad,-alms=$(LST_DIR)/$(notdir $(<:.c=.lst)) $< -o $@
+
+$(OBJ_DIR)/%.o: %.cpp Makefile
+	@echo "  C++       $<"
+	$(Q)$(CC) -c $(CFLAGS) -Wa,-a,-ad,-alms=$(LST_DIR)/$(notdir $(<:.cpp=.lst)) $< -o $@
+
+$(OBJ_DIR)/%.o: %.s Makefile
 	$(Q)$(AS) -c $(CFLAGS) $< -o $@
 
 $(BUILD_DIR)/$(TARGET).elf: $(OBJECTS) Makefile
-	@printf "  Building [${COLOR_GREEN}$(TARGET)${NO_COLOR}]...\n"
-	@echo
 	$(Q)$(CC) $(OBJECTS) $(LDFLAGS) -o $@
+	@echo
 	$(Q)$(SZ) $@
-	@echo "  [${COLOR_GREEN}$(TARGET)${NO_COLOR}] has been built in ${COLOR_GREEN}$(BUILD_DIR)${NO_COLOR} folder."
+	@echo
+	@echo "  [${COLOR_GREEN}$(TARGET)${NO_COLOR}] has been built in ${COLOR_BLUE}$(BUILD_DIR)${NO_COLOR} folder."
 
-$(BUILD_DIR)/%.hex: $(BUILD_DIR)/%.elf | $(BUILD_DIR)
+$(BUILD_DIR)/%.hex: $(BUILD_DIR)/%.elf
 	$(Q)$(HEX) $< $@
-	
-$(BUILD_DIR)/%.bin: $(BUILD_DIR)/%.elf | $(BUILD_DIR)
-	$(Q)$(BIN) $< $@	
-	
-$(BUILD_DIR):
-	$(Q)mkdir $@
 
-#######################################
-# clean up
-#######################################
+$(BUILD_DIR)/%.bin: $(BUILD_DIR)/%.elf
+	$(Q)$(BIN) $< $@
+
+.PHONY: make_dir
+make_dir:
+	$(Q)mkdir -p $(BUILD_DIR)
+	$(Q)mkdir -p $(OBJ_DIR)
+	$(Q)mkdir -p $(LST_DIR)
+
+all: build upload
+
+.PHONY: upload
 upload:
 	@echo "Uploading..."
 	$(Q)JLinkExe -Device stm32f427vi -NoGui -CommandFile ./cmd.jlink > /dev/null
@@ -168,6 +199,6 @@ clean:
 #######################################
 # dependencies
 #######################################
--include $(wildcard $(BUILD_DIR)/*.d)
+-include $(wildcard $(OBJ_DIR)/*.d)
 
 ###################################################

@@ -1,7 +1,7 @@
 {
     "configurations": [
         {
-            "name": "Mac",
+            "name": "Arm Cross",
             "includePath": [
                 "${workspaceFolder}/HAL/Inc",
                 "${workspaceFolder}/HAL/Drivers/STM32F4xx_HAL_Driver/Inc",
@@ -15,9 +15,9 @@
                 "ARM_MATH_CM4"
             ],
             "macFrameworkPath": [],
-            "compilerPath": "/usr/local/bin/arm-none-eabi-gcc",
+            "compilerPath": "/usr/local/bin/arm-none-eabi-g++",
             "cStandard": "gnu18",
-            "cppStandard": "gnu++14",
+            "cppStandard": "c++17",
             "intelliSenseMode": "gcc-arm"
         }
     ],

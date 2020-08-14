@@ -1,14 +1,13 @@
 #include "stm32f4xx_it.h"
-#include "led.h"
 
 /**
   * @brief System Clock Configuration
   * @retval None
   */
 void SystemClock_Config(void) {
-    RCC_OscInitTypeDef RCC_OscInitStruct = {0};
-    RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
-    RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
+    RCC_OscInitTypeDef RCC_OscInitStruct = { 0 };
+    RCC_ClkInitTypeDef RCC_ClkInitStruct = { 0 };
+    RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = { 0 };
 
     /** Configure the main internal regulator output voltage
   */
@@ -62,7 +61,10 @@ void HAL_MspInit(void) {
 void core_init(void) {
     HAL_Init();
     SystemClock_Config();
-    ledInit();
+    // Enable External Clock GPIO Clock
+    __HAL_RCC_GPIOH_CLK_ENABLE();
+    // Enable Debug GPIO Clock
+    __HAL_RCC_GPIOA_CLK_ENABLE();
 }
 
 #ifdef USE_FULL_ASSERT
@@ -73,10 +75,10 @@ void core_init(void) {
   * @param  line: assert_param error line source number
   * @retval None
   */
-void assert_failed(uint8_t *file, uint32_t line) {
+void assert_failed(uint8_t* file, uint32_t line) {
     /* USER CODE BEGIN 6 */
     /* User can add his own implementation to report the file name and line number,
      tex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
-    /* USER CODE END 6 */
+     /* USER CODE END 6 */
 }
 #endif
