@@ -2,7 +2,7 @@
 
 Led::Led(bool isOn, GPIO_TypeDef* port, uint16_t pin) : _gpioPort(port), _gpioPin(pin) {
     _isOn = isOn;
-    GPIO_InitTypeDef GPIO_InitStruct = { 0 };
+    GPIO_InitTypeDef GPIO_InitStruct{};
 
     /* GPIO Ports Clock Enable */
     __HAL_RCC_GPIOB_CLK_ENABLE();
