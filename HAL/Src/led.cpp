@@ -23,17 +23,17 @@ Led::~Led() {
     HAL_GPIO_DeInit(_gpioPort, _gpioPin);
 }
 
-void Led::on(void) {
+void Led::on() {
     HAL_GPIO_WritePin(_gpioPort, _gpioPin, GPIO_PIN_RESET);
     _isOn = true;
 }
 
-void Led::off(void) {
+void Led::off() {
     HAL_GPIO_WritePin(_gpioPort, _gpioPin, GPIO_PIN_SET);
     _isOn = false;
 }
 
-void Led::toggle(void) {
+void Led::toggle() {
     _isOn ? this->off() : this->on();
 }
 

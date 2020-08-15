@@ -10,9 +10,18 @@ TARGET = led_test
 DEBUG = 1
 # optimization
 OPT = -O0
+# verbose
+V = 1
+
+ifneq ($(V),2)
+Q := @
+# Do not print "Entering directory ...".
+MAKEFLAGS += --no-print-directory
+endif
 
 # Error flags
-ERRFLAG = -Wall -Wextra -Warray-bounds -Wdouble-promotion -Wfatal-errors -Wfloat-equal -Wcast-align -Wdisabled-optimization -Wformat=1 -Wformat-security -Wlogical-op -Wpointer-arith -Wshadow -fno-builtin-printf
+#-Wshadow
+ERRFLAG = -Wall -Wextra -Warray-bounds -Wdouble-promotion -Wfatal-errors -Wfloat-equal -Wcast-align -Wdisabled-optimization -Wformat=1 -Wformat-security -Wlogical-op -Wpointer-arith -fno-builtin-printf
 # ERRFLAG += -Werror # Make all warnings into errors
 
 ifneq ($(DEBUG), 0)
@@ -54,7 +63,7 @@ LIB_SOURCES:=$(filter-out $(wildcard HAL/Drivers/STM32F4xx_HAL_Driver/Src/*templ
 LIB_SOURCES:=$(filter-out $(wildcard HAL/Drivers/STM32F4xx_HAL_Driver/Src/Legacy/*template.c),$(LIB_SOURCES))
 
 #######################################
-# binaries
+# TOOLCHAIN
 #######################################
 PREFIX = arm-none-eabi-
 
@@ -69,6 +78,7 @@ BIN = $(CP) -O binary -S
 
 ASC = $(CC) -S -fverbose-asm
 ASCXX = $(CXX) -S -fverbose-asm
+
 #######################################
 # CFLAGS
 #######################################
@@ -110,12 +120,6 @@ GENERALFLAGS = $(MCU) $(OPT) $(ERRFLAG) $(DBGFLAG) -fdata-sections -ffunction-se
 ASFLAGS = $(GENERALFLAGS) $(AS_DEFS) $(AS_INCLUDES)
 CFLAGS = $(GENERALFLAGS) $(C_DEFS) $(C_INCLUDES) -Wstrict-prototypes -Wbad-function-cast -fno-common
 CXXFLAGS = $(GENERALFLAGS) $(C_DEFS) $(C_INCLUDES) -fcheck-new -fno-exceptions -fno-rtti -Wreorder -Wno-overloaded-virtual 
-
-ifneq ($(V),2)
-Q := @
-# Do not print "Entering directory ...".
-MAKEFLAGS += --no-print-directory
-endif
 
 # Generate dependency information
 CFLAGS += -MMD -MP -MF"$(@:%.o=%.d)"
@@ -194,15 +198,18 @@ endif
 $(OBJ_DIR)/%.o: %.s Makefile | $(OBJ_DIR)
 	$(Q)$(AS) -c $(ASFLAGS) $< -o $@
 
-.PHONY: build_lib
-build_lib: $(LIBOBJECTS)
-
-$(LIBOBJ_DIR)/%.o: %.c | $(LIBOBJ_DIR)
-	@if [ "$V" = "1" ]; then echo "  CC        $<"; fi
+$(LIBOBJ_DIR)/%.o: %.c Makefile | $(LIBOBJ_DIR)
+ifeq ($(V),1)
+	@echo "  CC        $<"
+endif
 	$(Q)$(CC) -c $(filter-out -Werror -Wall -Wbad-function-cast,$(CFLAGS)) -Wa,-a,-ad,-alms=$(LIBOBJ_DIR)/$(notdir $(<:.c=.lst)) $< -o $@
 
-$(BUILD_DIR)/$(TARGET).elf: build_lib $(OBJECTS) Makefile
-	@if [ "$V" = "1" ]; then echo;echo "  Linking files...";echo; fi
+$(BUILD_DIR)/$(TARGET).elf: $(LIBOBJECTS) $(OBJECTS) Makefile
+ifeq ($(V),1)
+	@echo
+	@echo "  Linking files..."
+	@echo
+endif
 	$(Q)$(CXX) $(LIBOBJECTS) $(OBJECTS) $(LDFLAGS) -o $@
 	@echo
 	$(Q)$(SZ) $@
@@ -233,7 +240,7 @@ upload:
 	$(Q)JLinkExe -Device stm32f427vi -NoGui -CommandFile ./cmd.jlink > /dev/null
 	@if [ ! "$$?" = "0" ]; then printf "  $(COLOR_RED)Unable to upload. Using V=1 to check what was happenning.${NO_COLOR}\n"; exit 1; fi
 	@echo "  Uploaded successfully"
-	
+
 clean:
 	$(Q)rm -rf $(BUILD_DIR)
 	@echo "  User build folder is deleted."
