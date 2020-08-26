@@ -3,3 +3,5 @@
 2. try to use CMAKE to build project, but ensure the makefile customizable.
 3. try to use freertos.
 4. need a host software to monitor sensor data.
+5. run code from ram
+6. how do I use FRAM to optimize my code.

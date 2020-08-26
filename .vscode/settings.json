@@ -44,5 +44,37 @@
         "initializer_list": "cpp",
         "sstream": "cpp",
         "stdexcept": "cpp"
-    }
+    },
+    "cSpell.words": [
+        "CMSIS",
+        "CPACR",
+        "FMCEN",
+        "GPIOC",
+        "GPIOCEN",
+        "GPIOE",
+        "GPIOF",
+        "GPIOG",
+        "GPIOH",
+        "GPIOI",
+        "HCLK",
+        "MODER",
+        "OSPEEDR",
+        "PUPDR",
+        "Presc",
+        "SDRAM",
+        "SRAM",
+        "VECT",
+        "VTOR",
+        "cfgr",
+        "gdbtmp",
+        "pllcfgr",
+        "pllm",
+        "pllp",
+        "pllp pllm pllcfgr",
+        "pllvco",
+        "printf",
+        "starttime",
+        "timec",
+        "timen"
+    ]
 }
