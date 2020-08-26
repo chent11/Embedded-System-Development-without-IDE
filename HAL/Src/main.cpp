@@ -16,7 +16,6 @@ int main() {
 
     auto* led = new LedGreen();
     vector<vector<int>> a(SIZE, vector<int>(SIZE, 0));
-    int b[SIZE][SIZE];
     while (true) {
         led->on();
         for (int ii = 0; ii < 100; ii++) {

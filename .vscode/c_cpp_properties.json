@@ -3,11 +3,13 @@
         {
             "name": "Arm Cross",
             "includePath": [
-                "${workspaceFolder}/HAL/Inc",
-                "${workspaceFolder}/HAL/Drivers/STM32F4xx_HAL_Driver/Inc",
-                "${workspaceFolder}/HAL/Drivers/CMSIS/Include/STM32F4xx",
                 "${workspaceFolder}/HAL/Drivers/CMSIS/Include",
-                "${workspaceFolder}/HAL/Drivers/STM32F4xx_HAL_Driver/Inc/Legacy"
+                "${workspaceFolder}/HAL/Drivers/CMSIS/Core/Include",
+                "${workspaceFolder}/HAL/Drivers/CMSIS/Device/ST/STM32F4xx/Include",
+                "${workspaceFolder}/HAL/Drivers/CMSIS/DSP/Include",
+                "${workspaceFolder}/HAL/Drivers/STM32F4xx_HAL_Driver/Inc",
+                "${workspaceFolder}/HAL/Drivers/STM32F4xx_HAL_Driver/Inc/Legacy",
+                "${workspaceFolder}/HAL/Inc"
             ],
             "defines": [
                 "STM32F427xx",

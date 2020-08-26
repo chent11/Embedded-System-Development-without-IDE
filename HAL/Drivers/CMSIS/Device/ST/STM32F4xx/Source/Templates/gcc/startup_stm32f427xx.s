@@ -2,7 +2,7 @@
   ******************************************************************************
   * @file      startup_stm32f427xx.s
   * @author    MCD Application Team
-  * @brief     STM32F427xx Devices vector table for GCC based toolchains.
+  * @brief     STM32F427xx Devices vector table for GCC based toolchains. 
   *            This module performs:
   *                - Set the initial SP
   *                - Set the initial PC == Reset_Handler,
@@ -70,7 +70,7 @@ CopyDataInit:
   ldr  r3, [r3, r1]
   str  r3, [r0, r1]
   adds  r1, r1, #4
-
+    
 LoopCopyDataInit:
   ldr  r0, =_sdata
   ldr  r3, =_edata
@@ -92,7 +92,7 @@ LoopFillZerobss:
 /* Call the clock system intitialization function.*/
   bl  SystemInit   
 /* Call static constructors */
-  bl __libc_init_array
+    bl __libc_init_array
 /* Call the application's entry point.*/
   bl  main
   bx  lr    
@@ -120,8 +120,8 @@ Infinite_Loop:
    .section  .isr_vector,"a",%progbits
   .type  g_pfnVectors, %object
   .size  g_pfnVectors, .-g_pfnVectors
-
-
+   
+   
 g_pfnVectors:
   .word  _estack
   .word  Reset_Handler
@@ -190,7 +190,7 @@ g_pfnVectors:
   .word     TIM8_TRG_COM_TIM14_IRQHandler     /* TIM8 Trigger and Commutation and TIM14 */
   .word     TIM8_CC_IRQHandler                /* TIM8 Capture Compare         */                          
   .word     DMA1_Stream7_IRQHandler           /* DMA1 Stream7                 */                          
-  .word     FMC_IRQHandler                    /* FMC                          */
+  .word     FMC_IRQHandler                    /* FMC                          */                   
   .word     SDIO_IRQHandler                   /* SDIO                         */                   
   .word     TIM5_IRQHandler                   /* TIM5                         */                   
   .word     SPI3_IRQHandler                   /* SPI3                         */                   
@@ -221,10 +221,10 @@ g_pfnVectors:
   .word     OTG_HS_WKUP_IRQHandler            /* USB OTG HS Wakeup through EXTI */                         
   .word     OTG_HS_IRQHandler                 /* USB OTG HS                   */                   
   .word     DCMI_IRQHandler                   /* DCMI                         */                   
-  .word     0                                 /* Reserved                     */
+  .word     0                                 /* Reserved                     */                   
   .word     HASH_RNG_IRQHandler               /* Hash and Rng                 */
   .word     FPU_IRQHandler                    /* FPU                          */
-  .word     UART7_IRQHandler                  /* UART7                        */
+  .word     UART7_IRQHandler                  /* UART7                        */      
   .word     UART8_IRQHandler                  /* UART8                         */
   .word     SPI4_IRQHandler                   /* SPI4                          */
   .word     SPI5_IRQHandler                   /* SPI5 						  */
@@ -411,7 +411,7 @@ g_pfnVectors:
    .weak      DMA1_Stream7_IRQHandler               
    .thumb_set DMA1_Stream7_IRQHandler,Default_Handler
                      
-   .weak      FMC_IRQHandler
+   .weak      FMC_IRQHandler            
    .thumb_set FMC_IRQHandler,Default_Handler
                      
    .weak      SDIO_IRQHandler            
@@ -449,11 +449,11 @@ g_pfnVectors:
             
    .weak      DMA2_Stream4_IRQHandler               
    .thumb_set DMA2_Stream4_IRQHandler,Default_Handler
-
-   .weak      ETH_IRQHandler
+   
+   .weak      ETH_IRQHandler               
    .thumb_set ETH_IRQHandler,Default_Handler
 
-   .weak      ETH_WKUP_IRQHandler
+   .weak      ETH_WKUP_IRQHandler               
    .thumb_set ETH_WKUP_IRQHandler,Default_Handler
 
    .weak      CAN2_TX_IRQHandler   
@@ -503,33 +503,33 @@ g_pfnVectors:
                   
    .weak      DCMI_IRQHandler            
    .thumb_set DCMI_IRQHandler,Default_Handler
-
+                                   
    .weak      HASH_RNG_IRQHandler                  
    .thumb_set HASH_RNG_IRQHandler,Default_Handler   
 
    .weak      FPU_IRQHandler                  
    .thumb_set FPU_IRQHandler,Default_Handler  
 
-   .weak      UART7_IRQHandler
+   .weak      UART7_IRQHandler            
    .thumb_set UART7_IRQHandler,Default_Handler
 
-   .weak      UART8_IRQHandler
+   .weak      UART8_IRQHandler            
    .thumb_set UART8_IRQHandler,Default_Handler
 
-   .weak      SPI4_IRQHandler
+   .weak      SPI4_IRQHandler            
    .thumb_set SPI4_IRQHandler,Default_Handler
 
-   .weak      SPI5_IRQHandler
+   .weak      SPI5_IRQHandler            
    .thumb_set SPI5_IRQHandler,Default_Handler
 
-   .weak      SPI6_IRQHandler
+   .weak      SPI6_IRQHandler            
    .thumb_set SPI6_IRQHandler,Default_Handler
 
-   .weak      SAI1_IRQHandler
+   .weak      SAI1_IRQHandler            
    .thumb_set SAI1_IRQHandler,Default_Handler
 
-   .weak      DMA2D_IRQHandler
+   .weak      DMA2D_IRQHandler            
    .thumb_set DMA2D_IRQHandler,Default_Handler
 
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
-
+/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/		
+ 

@@ -62,14 +62,14 @@ CPP_SOURCES = \
 $(wildcard HAL/Src/*.cpp)
 
 # ASM sources
-ASM_SOURCES = HAL/Src/startup_stm32f427xx.s
+ASM_SOURCES = HAL/Drivers/CMSIS/Device/ST/STM32F4xx/Source/Templates/gcc/startup_stm32f427xx.s
 
 # Lib sources
-LIB_SOURCES =  \
+LIB_SOURCES = \
+HAL/Drivers/CMSIS/Device/ST/STM32F4xx/Source/Templates/system_stm32f4xx.c \
 $(wildcard HAL/Drivers/STM32F4xx_HAL_Driver/Src/*.c) \
 $(wildcard HAL/Drivers/STM32F4xx_HAL_Driver/Src/Legacy/*.c)
 LIB_SOURCES:=$(filter-out $(wildcard HAL/Drivers/STM32F4xx_HAL_Driver/Src/*template.c),$(LIB_SOURCES))
-LIB_SOURCES:=$(filter-out $(wildcard HAL/Drivers/STM32F4xx_HAL_Driver/Src/Legacy/*template.c),$(LIB_SOURCES))
 
 #######################################
 # TOOLCHAIN
@@ -114,11 +114,13 @@ C_DEFS =  \
 
 # C includes
 C_INCLUDES =  \
--IHAL/Inc \
--isystem HAL/Drivers/STM32F4xx_HAL_Driver/Inc \
--isystem HAL/Drivers/CMSIS/Include/STM32F4xx \
 -isystem HAL/Drivers/CMSIS/Include \
--isystem HAL/Drivers/STM32F4xx_HAL_Driver/Inc/Legacy
+-isystem HAL/Drivers/CMSIS/Core/Include \
+-isystem HAL/Drivers/CMSIS/Device/ST/STM32F4xx/Include \
+-isystem HAL/Drivers/CMSIS/DSP/Include \
+-isystem HAL/Drivers/STM32F4xx_HAL_Driver/Inc \
+-isystem HAL/Drivers/STM32F4xx_HAL_Driver/Inc/Legacy \
+-IHAL/Inc
 
 # C++ includes
 # C++_INCLUDES = \
@@ -149,7 +151,7 @@ C++FLAGS += -std=gnu++17
 LDSCRIPT = STM32F427VITx_FLASH.ld
 
 # libraries
-LIBS = -lc -lm -lnosys HAL/Drivers/CMSIS/Lib/libarm_cortexM4lf_math.a
+LIBS = -lc -lm -lnosys HAL/Drivers/CMSIS/Lib/GCC/libarm_cortexM4lf_math.a
 LIBDIR = 
 LDFLAGS = $(MCU) -specs=nano.specs -specs=nosys.specs -T$(LDSCRIPT) $(LIBDIR) $(LIBS) -Wl,-Map=$(BUILD_DIR)/$(TARGET).map,--cref -Wl,--gc-sections,--print-memory-usage
 
@@ -250,5 +252,6 @@ distclean:
 # dependencies
 #######################################
 -include $(wildcard $(OBJ_DIR)/*.d)
+-include $(wildcard $(LIBOBJ_DIR)/*.d)
 
 ###################################################
