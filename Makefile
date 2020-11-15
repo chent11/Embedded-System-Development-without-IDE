@@ -9,7 +9,8 @@ TARGET = led_test
 # Debug level (set 0 to turn off debug)
 DEBUG = 1
 # Optimization
-OPT = -O0
+OPT = -O3
+# OPT += -floop-nest-optimize
 # Verbose
 # 0: No Messages
 # 1: Print what is compiling without warning messages.

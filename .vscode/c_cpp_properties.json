@@ -18,7 +18,7 @@
             ],
             "macFrameworkPath": [],
             "compilerPath": "/usr/local/bin/arm-none-eabi-g++",
-            "cStandard": "gnu18",
+            "cStandard": "gnu17",
             "cppStandard": "c++17",
             "intelliSenseMode": "gcc-arm"
         }

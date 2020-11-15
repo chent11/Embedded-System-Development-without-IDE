@@ -1,37 +1,40 @@
-#include <vector>
-
 #include "led.hh"
 #include "core_init.h"
-
-using std::vector;
+#include <vector>
 
 void delay_ms(int time) {
     HAL_Delay(time);
 }
 
-#define SIZE 200
+#define SIZE 100
 
 int main() {
     core_init();
 
     auto* led = new LedGreen();
-    vector<vector<int>> a(SIZE, vector<int>(SIZE, 0));
+    const int LENGTH = 100;
+    const int LOOP = 300000;
+
+    static int __attribute__((used)) arr[LENGTH]{ 0 };
+    static std::vector<int> __attribute__((used)) vec(LENGTH, 0);
+    static int __attribute__((used)) count { 0 };
+
     while (true) {
         led->on();
-        for (int ii = 0; ii < 100; ii++) {
-            for (int i = 0; i < SIZE; i++) {
-                for (int j = 0; j < SIZE; j++) {
-                    a[j][i] = i + j;
-                }
+        count = HAL_GetTick();
+        for (int i = 0; i < LOOP; i++)
+            for (int j = 0; j < LENGTH; j++) {
+                arr[j] = j * 12;
             }
-        }
+        static int __attribute__((used)) a = HAL_GetTick() - count;
+
         led->off();
-        for (int ii = 0; ii < 100; ii++) { 
-            for (int i = 0; i < SIZE; i++) {
-                for (int j = 0; j < SIZE; j++) {
-                    a[i][j] = i + j;
-                }
+        count = HAL_GetTick();
+        for (int i = 0; i < LOOP; i++)
+            for (int j = 0; j < vec.size(); j++) {
+                vec[j] = j * 12;
             }
-        }
+        a = HAL_GetTick() - count;
     }
+
 }
