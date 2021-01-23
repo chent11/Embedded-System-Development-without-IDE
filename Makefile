@@ -75,7 +75,7 @@ LIB_SOURCES:=$(filter-out $(wildcard HAL/Drivers/STM32F4xx_HAL_Driver/Src/*templ
 #######################################
 # TOOLCHAIN
 #######################################
-PREFIX = ~/Projects/C/Embedded/toolchains/gcc-arm-none-eabi-9-2020-q2-update/bin/arm-none-eabi-
+PREFIX = ccache ~/Projects/C/Embedded/toolchains/gcc-arm-none-eabi-9-2020-q2-update/bin/arm-none-eabi-
 
 CC = $(PREFIX)gcc
 C++ = $(PREFIX)g++
