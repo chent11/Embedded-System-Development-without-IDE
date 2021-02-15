@@ -8,6 +8,8 @@ TARGET = led_test
 ######################################
 # Debug level (set 0 to turn off debug)
 DEBUG = 1
+# CCACHE
+CCACHE_USE = 0
 # Optimization
 OPT = -O3
 # OPT += -floop-nest-optimize
@@ -75,7 +77,17 @@ LIB_SOURCES:=$(filter-out $(wildcard HAL/Drivers/STM32F4xx_HAL_Driver/Src/*templ
 #######################################
 # TOOLCHAIN
 #######################################
-PREFIX = ccache ~/Projects/C/Embedded/toolchains/gcc-arm-none-eabi-9-2020-q2-update/bin/arm-none-eabi-
+ifeq ($(CCACHE_USE), 1)
+CCACHE = /usr/local/bin/ccache
+endif
+UNAME_S := $(shell uname -s)
+ifeq ($(UNAME_S),Linux)
+	COMPILER_PATH = /root/gcc-arm-none-eabi-10-2020-q4-major/bin/arm-none-eabi-
+endif
+ifeq ($(UNAME_S),Darwin)
+	COMPILER_PATH = ~/Projects/C/Embedded/toolchains/gcc-arm-none-eabi-9-2020-q2-update/bin/arm-none-eabi-
+endif
+PREFIX = $(CCACHE) $(COMPILER_PATH)
 
 CC = $(PREFIX)gcc
 C++ = $(PREFIX)g++
@@ -192,19 +204,19 @@ pre_build:
 $(TARGET): $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin
 
 $(OBJ_DIR)/%.o: %.c Makefile | $(OBJ_DIR)
-	@if [[ $(V) -gt 0 && $(V) -lt 4 ]];then echo "  CC        $<"; fi
+	@if [ $(V) -gt 0 ] && [ $(V) -lt 4 ];then echo "  CC        $<"; fi
 	$(Q)$(CC) -c $(CFLAGS) -Wa,-a,-ad,-alms=$(LST_DIR)/$(notdir $(<:.c=.lst)) $< -o $@
 
 $(OBJ_DIR)/%.o: %.cpp Makefile | $(OBJ_DIR)
-	@if [[ $(V) -gt 0 && $(V) -lt 4 ]];then echo "  C++       $<"; fi
+	@if [ $(V) -gt 0 ] && [ $(V) -lt 4 ];then echo "  C++       $<"; fi
 	$(Q)$(C++) -c $(C++FLAGS) -Wa,-a,-ad,-alms=$(LST_DIR)/$(notdir $(<:.cpp=.lst)) $< -o $@
 
 $(OBJ_DIR)/%.o: %.s Makefile | $(OBJ_DIR)
-	@if [[ $(V) -gt 0 && $(V) -lt 4 ]];then echo "  ASM       $<"; fi
+	@if [ $(V) -gt 0 ] && [ $(V) -lt 4 ];then echo "  ASM       $<"; fi
 	$(Q)$(AS) -c $(ASFLAGS) $< -o $@
 
 $(LIBOBJ_DIR)/%.o: %.c Makefile | $(LIBOBJ_DIR)
-	@if [[ $(V) -gt 0 && $(V) -lt 4 ]];then echo "  CC        $<"; fi
+	@if [ $(V) -gt 0 ] && [ $(V) -lt 4 ];then echo "  CC        $<"; fi
 	$(Q)$(CC) -c $(filter-out -Werror,$(LIBFLAG)) -Wa,-a,-ad,-alms=$(LIBOBJ_DIR)/$(notdir $(<:.c=.lst)) $< -o $@
 
 $(BUILD_DIR)/$(TARGET).elf: $(LIBOBJECTS) $(OBJECTS) Makefile STM32F427VITx_FLASH.ld
@@ -238,7 +250,7 @@ all: main_build upload
 upload:
 	@echo
 	@echo "  Uploading..."
-	$(Q)JLinkExe -Device stm32f427vi -NoGui -CommandFile ./cmd.jlink > /tmp/jlinktmpoutput || { if [[ $(V) -gt 2 ]];then cat /tmp/jlinktmpoutput; else printf "  $(COLOR_RED)Unable to upload. Setting V > 2 to check what was happenning.${NO_COLOR}\n"; fi; exit 1; }
+	$(Q)/usr/local/bin/JLinkExe -Device stm32f427vi -NoGui -CommandFile ./cmd.jlink > /tmp/jlinktmpoutput || { if [[ $(V) -gt 2 ]];then cat /tmp/jlinktmpoutput; else printf "  $(COLOR_RED)Unable to upload. Setting V > 2 to check what was happenning.${NO_COLOR}\n"; fi; exit 1; }
 	@echo "  Uploaded successfully"
 
 clean:

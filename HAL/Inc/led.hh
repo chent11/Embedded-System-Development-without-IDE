@@ -10,7 +10,6 @@ protected:
     const uint16_t _gpioPin;
 public:
     Led(bool isOn, GPIO_TypeDef* port, uint16_t pin);
-
     ~Led();
 
     void on(void);
