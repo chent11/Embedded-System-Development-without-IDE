@@ -24,7 +24,24 @@ V = 2
 STACK_SIZE = 65536
 
 # Error flags
-ERRFLAG = -Wall -Wextra -Warray-bounds -Wdouble-promotion -Wfatal-errors -Wfloat-equal -Wno-missing-field-initializers -Wcast-align -Wdisabled-optimization -Wformat=1 -Wformat-security -Wlogical-op -Wpointer-arith -fno-builtin-printf -Wpedantic -Wundef -Wstack-usage=$(STACK_SIZE) -Wshadow
+ERRFLAG =	\
+-Wall \
+-Warray-bounds \
+-Wcast-align \
+-Wdisabled-optimization \
+-Wdouble-promotion \
+-Wextra \
+-Wfatal-errors \
+-Wfloat-equal \
+-Wformat-security \
+-Wformat=1 \
+-Wlogical-op \
+-Wno-missing-field-initializers \
+-Wpedantic \
+-Wpointer-arith \
+-Wshadow \
+-Wstack-usage=$(STACK_SIZE) \
+-Wundef
 # ERRFLAG += -Werror # Make all warnings into errors
 
 ifeq ($(shell test $(V) -lt 2; echo $$?),0)
@@ -37,7 +54,8 @@ MAKEFLAGS += --no-print-directory
 endif
 
 ifneq ($(DEBUG), 0)
-DBGFLAG = -g$(DEBUG) -ggdb
+DBGFLAG = -g$(DEBUG) -ggdb -fno-builtin
+# What is the "no-builtin" option? -> https://stackoverflow.com/a/70857389
 endif
 
 #######################################
@@ -77,14 +95,15 @@ LIB_SOURCES:=$(filter-out $(wildcard HAL/Drivers/STM32F4xx_HAL_Driver/Src/*templ
 #######################################
 # TOOLCHAIN
 #######################################
-ifeq ($(CCACHE_USE), 1)
-CCACHE = /usr/local/bin/ccache
-endif
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S),Linux)
-	COMPILER_PATH = /root/gcc-arm-none-eabi-10-2020-q4-major/bin/arm-none-eabi-
+	COMPILER_PATH = /root/x-tools/arm-bare_newlib_cortex_m4_nommu-eabi/bin/arm-bare_newlib_cortex_m4_nommu-eabi-
 endif
 ifeq ($(UNAME_S),Darwin)
+	ifeq ($(CCACHE_USE), 1)
+	CCACHE = /usr/local/bin/ccache
+	endif
+# GCC 10 cannot compile with -Xassembler and -Wa options when use -flto option
 	COMPILER_PATH = ~/Projects/C/Embedded/toolchains/gcc-arm-none-eabi-9-2020-q2-update/bin/arm-none-eabi-
 endif
 PREFIX = $(CCACHE) $(COMPILER_PATH)
@@ -140,10 +159,25 @@ C_INCLUDES =  \
 # -IHAL/Inc
 
 # compile gcc flags
-GENERALFLAGS = $(MCU) $(OPT) $(ERRFLAG) $(DBGFLAG) -fdata-sections -ffunction-sections -fstack-usage
+GENERALFLAGS = $(MCU) $(OPT) $(ERRFLAG) $(DBGFLAG) \
+-fdata-sections \
+-ffunction-sections \
+-flto \
+-fstack-usage
+
 ASFLAGS = $(GENERALFLAGS) $(AS_DEFS) $(AS_INCLUDES)
-CFLAGS = $(GENERALFLAGS) $(C_DEFS) $(C_INCLUDES) -Wstrict-prototypes -Wbad-function-cast -fno-common
-C++FLAGS = $(GENERALFLAGS) $(C_DEFS) $(C_INCLUDES) -fcheck-new -fno-exceptions -fno-rtti -Wreorder -Wno-overloaded-virtual 
+CFLAGS = $(GENERALFLAGS) $(C_DEFS) $(C_INCLUDES) \
+-fno-common \
+-Wbad-function-cast \
+-Wstrict-prototypes
+
+C++FLAGS = $(GENERALFLAGS) $(C_DEFS) $(C_INCLUDES) \
+-fcheck-new \
+-fno-exceptions \
+-fno-rtti \
+-Wno-overloaded-virtual \
+-Wreorder
+
 LIBFLAG=$(CFLAGS)
 ifeq ($(V), 2)
 LIBFLAG=$(CFLAGS) -w
@@ -164,15 +198,20 @@ C++FLAGS += -std=gnu++17
 LDSCRIPT = STM32F427VITx_FLASH.ld
 
 # libraries
-LIBS = -lc -lm -lnosys HAL/Drivers/CMSIS/Lib/GCC/libarm_cortexM4lf_math.a
+LIBS = \
+-lc_nano \
+-lm \
+-lnosys HAL/Drivers/CMSIS/Lib/GCC/libarm_cortexM4lf_math.a
 LIBDIR = 
-LDFLAGS = $(MCU) -specs=nano.specs -specs=nosys.specs -T$(LDSCRIPT) $(LIBDIR) $(LIBS) -Wl,-Map=$(BUILD_DIR)/$(TARGET).map,--cref -Wl,--gc-sections,--print-memory-usage
+LDFLAGS = $(MCU) -T$(LDSCRIPT) $(LIBDIR) $(LIBS) \
+-flto-partition=one \
+-specs=nano.specs \
+-specs=nosys.specs \
+-Wl,-Map=$(BUILD_DIR)/$(TARGET).map,--cref -Wl,--gc-sections,--print-memory-usage
 
 #######################################
 # BUILD ACTION
 #######################################
-.PHONY: all clean
-
 # list of c objects
 OBJECTS = $(addprefix $(OBJ_DIR)/,$(notdir $(C_SOURCES:.c=.o)))
 vpath %.c $(sort $(dir $(C_SOURCES)))
@@ -244,6 +283,7 @@ $(OBJ_DIR): $(LST_DIR)
 $(LST_DIR): | $(BUILD_DIR)
 	$(Q)mkdir -p $@
 
+.PHONY: all
 all: main_build upload
 
 .PHONY: upload
@@ -253,10 +293,12 @@ upload:
 	$(Q)/usr/local/bin/JLinkExe -Device stm32f427vi -NoGui -CommandFile ./cmd.jlink > /tmp/jlinktmpoutput || { if [[ $(V) -gt 2 ]];then cat /tmp/jlinktmpoutput; else printf "  $(COLOR_RED)Unable to upload. Setting V > 2 to check what was happenning.${NO_COLOR}\n"; fi; exit 1; }
 	@echo "  Uploaded successfully"
 
+.PHONY: clean
 clean:
 	$(Q)rm -rf $(BUILD_DIR)
 	@echo "  User build folder is deleted."
 
+.PHONY: distclean
 distclean:
 	$(Q)rm -rf $(BUILD_DIR) $(LIBOBJ_DIR)
 	@echo "  User build and lib build folder is deleted."

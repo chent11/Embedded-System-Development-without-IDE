@@ -19,20 +19,20 @@ public:
 
 class LedRed : public Led {
 public:
-    LedRed(void) : Led(false, GPIOB, GPIO_PIN_11) {}
-    LedRed(bool isOn) : Led(isOn, GPIOB, GPIO_PIN_11) {}
+    LedRed(void) : Led(false, GPIOD, GPIO_PIN_14) {}
+    LedRed(bool isOn) : Led(isOn, GPIOD, GPIO_PIN_14) {}
 };
 
 class LedBlue : public Led {
 public:
-    LedBlue(void) : Led(false, GPIOB, GPIO_PIN_3) {}
-    LedBlue(bool isOn) : Led(isOn, GPIOB, GPIO_PIN_3) {}
+    LedBlue(void) : Led(false, GPIOD, GPIO_PIN_15) {}
+    LedBlue(bool isOn) : Led(isOn, GPIOD, GPIO_PIN_15) {}
 };
 
 class LedGreen : public Led {
 public:
-    LedGreen(void) : Led(false, GPIOB, GPIO_PIN_1) {}
-    LedGreen(bool isOn) : Led(isOn, GPIOB, GPIO_PIN_1) {}
+    LedGreen(void) : Led(false, GPIOD, GPIO_PIN_12) {}
+    LedGreen(bool isOn) : Led(isOn, GPIOD, GPIO_PIN_12) {}
 };
 
 #endif
