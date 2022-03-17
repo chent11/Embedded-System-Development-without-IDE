@@ -1,7 +1,7 @@
 #ifndef __LED_H
 #define __LED_H
 
-#include "stm32f4xx_hal.h"
+#include "../drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h"
 
 class Led {
 protected:

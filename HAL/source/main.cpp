@@ -1,10 +1,12 @@
-#include "led.hh"
-#include "core_init.h"
+#include "../include/led.hh"
+#include "../include/core_init.h"
 #include <vector>
 
-void delay_ms(int time) {
-    HAL_Delay(time);
-}
+namespace {
+    void delay_ms(int time) {
+        HAL_Delay(time);
+    }
+} // anonymous
 
 #define SIZE 100
 

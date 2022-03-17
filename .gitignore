@@ -2,3 +2,6 @@
 .DS_Store?
 build
 test/
+.vscode/
+.project
+.cproject
