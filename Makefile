@@ -64,33 +64,33 @@ endif
 # Build path
 BUILD_DIR = build
 # Objects path
-OBJ_DIR = $(BUILD_DIR)/Obj
-LIBOBJ_DIR = hal/drivers/STM32F4xx_HAL_Driver/$(BUILD_DIR)
+OBJ_DIR = $(BUILD_DIR)/obj
+LIBOBJ_DIR = source/drivers/STM32F4xx_HAL_Driver/$(BUILD_DIR)
 # Dependencies path
-DEPS_DIR = $(BUILD_DIR)/Dependencies
-# Lists path
-LST_DIR = $(BUILD_DIR)/Lists
+DEPS_DIR = $(BUILD_DIR)/dependencies
+# lists path
+LST_DIR = $(BUILD_DIR)/lists
 
 ######################################
 # source
 ######################################
 # C sources
 C_SOURCES =  \
-$(wildcard hal/source/*.c)
+$(wildcard source/hal/*.c)
 
 # C++ sources
 CPP_SOURCES = \
-$(wildcard hal/source/*.cpp)
+$(wildcard source/hal/*.cpp)
 
 # ASM sources
-ASM_SOURCES = hal/drivers/CMSIS/Device/ST/STM32F4xx/Source/Templates/gcc/startup_stm32f427xx.s
+ASM_SOURCES = source/drivers/CMSIS/Device/ST/STM32F4xx/Source/Templates/gcc/startup_stm32f427xx.s
 
 # Lib sources
 LIB_SOURCES = \
-hal/drivers/CMSIS/Device/ST/STM32F4xx/Source/Templates/system_stm32f4xx.c \
-$(wildcard hal/drivers/STM32F4xx_HAL_Driver/Src/*.c) \
-$(wildcard hal/drivers/STM32F4xx_HAL_Driver/Src/Legacy/*.c)
-LIB_SOURCES:=$(filter-out $(wildcard hal/drivers/STM32F4xx_HAL_Driver/Src/*template.c),$(LIB_SOURCES))
+source/drivers/CMSIS/Device/ST/STM32F4xx/Source/Templates/system_stm32f4xx.c \
+$(wildcard source/drivers/STM32F4xx_HAL_Driver/Src/*.c) \
+$(wildcard source/drivers/STM32F4xx_HAL_Driver/Src/Legacy/*.c)
+LIB_SOURCES := $(filter-out $(wildcard source/drivers/STM32F4xx_HAL_Driver/Src/*template.c),$(LIB_SOURCES))
 
 #######################################
 # TOOLCHAIN
@@ -146,14 +146,13 @@ C_DEFS =  \
 
 # C includes
 C_INCLUDES =  \
--isystem hal/drivers/CMSIS/Include \
--isystem hal/drivers/CMSIS/Core/Include \
--isystem hal/drivers/CMSIS/Device/ST/STM32F4xx/Include \
--isystem hal/drivers/CMSIS/DSP/Include \
--isystem hal/drivers/STM32F4xx_HAL_Driver/Inc \
--isystem hal/drivers/STM32F4xx_HAL_Driver/Inc/Legacy \
--Ihal/include
-
+-isystem source/drivers/CMSIS/Include \
+-isystem source/drivers/CMSIS/Core/Include \
+-isystem source/drivers/CMSIS/Device/ST/STM32F4xx/Include \
+-isystem source/drivers/CMSIS/DSP/Include \
+-isystem source/drivers/STM32F4xx_HAL_Driver/Inc \
+-isystem source/drivers/STM32F4xx_HAL_Driver/Inc/Legacy \
+-Isource/hal
 # C++ includes
 # C++_INCLUDES = \
 # -Ihal/Inc
@@ -201,7 +200,7 @@ LDSCRIPT = STM32F427VITx_FLASH.ld
 LIBS = \
 -lc_nano \
 -lm \
--lnosys hal/drivers/CMSIS/Lib/GCC/libarm_cortexM4lf_math.a
+-lnosys
 LIBDIR = 
 LDFLAGS = $(MCU) -T$(LDSCRIPT) $(LIBDIR) $(LIBS) \
 -flto-partition=one \

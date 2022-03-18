@@ -1,5 +1,5 @@
-#include "../include/led.hh"
-#include "../include/core_init.h"
+#include "led.hh"
+#include "core_init.h"
 #include <vector>
 
 namespace {

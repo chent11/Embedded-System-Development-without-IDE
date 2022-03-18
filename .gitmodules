@@ -1,0 +1,9 @@
+[submodule "source/modules/cmsis"]
+	path = source/modules/cmsis
+	url = https://github.com/ARM-software/CMSIS_5.git
+[submodule "source/modules/freertos_kernel"]
+	path = source/modules/freertos_kernel
+	url = https://github.com/FreeRTOS/FreeRTOS-Kernel.git
+[submodule "source/modules/stm32f4xx_hal_driver"]
+	path = source/modules/stm32f4xx_hal_driver
+	url = https://github.com/STMicroelectronics/stm32f4xx_hal_driver.git
