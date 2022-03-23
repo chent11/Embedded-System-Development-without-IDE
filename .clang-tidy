@@ -1,0 +1,11 @@
+---
+Checks: '-*,
+    cppcoreguidelines*,
+    clang-analyzer*,
+    google*,
+    modernize*,
+    -modernize-use-trailing-return-type,
+    performance*,
+    readability*,
+    misc*,
+    -misc-unused-parameters'

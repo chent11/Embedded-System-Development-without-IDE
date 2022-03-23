@@ -1,7 +1,6 @@
 .DS_Store
 .DS_Store?
 build
-test/
-.vscode/
+test
 .project
 .cproject

@@ -1,47 +1,53 @@
+#include <array>
+#include <vector>
+#include <algorithm>
+#include "stm32f4xx_hal.h"
 #include "led.hh"
 #include "core_init.h"
-#include <vector>
+#include "arm_math.h"
 
 namespace {
+    const int LENGTH = 1000;
     void delay_ms(int time) {
         HAL_Delay(time);
     }
+    std::vector<float> vec(LENGTH, 0);
+    std::array<float, LENGTH> arr = { 0 };
 } // anonymous
-
-#define SIZE 100
 
 int main() {
     core_init();
 
-    auto* led = new LedGreen();
-    auto* led2 = new LedRed();
-    auto* led3 = new LedBlue();
-    const int LENGTH = 100;
-    const int LOOP = 300000;
+    Led* led = new LedGreen();
+    Led* ledRed = new LedRed();
+    Led* signal1 = new GpioPE14_FmuCH1();
+    // Led* signal2 = new GpioPD14_FmuCH6();
 
-    static int __attribute__((used)) arr[LENGTH]{ 0 };
-    static std::vector<int> __attribute__((used)) vec(LENGTH, 0);
-    static int __attribute__((used)) count { 0 };
+    for (uint32_t i = 0; i < 10; i++) {
+        ledRed->toggle();
+        delay_ms(100);
+    }
 
+    float volatile testVar = 0.0F;
     while (true) {
+        // Test 1
         led->on();
-        led2->on();
-        led3->on();
-        count = HAL_GetTick();
-        for (int i = 0; i < LOOP; i++)
-            for (int j = 0; j < LENGTH; j++) {
-                arr[j] = j * 12;
-            }
-        static int __attribute__((used)) a = HAL_GetTick() - count;
+        signal1->on();
+        for (auto& j : vec) {
+            j = arm_cos_f32(static_cast<float>(rand()));
+        }
 
+        for (auto const& i : vec) {
+            testVar += i;
+        }
+
+        // Test 2
         led->off();
-        led2->off();
-        led3->off();
-        count = HAL_GetTick();
-        for (int i = 0; i < LOOP; i++)
-            for (uint32_t j = 0; j < vec.size(); j++) {
-                vec[j] = j * 12;
-            }
-        a = HAL_GetTick() - count;
+        signal1->off();
+        std::generate(arr.begin(), arr.end(), []() mutable { return arm_cos_f32(static_cast<float>(rand())); });
+
+        for (auto const& i : arr) {
+            testVar += i;
+        }
     }
 }

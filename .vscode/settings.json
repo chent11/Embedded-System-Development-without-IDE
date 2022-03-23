@@ -1,5 +1,8 @@
 {
     "files.associations": {
+        "*.cpp": "cpp",
+        "*.json": "jsonc",
+        "tmpconfig": "json",
         "cstddef": "c",
         "ostream": "cpp",
         "iostream": "cpp",
@@ -43,7 +46,19 @@
         "utility": "cpp",
         "initializer_list": "cpp",
         "sstream": "cpp",
-        "stdexcept": "cpp"
+        "stdexcept": "cpp",
+        "bit": "cpp",
+        "functional": "cpp",
+        "iterator": "cpp",
+        "numeric": "cpp",
+        "random": "cpp",
+        "compare": "cpp",
+        "complex": "cpp",
+        "concepts": "cpp",
+        "cstring": "cpp",
+        "numbers": "cpp",
+        "cfenv": "cpp",
+        "cinttypes": "cpp"
     },
     "cSpell.words": [
         "CMSIS",
@@ -76,5 +91,10 @@
         "starttime",
         "timec",
         "timen"
-    ]
+    ],
+    "cortex-debug.variableUseNaturalFormat": true,
+    "lldb.displayFormat": "auto",
+    "lldb.showDisassembly": "auto",
+    "lldb.dereferencePointers": true,
+    "lldb.consoleMode": "commands"
 }
