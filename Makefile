@@ -98,10 +98,8 @@ LIB_SOURCES := $(filter-out $(wildcard modules/stm32f4xx_hal_driver/Src/*templat
 LIB_INCLUDE_PATH := \
 modules/cmsis_device_f4/Include \
 modules/stm32f4xx_hal_driver/Inc \
-modules/stm32f4xx_hal_driver/Inc/Legacy \
 modules/CMSIS_5/CMSIS/Core/Include \
-modules/CMSIS_5/CMSIS/DSP/Include \
-modules/CMSIS_5/CMSIS/Include
+modules/CMSIS_5/CMSIS/DSP/Include
 
 USER_INCLUDE_PATH := \
 source/hal
@@ -145,7 +143,6 @@ FLOAT_ABI_FLAG := -mfloat-abi=hard
 ARM_IS_FLAG := -mthumb
 # Defines
 COMPILER_DEFINES := \
--DARM_MATH_CM4 \
 -DSTM32F427xx \
 -DUSE_HAL_DRIVER
 # Includes
