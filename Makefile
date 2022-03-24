@@ -11,13 +11,13 @@ STACK_SIZE := $(shell printf "%d" 0xFA00) # Hex Format
 # DEBUG & OPTIMIZATION
 ######################################
 # Debug level (0-3, set 0 to turn off debug)
-DEBUG_MODE := 3
+DEBUG_MODE := 0
 # Build Performance
 # JOBS := 1
 JOBS := $(shell nproc)
 CCACHE_USE := 1
 # Optimization
-OPTIMIZATION_FLAG := -O3
+OPTIMIZATION_FLAG := -Os
 # Link Time Optimization
 LTO_USE := 1
 # Verbose
@@ -84,25 +84,24 @@ $(wildcard source/hal/*.c)
 CPP_SOURCES := \
 $(wildcard source/hal/*.cpp)
 # ASM sources
-ASM_SOURCES := source/drivers/CMSIS/Device/ST/STM32F4xx/Source/Templates/gcc/startup_stm32f427xx.s
+ASM_SOURCES := modules/cmsis_device_f4/Source/Templates/gcc/startup_stm32f427xx.s
 # Lib sources
-MATH_LIB := source/drivers/CMSIS/Lib/GCC/libarm_cortexM4lf_math.a # why this lib is faster and smaller than the one I built from same sources?
-# MATH_LIB := source/modules/cmsis_dsp_lib/lib_cortexM4f_cmsisdsp.a
+MATH_LIB := modules/cmsis_dsp_lib/lib_cortexM4f_cmsisdsp.a
 LIB_SOURCES := \
-source/drivers/CMSIS/Device/ST/STM32F4xx/Source/Templates/system_stm32f4xx.c \
-$(wildcard source/drivers/STM32F4xx_HAL_Driver/Src/*.c) \
-$(wildcard source/drivers/STM32F4xx_HAL_Driver/Src/Legacy/*.c)
-LIB_SOURCES := $(filter-out $(wildcard source/drivers/STM32F4xx_HAL_Driver/Src/*template.c),$(LIB_SOURCES))
+modules/cmsis_device_f4/Source/Templates/system_stm32f4xx.c \
+$(wildcard modules/stm32f4xx_hal_driver/Src/*.c) \
+$(wildcard modules/stm32f4xx_hal_driver/Src/Legacy/*.c)
+LIB_SOURCES := $(filter-out $(wildcard modules/stm32f4xx_hal_driver/Src/*template.c),$(LIB_SOURCES))
 
 # C inlude path
 # Separated user and lib include can suppress compiler's warnings for LIB include
 LIB_INCLUDE_PATH := \
-source/drivers/CMSIS/Device/ST/STM32F4xx/Include \
-source/drivers/STM32F4xx_HAL_Driver/Inc \
-source/drivers/STM32F4xx_HAL_Driver/Inc/Legacy \
-source/modules/cmsis/CMSIS/Core/Include \
-source/modules/cmsis/CMSIS/DSP/Include \
-source/modules/cmsis/CMSIS/Include
+modules/cmsis_device_f4/Include \
+modules/stm32f4xx_hal_driver/Inc \
+modules/stm32f4xx_hal_driver/Inc/Legacy \
+modules/CMSIS_5/CMSIS/Core/Include \
+modules/CMSIS_5/CMSIS/DSP/Include \
+modules/CMSIS_5/CMSIS/Include
 
 USER_INCLUDE_PATH := \
 source/hal
@@ -153,6 +152,7 @@ COMPILER_DEFINES := \
 INCLUDES := $(addprefix -I,$(USER_INCLUDE_PATH)) $(addprefix -isystem ,$(LIB_INCLUDE_PATH))
 # flags
 GENERAL_FLAGS := $(COMPILER_DEFINES) $(CPU_FLAG) $(ARM_IS_FLAG) $(FPU_FLAG) $(FLOAT_ABI_FLAG) $(OPTIMIZATION_FLAG) $(ERROR_FLAGS) $(DEBUG_FLAGS) $(LTO_FLAG) \
+-fmerge-all-constants \
 -fdata-sections \
 -ffunction-sections \
 -fstack-usage
@@ -161,6 +161,8 @@ CFLAGS := $(GENERAL_FLAGS) $(INCLUDES) \
 -Wbad-function-cast \
 -Wstrict-prototypes
 CXXFLAGS := $(GENERAL_FLAGS) $(INCLUDES) \
+-fno-threadsafe-statics \
+-fvisibility=hidden \
 -fcheck-new \
 -fno-exceptions \
 -fno-rtti \
