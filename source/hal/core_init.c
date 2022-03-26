@@ -1,10 +1,7 @@
 #include "stm32f4xx_it.h"
 #include "stm32f4xx_hal.h"
-/**
-  * @brief System Clock Configuration
-  * @retval None
-  */
-void SystemClock_Config(void) {
+
+static void systemclock_config(void) {
     RCC_OscInitTypeDef RCC_OscInitStruct = { 0 };
     RCC_ClkInitTypeDef RCC_ClkInitStruct = { 0 };
     RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = { 0 };
@@ -60,7 +57,7 @@ void HAL_MspInit(void) {
 
 void core_init(void) {
     HAL_Init();
-    SystemClock_Config();
+    systemclock_config();
     // Enable External Clock GPIO Clock
     __HAL_RCC_GPIOH_CLK_ENABLE();
     // Enable Debug GPIO Clock

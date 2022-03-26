@@ -86,7 +86,8 @@ $(wildcard source/hal/*.cpp)
 # ASM sources
 ASM_SOURCES := modules/cmsis_device_f4/Source/Templates/gcc/startup_stm32f427xx.s
 # Lib sources
-MATH_LIB := modules/cmsis_dsp_lib/lib_cortexM4f_cmsisdsp.a
+MATH_LIB := modules/cmsis_dsp_lib/lib_cortexM4_fpu_cmsisdsp.a
+# MATH_LIB := modules/cmsis_dsp_lib/lib_cortexM4_cmsisdsp.a
 LIB_SOURCES := \
 modules/cmsis_device_f4/Source/Templates/system_stm32f4xx.c \
 $(wildcard modules/stm32f4xx_hal_driver/Src/*.c) \
@@ -107,6 +108,7 @@ source/hal
 #######################################
 # TOOLCHAIN
 #######################################
+# https://developer.arm.com/tools-and-software/open-source-software/developer-tools/gnu-toolchain/downloads
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S),Linux)
 	COMPILER_PATH := /root/x-tools/arm-bare_newlib_cortex_m4_nommu-eabi/bin/arm-bare_newlib_cortex_m4_nommu-eabi-
@@ -149,6 +151,7 @@ COMPILER_DEFINES := \
 INCLUDES := $(addprefix -I,$(USER_INCLUDE_PATH)) $(addprefix -isystem ,$(LIB_INCLUDE_PATH))
 # flags
 GENERAL_FLAGS := $(COMPILER_DEFINES) $(CPU_FLAG) $(ARM_IS_FLAG) $(FPU_FLAG) $(FLOAT_ABI_FLAG) $(OPTIMIZATION_FLAG) $(ERROR_FLAGS) $(DEBUG_FLAGS) $(LTO_FLAG) \
+-fno-common \
 -fmerge-all-constants \
 -fdata-sections \
 -ffunction-sections \
@@ -158,6 +161,7 @@ CFLAGS := $(GENERAL_FLAGS) $(INCLUDES) \
 -Wbad-function-cast \
 -Wstrict-prototypes
 CXXFLAGS := $(GENERAL_FLAGS) $(INCLUDES) \
+-fno-use-cxa-atexit \
 -fno-threadsafe-statics \
 -fvisibility=hidden \
 -fcheck-new \
@@ -284,7 +288,7 @@ distclean:
 	@echo "  User build and lib build folder is deleted."
 
 #######################################
-# dependencies
+# DEPENDENCIES
 #######################################
 -include $(wildcard $(OBJ_DIR)/*.d)
 -include $(wildcard $(LIBOBJ_DIR)/*.d)

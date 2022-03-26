@@ -23,7 +23,6 @@ add_subdirectory(\${DSP}/Source bin_dsp)
 " > CMakeLists.txt
 
 rm -rf build
-rm -f ./*.a
 mkdir build
 (
 ##################################### Default Options #####################################
@@ -54,14 +53,14 @@ mkdir build
     -DARM_CPU="cortex-m4" \
     -DOPTIMIZED=ON \
     -DHARDFP=ON \
-    -DFLOAT16=ON \
     -G "Unix Makefiles" ..
   make -j$(($(nproc) + 1))
 )
 mv build/bin_dsp/**/*.a .
 rm -rf build CMakeLists.txt
 
-target="lib_cortexM4f_cmsisdsp.a"
+# target="lib_cortexM4_cmsisdsp.a"
+target="lib_cortexM4_fpu_cmsisdsp.a"
 rm -f $target
 echo "Rearchive to $target"
 ~/Projects/C/Embedded/toolchains/gcc-arm-11.2-2022.02-arm-none-eabi/bin/arm-none-eabi-ar -M <<EOM
