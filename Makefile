@@ -111,15 +111,17 @@ source/hal
 # https://developer.arm.com/tools-and-software/open-source-software/developer-tools/gnu-toolchain/downloads
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S),Linux)
-	COMPILER_PATH := /root/x-tools/arm-bare_newlib_cortex_m4_nommu-eabi/bin/arm-bare_newlib_cortex_m4_nommu-eabi-
+MAKEFLAGS += --no-print-directory
+COMPILER_PATH := arm-none-eabi-
 endif
 ifeq ($(UNAME_S),Darwin)
-	ifeq ($(CCACHE_USE), 1)
-	CCACHE := /usr/local/bin/ccache
-	endif
 # GCC 9 has some bugs that hardware cannot run with with -flto option
-	COMPILER_PATH := ~/Projects/C/Embedded/toolchains/gcc-arm-11.2-2022.02-arm-none-eabi/bin/arm-none-eabi-
+COMPILER_PATH := ~/Projects/C/Embedded/toolchains/gcc-arm-11.2-2022.02-arm-none-eabi/bin/arm-none-eabi-
 endif
+ifeq ($(CCACHE_USE), 1)
+CCACHE := CCACHE_DIR=.ccache ccache
+endif
+
 PREFIX := $(CCACHE) $(COMPILER_PATH)
 
 CC := $(PREFIX)gcc
@@ -149,8 +151,9 @@ COMPILER_DEFINES := \
 -DUSE_HAL_DRIVER
 # Includes
 INCLUDES := $(addprefix -I,$(USER_INCLUDE_PATH)) $(addprefix -isystem ,$(LIB_INCLUDE_PATH))
-# flags
+# flags "specs=nano.specs is both a compiler and linker option" -- {arm_gcc_root}/share/doc/arm-none-eabi/readme.txt:216
 GENERAL_FLAGS := $(COMPILER_DEFINES) $(CPU_FLAG) $(ARM_IS_FLAG) $(FPU_FLAG) $(FLOAT_ABI_FLAG) $(OPTIMIZATION_FLAG) $(ERROR_FLAGS) $(DEBUG_FLAGS) $(LTO_FLAG) \
+-specs=nano.specs \
 -fno-common \
 -fmerge-all-constants \
 -fdata-sections \
@@ -194,7 +197,6 @@ LIBS := $(MATH_LIB) \
 -lnosys
 LIBDIR = 
 LDFLAGS := $(GENERAL_FLAGS) -T$(LDSCRIPT) $(LIBDIR) $(LIBS) \
--specs=nano.specs \
 -specs=nosys.specs \
 -Wl,-Map=$(BUILD_DIR)/$(TARGET).map,--cref -Wl,--gc-sections,--print-memory-usage
 #######################################
@@ -267,15 +269,23 @@ $(BUILD_DIR):
 $(OBJ_DIR):
 	$(Q)mkdir -p $@
 
-.PHONY: all
-all: upload
-
-.PHONY: upload
-upload: main_build
+.PHONY: flash
+flash: $(BUILD_DIR)/$(TARGET).elf
+ifeq (,$(wildcard /usr/local/bin/JLinkExe))
+	@printf "  $(COLOR_RED)No flash utility was found on this machine; is this a docker environment?${NO_COLOR}\n"; exit 1
+endif
 	@echo
 	@echo "  ${COLOR_YELLOW}Uploading to [${COLOR_GREEN}$(TARGET_DEVICE)${NO_COLOR}]...${NO_COLOR}"
-	$(Q)/usr/local/bin/JLinkExe -Device $(TARGET_DEVICE) -NoGui -CommandFile ./cmd.jlink > /tmp/jlinktmpoutput || { if [[ $(V) -gt 2 ]];then cat /tmp/jlinktmpoutput; else printf "  $(COLOR_RED)Unable to upload. Setting V > 2 to check what was happenning.${NO_COLOR}\n"; fi; exit 1; }
+	$(Q)/usr/local/bin/JLinkExe -Device $(TARGET_DEVICE) -NoGui -CommandFile ./cmd.jlink > /tmp/jlinktmpoutput || { if [[ $(V) -gt 2 ]];then cat /tmp/jlinktmpoutput; else printf "  $(COLOR_RED)Unable to flash. Setting V > 2 to check what was happenning.${NO_COLOR}\n"; fi; exit 1; }
 	@echo "  ${COLOR_YELLOW}Uploaded successfully${NO_COLOR}"
+
+.PHONY: ccache-stats ccache-config ccache-version
+ccache-stats:
+	@$(CCACHE) -s
+ccache-config:
+	@$(CCACHE) -p
+ccache-version:
+	@$(CCACHE) -V
 
 .PHONY: clean
 clean:

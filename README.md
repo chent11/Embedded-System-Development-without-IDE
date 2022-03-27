@@ -7,3 +7,15 @@ It's may not a big deal if you are only focusing on the development itself, and 
 Indeed, I won't reinvent the wheel like some device drivers. I'll use the most popular and reliable library, CMSIS, for this project.
 
 I plan to write an RTOS-based project, but I haven't decided on the main function of this project yet. It's just a led-blinker for now.
+
+# How to build?
+
+1. Build a cross-compiler environment from docker.
+    ```
+    docker build -t cross-compiler .
+    ```
+2. Use the dockercross script to build this project.
+    ```
+    ./dockercross make
+    ```
+3. Flash (TBD)
