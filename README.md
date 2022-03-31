@@ -8,14 +8,23 @@ Indeed, I won't reinvent the wheel like some device drivers. I'll use the most p
 
 I plan to write an RTOS-based project, but I haven't decided on the main function of this project yet. It's just a led-blinker for now.
 
-# How to build?
+## How to build?
 
-1. Build a cross-compiler environment from docker.
+1. Clone and update all submodules.
+    ```
+    git clone --recursive https://github.com/chent11/Embedded-System-Development-without-IDE.git
+    ```
+2. Enter the repo's folder and build a cross-compiler environment from docker.
     ```
     docker build -t cross-compiler .
     ```
-2. Use the dockercross script to build this project.
+3. Use the docker-run script to build cmsis-dsp library.
     ```
-    ./dockercross make
+    cd modules
+    ../docker-run ./build_cmsis_dsp_lib.sh
     ```
-3. Flash (TBD)
+4. Change the directory to the root of this repo, and use the docker-run script to build.
+    ```
+    ./docker-run make V=2
+    ```
+5. Flash (TBD)

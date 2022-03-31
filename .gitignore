@@ -1,9 +1,10 @@
-.DS_Store
-.DS_Store?
-build
-test
-.project
-.cproject
-.vscode
 !.vscode/launch.json
 .ccache
+.cproject
+.DS_Store
+.DS_Store?
+.project
+.vscode
+build
+cmsis_dsp_lib
+test

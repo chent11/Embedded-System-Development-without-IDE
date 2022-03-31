@@ -17,7 +17,7 @@ DEBUG_MODE := 0
 JOBS := $(shell nproc)
 CCACHE_USE := 1
 # Optimization
-OPTIMIZATION_FLAG := -Os
+OPTIMIZATION_FLAG := -Os -g
 # Link Time Optimization
 LTO_USE := 1
 # Verbose
@@ -279,9 +279,13 @@ endif
 	$(Q)/usr/local/bin/JLinkExe -Device $(TARGET_DEVICE) -NoGui -CommandFile ./cmd.jlink > /tmp/jlinktmpoutput || { if [[ $(V) -gt 2 ]];then cat /tmp/jlinktmpoutput; else printf "  $(COLOR_RED)Unable to flash. Setting V > 2 to check what was happenning.${NO_COLOR}\n"; fi; exit 1; }
 	@echo "  ${COLOR_YELLOW}Uploaded successfully${NO_COLOR}"
 
-.PHONY: ccache-stats ccache-config ccache-version
+.PHONY: ccache-stats ccache-clear ccache-reset ccache-config ccache-version
 ccache-stats:
-	@$(CCACHE) -s
+	@$(CCACHE) -sv
+ccache-clear:
+	@$(CCACHE) -C
+ccache-reset: ccache-clear
+	@$(CCACHE) -z
 ccache-config:
 	@$(CCACHE) -p
 ccache-version:
