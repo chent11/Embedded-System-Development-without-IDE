@@ -1,0 +1,14 @@
+#!/bin/bash
+
+if [ ! $# -eq 0 ]; then
+    if [ "$1" = "GDB DEBUG TOCKEN FOR CORTEX-DEBUG EXTENSION DEBUGGING" ]; then
+        shift
+        VSCODE_EXTENSIONS_PATH=$HOME/.vscode/extensions
+        HOST_LOCAL_IP=$(ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p')
+        docker container run -p 50000:50000 --add-host=localhost:$HOST_LOCAL_IP --rm -i -v $VSCODE_EXTENSIONS_PATH:$VSCODE_EXTENSIONS_PATH -v  "$(PWD)":/$(PWD) -w "/$(PWD)" cross-compiler "$@"
+        exit
+    fi
+    docker container run --rm -it -v  "$(PWD)":/current-workspace -w "/current-workspace" cross-compiler "$@"
+else
+    echo "Error: need a parameter"
+fi

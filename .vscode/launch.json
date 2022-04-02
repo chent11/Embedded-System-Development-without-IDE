@@ -14,10 +14,9 @@
             "servertype": "jlink",
             "device": "stm32f427vi",
             "interface": "swd",
-            // "jlinkscript":"${workspaceRoot}/BSP/SEGGER/K66FN2M0_emPower/Setup/Kinetis_K66_Target.js",
             "runToEntryPoint": "main",
             "svdFile": "${workspaceRoot}/STM32F427.svd",
-            "gdbPath": "/Users/clydechen/Projects/C/Embedded/toolchains/gcc-arm-11.2-2022.02-arm-none-eabi/bin/arm-none-eabi-gdb"
+            "gdbPath": "${workspaceRoot}/toolchain/docker-gdb"
         }
     ]
 }

@@ -1,0 +1,3 @@
+#!/bin/sh
+
+./docker-cmd "GDB DEBUG TOCKEN FOR CORTEX-DEBUG EXTENSION DEBUGGING" arm-none-eabi-gdb "$@"

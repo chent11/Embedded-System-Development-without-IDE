@@ -18,13 +18,15 @@ I plan to write an RTOS-based project, but I haven't decided on the main functio
     ```
     docker build -t cross-compiler .
     ```
-3. Use the docker-run script to build cmsis-dsp library.
+3. Use the docker-cmd script to build cmsis-dsp library.
     ```
     cd modules
-    ../docker-run ./build_cmsis_dsp_lib.sh
+    ../docker-cmd ./build_cmsis_dsp_lib.sh
     ```
-4. Change the directory to the root of this repo, and use the docker-run script to build.
+4. Change the directory to the root of this repo, and use the docker-cmd script to build.
     ```
-    ./docker-run make V=2
+    ./docker-cmd make V=2
     ```
 5. Flash (TBD)
+
+## How to debug? (TBD)
