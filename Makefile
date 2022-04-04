@@ -6,12 +6,11 @@ TARGET_DEVICE := stm32f427vi
 # Stack size
 STACK_SIZE := $(shell printf "%d" 0xFA00) # Hex Format
 # STACK_SIZE := 64000 # Decimal Format
-
 ######################################
 # DEBUG & OPTIMIZATION
 ######################################
 # Debug level (0-3, set 0 to turn off debug)
-DEBUG_MODE := 0
+DEBUG_LEVEL := 0
 # Build Performance
 # JOBS := 1
 JOBS := $(shell nproc)
@@ -26,47 +25,7 @@ LTO_USE := 1
 # 2. Print what is compiling with only user code warning and error messages.
 # 3. Print what is compiling and all code warning and error messages.
 # 4. Print what the make is doing.
-V := 1
-# Error flags
-ERROR_FLAGS := \
--Wall \
--Wcast-align \
--Wconversion \
--Wdisabled-optimization \
--Wdouble-promotion \
--Wextra \
--Wfatal-errors \
--Wfloat-equal \
--Wformat-security \
--Wformat-truncation \
--Wformat=2 \
--Wlogical-op \
--Wno-missing-field-initializers \
--Wpadded \
--Wpedantic \
--Wpointer-arith \
--Wshadow \
--Wstack-usage=$(STACK_SIZE) \
--Wundef
-# ERROR_FLAGS += -Werror # Make all warnings into errors
-
-ifeq ($(shell test $(V) -lt 1; echo $$?),0)
-ERROR_FLAGS += -w
-endif
-ifeq ($(shell test $(V) -lt 4; echo $$?),0)
-Q := @
-endif
-
-ifneq ($(DEBUG_MODE), 0)
-LTO_USE := 0
-OPTIMIZATION_FLAG := -Og
-DEBUG_FLAGS := -g$(DEBUG_MODE) -ggdb -fno-builtin
-# What is the "no-builtin" option? -> https://stackoverflow.com/a/70857389
-endif
-
-ifeq ($(LTO_USE), 1)
-LTO_FLAG := -flto=auto
-endif
+V ?= 1
 
 #######################################
 # PATHS
@@ -106,115 +65,13 @@ USER_INCLUDE_PATH := \
 source/hal
 
 #######################################
-# TOOLCHAIN
+# GCC CONFIG
 #######################################
-# https://developer.arm.com/tools-and-software/open-source-software/developer-tools/gnu-toolchain/downloads
-UNAME_S := $(shell uname -s)
-ifeq ($(UNAME_S),Linux)
-MAKEFLAGS += --no-print-directory
-COMPILER_PATH := arm-none-eabi-
-endif
-ifeq ($(UNAME_S),Darwin)
-# GCC 9 has some bugs that hardware cannot run with with -flto option
-COMPILER_PATH := ~/Projects/C/Embedded/toolchains/gcc-arm-11.2-2022.02-arm-none-eabi/bin/arm-none-eabi-
-endif
-ifeq ($(CCACHE_USE), 1)
-CCACHE := CCACHE_DIR=.ccache ccache
-endif
-
-PREFIX := $(CCACHE) $(COMPILER_PATH)
-
-CC := $(PREFIX)gcc
-CXX := $(PREFIX)g++
-AS := $(PREFIX)g++
-SZ := $(PREFIX)size
-
-HEX := $(PREFIX)objcopy -O ihex
-BIN := $(PREFIX)objcopy -O binary -S
-
-ASC := $(CC) -S -fverbose-asm
-ASCXX := $(CXX) -S -fverbose-asm
+include toolchain/mk/gcc-config.mk
 
 #######################################
-# CFLAGS
+# GCC RULES
 #######################################
-# Cpu
-CPU_FLAG := -mcpu=cortex-m4
-# Fpu
-FPU_FLAG := -mfpu=fpv4-sp-d16
-FLOAT_ABI_FLAG := -mfloat-abi=hard
-# Instruction set
-ARM_IS_FLAG := -mthumb
-# Defines
-COMPILER_DEFINES := \
--DSTM32F427xx \
--DUSE_HAL_DRIVER
-# Includes
-INCLUDES := $(addprefix -I,$(USER_INCLUDE_PATH)) $(addprefix -isystem ,$(LIB_INCLUDE_PATH))
-# flags "specs=nano.specs is both a compiler and linker option" -- {arm_gcc_root}/share/doc/arm-none-eabi/readme.txt:216
-GENERAL_FLAGS := $(COMPILER_DEFINES) $(CPU_FLAG) $(ARM_IS_FLAG) $(FPU_FLAG) $(FLOAT_ABI_FLAG) $(OPTIMIZATION_FLAG) $(ERROR_FLAGS) $(DEBUG_FLAGS) $(LTO_FLAG) \
--specs=nano.specs \
--fno-common \
--fmerge-all-constants \
--fdata-sections \
--ffunction-sections \
--fstack-usage
-ASFLAGS := $(GENERAL_FLAGS)
-CFLAGS := $(GENERAL_FLAGS) $(INCLUDES) \
--Wbad-function-cast \
--Wstrict-prototypes
-CXXFLAGS := $(GENERAL_FLAGS) $(INCLUDES) \
--fno-use-cxa-atexit \
--fno-threadsafe-statics \
--fvisibility=hidden \
--fcheck-new \
--fno-exceptions \
--fno-rtti \
--Wno-overloaded-virtual \
--Wreorder
-
-# For controllable verbose information
-LIB_FLAGS := $(CFLAGS)
-ifeq ($(shell test $(V) -lt 3; echo $$?),0)
-LIB_FLAGS := $(CFLAGS) -w
-endif
-
-# Standard
-CFLAGS += -std=gnu99
-CXXFLAGS += -std=gnu++17
-# Generate dependency information
-GEN_DEPS = -MMD -MP -MF"$(@:%.o=%.d)"
-
-#######################################
-# LDFLAGS
-#######################################
-# link script
-LDSCRIPT := STM32F427VITx_FLASH.ld
-
-# libraries
-LIBS := $(MATH_LIB) \
--lc_nano \
--lnosys
-LIBDIR = 
-LDFLAGS := $(GENERAL_FLAGS) -T$(LDSCRIPT) $(LIBDIR) $(LIBS) \
--specs=nosys.specs \
--Wl,-Map=$(BUILD_DIR)/$(TARGET).map,--cref -Wl,--gc-sections,--print-memory-usage
-#######################################
-# BUILD ACTION
-#######################################
-# list of c objects
-OBJECTS := $(addprefix $(OBJ_DIR)/,$(notdir $(C_SOURCES:.c=.o)))
-vpath %.c $(sort $(dir $(C_SOURCES)))
-# list of lib objects
-LIBOBJECTS := $(addprefix $(LIBOBJ_DIR)/,$(notdir $(LIB_SOURCES:.c=.o)))
-vpath %.c $(sort $(dir $(LIB_SOURCES)))
-# list of cpp objects
-OBJECTS := $(OBJECTS) $(addprefix $(OBJ_DIR)/,$(notdir $(CPP_SOURCES:.cpp=.o)))
-vpath %.cpp $(sort $(dir $(CPP_SOURCES)))
-# list of asm objects
-OBJECTS := $(OBJECTS) $(addprefix $(OBJ_DIR)/,$(notdir $(ASM_SOURCES:.s=.o)))
-vpath %.s $(sort $(dir $(ASM_SOURCES)))
-
 COLOR_BLUE := \033[38;5;81m
 COLOR_GREEN := \033[38;5;2m
 COLOR_RED := \033[38;5;124m
@@ -226,80 +83,9 @@ main_build:
 	@echo
 	@printf "  ${COLOR_YELLOW}Building${NO_COLOR} [${COLOR_GREEN}$(TARGET)${NO_COLOR}]...\n"
 	@echo
-	$(Q)$(MAKE) $(TARGET) -j$(JOBS)
+	$(Q)docker container run --rm -it -v  "$(PWD)":/current-workspace -w "/current-workspace" cross-compiler:cortex-m4-hf make $(TARGET) -j$(JOBS) -$(MAKEFLAGS)
 
-$(TARGET): $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin
-
-$(OBJ_DIR)/%.o: %.c Makefile | $(OBJ_DIR)
-	@if [ $(V) -gt 1 ] && [ $(V) -lt 4 ];then echo "  CC        $<"; fi
-	$(Q)$(CC) -c $(CFLAGS) $(GEN_DEPS) $< -o $@
-
-$(OBJ_DIR)/%.o: %.cpp Makefile | $(OBJ_DIR)
-	@if [ $(V) -gt 1 ] && [ $(V) -lt 4 ];then echo "  CXX       $<"; fi
-	$(Q)$(CXX) -c $(CXXFLAGS) $(GEN_DEPS) $< -o $@
-
-$(OBJ_DIR)/%.o: %.s Makefile | $(OBJ_DIR)
-	@if [ $(V) -gt 1 ] && [ $(V) -lt 4 ];then echo "  ASM       $<"; fi
-	$(Q)$(AS) -c $(ASFLAGS) $< -o $@
-
-$(LIBOBJ_DIR)/%.o: %.c Makefile | $(LIBOBJ_DIR)
-	@if [ $(V) -gt 1 ] && [ $(V) -lt 4 ];then echo "  CC        $<"; fi
-	$(Q)$(CC) -c $(filter-out -Werror,$(LIB_FLAGS)) $(GEN_DEPS) $< -o $@
-
-$(BUILD_DIR)/$(TARGET).elf: $(LIBOBJECTS) $(OBJECTS) $(LDSCRIPT) | $(BUILD_DIR)
-	@echo
-	@echo "  ${COLOR_YELLOW}Linking objects...${NO_COLOR}"
-	@echo
-	$(Q)$(CXX) $(LIBOBJECTS) $(OBJECTS) $(LDFLAGS) -o $@
-	@echo
-	$(Q)$(SZ) $@
-	@echo
-	@echo "  [${COLOR_GREEN}$(TARGET)${NO_COLOR}] has been built in ${COLOR_BLUE}$(BUILD_DIR)${NO_COLOR} folder."
-
-$(BUILD_DIR)/%.hex: $(BUILD_DIR)/%.elf
-	$(Q)$(HEX) $< $@
-
-$(BUILD_DIR)/%.bin: $(BUILD_DIR)/%.elf
-	$(Q)$(BIN) $< $@
-
-$(LIBOBJ_DIR):
-	$(Q)mkdir -p $@
-$(BUILD_DIR):
-	$(Q)mkdir -p $@
-$(OBJ_DIR):
-	$(Q)mkdir -p $@
-
-.PHONY: flash
-flash: $(BUILD_DIR)/$(TARGET).elf
-ifeq (,$(wildcard /usr/local/bin/JLinkExe))
-	@printf "  $(COLOR_RED)No flash utility was found on this machine; is this a docker environment?${NO_COLOR}\n"; exit 1
-endif
-	@echo
-	@echo "  ${COLOR_YELLOW}Uploading to [${COLOR_GREEN}$(TARGET_DEVICE)${NO_COLOR}]...${NO_COLOR}"
-	$(Q)/usr/local/bin/JLinkExe -Device $(TARGET_DEVICE) -NoGui -CommandFile ./cmd.jlink > /tmp/jlinktmpoutput || { if [[ $(V) -gt 2 ]];then cat /tmp/jlinktmpoutput; else printf "  $(COLOR_RED)Unable to flash. Setting V > 2 to check what was happenning.${NO_COLOR}\n"; fi; exit 1; }
-	@echo "  ${COLOR_YELLOW}Uploaded successfully${NO_COLOR}"
-
-.PHONY: ccache-stats ccache-clear ccache-reset ccache-config ccache-version
-ccache-stats:
-	@$(CCACHE) -sv
-ccache-clear:
-	@$(CCACHE) -C
-ccache-reset: ccache-clear
-	@$(CCACHE) -z
-ccache-config:
-	@$(CCACHE) -p
-ccache-version:
-	@$(CCACHE) -V
-
-.PHONY: clean
-clean:
-	$(Q)rm -rf $(OBJ_DIR) $(BUILD_DIR)/$(TARGET)*
-	@echo "  User build folder is deleted."
-
-.PHONY: distclean
-distclean:
-	$(Q)rm -rf $(BUILD_DIR)
-	@echo "  User build and lib build folder is deleted."
+include toolchain/mk/gcc-rules.mk
 
 #######################################
 # DEPENDENCIES
