@@ -28,18 +28,6 @@ ifeq ($(shell test $(V) -lt 4; echo $$?),0)
 Q := @
 endif
 
-ifneq ($(DEBUG_LEVEL), 0)
-LTO_USE := 0
-OPTIMIZATION_FLAG := -Og
-DEBUG_FLAGS := -g$(DEBUG_LEVEL) -ggdb -fno-builtin
-# What is the "no-builtin" option? -> https://stackoverflow.com/a/70857389
-endif
-ifeq ($(LTO_USE), 1)
-LTO_FLAG := -flto=auto
-endif
-ifeq ($(CCACHE_USE), 1)
-CCACHE := CCACHE_DIR=.ccache ccache
-endif
 #######################################
 # CFLAGS
 #######################################
@@ -116,9 +104,6 @@ endif
 ifeq ($(UNAME_S),Darwin)
 # GCC 9 has some bugs that hardware cannot run with with -flto option
 COMPILER_PREFIX := ~/Projects/C/Embedded/toolchains/gcc-arm-11.2-2022.02-arm-none-eabi/bin/arm-none-eabi-
-endif
-ifeq ($(CCACHE_USE), 1)
-CCACHE := CCACHE_DIR=.ccache ccache
 endif
 
 PREFIX := $(CCACHE) $(COMPILER_PREFIX)

@@ -10,10 +10,9 @@ STACK_SIZE := $(shell printf "%d" 0xFA00) # Hex Format
 # DEBUG & OPTIMIZATION
 ######################################
 # Debug level (0-3, set 0 to turn off debug)
-DEBUG_LEVEL := 0
+DEBUG_LEVEL ?= 0
 # Build Performance
-# JOBS := 1
-JOBS := $(shell nproc)
+JOBS ?= $(shell nproc)
 CCACHE_USE := 1
 # Optimization
 OPTIMIZATION_FLAG := -Os -g
@@ -27,6 +26,18 @@ LTO_USE := 1
 # 4. Print what the make is doing.
 V ?= 1
 
+ifneq ($(DEBUG_LEVEL), 0)
+LTO_USE := 0
+OPTIMIZATION_FLAG := -Og
+DEBUG_FLAGS := -g$(DEBUG_LEVEL) -ggdb -fno-builtin
+# What is the "no-builtin" option? -> https://stackoverflow.com/a/70857389
+endif
+ifeq ($(LTO_USE), 1)
+LTO_FLAG := -flto=auto
+endif
+ifeq ($(CCACHE_USE), 1)
+CCACHE := CCACHE_DIR=.ccache ccache
+endif
 #######################################
 # PATHS
 #######################################
@@ -70,7 +81,7 @@ source/hal
 include toolchain/mk/gcc-config.mk
 
 #######################################
-# GCC RULES
+# BUILD RULES
 #######################################
 COLOR_BLUE := \033[38;5;81m
 COLOR_GREEN := \033[38;5;2m
@@ -83,7 +94,7 @@ main_build:
 	@echo
 	@printf "  ${COLOR_YELLOW}Building${NO_COLOR} [${COLOR_GREEN}$(TARGET)${NO_COLOR}]...\n"
 	@echo
-	$(Q)docker container run --rm -it -v  "$(PWD)":/current-workspace -w "/current-workspace" cross-compiler:cortex-m4-hf make $(TARGET) -j$(JOBS) -$(MAKEFLAGS)
+	$(Q)$(MAKE) $(TARGET) -j$(JOBS)
 
 include toolchain/mk/gcc-rules.mk
 

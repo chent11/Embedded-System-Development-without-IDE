@@ -13,10 +13,10 @@ if [ ! $# -eq 0 ]; then
             echo "Unknown local ip address, please set a value to HOST_LOCAL_IP in environment or $0 and run this script again."
             exit 1
         fi
-        docker container run --rm -i -p 50000:50000 --add-host=localhost:$HOST_LOCAL_IP -v $VSCODE_EXTENSIONS_PATH:$VSCODE_EXTENSIONS_PATH -v  "$(PWD)":/$(PWD) -w "/$(PWD)" cross-compiler:cortex-m4-hf "$@"
+        docker container run --rm -i -p 50000:50000 --add-host=localhost:$HOST_LOCAL_IP -v $VSCODE_EXTENSIONS_PATH:$VSCODE_EXTENSIONS_PATH -v  "$(PWD)":/$(PWD) -w "/$(PWD)" chent11/cross-compiler:cortex-m4-hf "$@"
         exit
     fi
-    docker container run --rm -it -v  "$(PWD)":/current-workspace -w "/current-workspace" cross-compiler:cortex-m4-hf "$@"
+    docker container run --rm -it -v  "$(PWD)":/current-workspace -w "/current-workspace" chent11/cross-compiler:cortex-m4-hf "$@"
 else
     echo "Error: need a parameter"
 fi

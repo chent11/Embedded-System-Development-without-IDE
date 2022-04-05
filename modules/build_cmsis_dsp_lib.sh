@@ -3,6 +3,9 @@ set -e
 
 # PREFIX_PATH: Docker environment defined this variable
 LIB_FOLDER_NAME=cmsis_dsp_lib
+TARGET="lib_cortexM4_fpu_cmsisdsp"
+CPU="cortex-m4"
+FPU=ON
 
 echo "
 cmake_minimum_required (VERSION 3.14)
@@ -50,50 +53,39 @@ mkdir $LIB_FOLDER_NAME
 # option(AUTOVECTORIZE "Prefer autovectorizable code to one using C intrinsics" OFF)
 ############################################################################################
     cd $LIB_FOLDER_NAME
-    for run in {1..2}; do
-        if [ $run -eq 1 ]; then
-            TARGET="lib_cortexM4_fpu_cmsisdsp"
-            CPU="cortex-m4"
-            FPU=ON
-        else
-            TARGET="lib_cortexM4_cmsisdsp"
-            CPU="cortex-m3"
-            FPU=OFF
-        fi
-        cmake -DROOT=`realpath "../CMSIS_5"` \
-            -DCMAKE_PREFIX_PATH=$PREFIX_PATH \
-            -DCMAKE_TOOLCHAIN_FILE=`realpath "../CMSIS_5/CMSIS/DSP/gcc.cmake"` \
-            -DARM_CPU=$CPU \
-            -DOPTIMIZED=ON \
-            -DHARDFP=$FPU \
-            -G "Ninja" ..
-        ninja
+    cmake -DROOT=`realpath "../CMSIS_5"` \
+        -DCMAKE_PREFIX_PATH=$PREFIX_PATH \
+        -DCMAKE_TOOLCHAIN_FILE=`realpath "../CMSIS_5/CMSIS/DSP/gcc.cmake"` \
+        -DARM_CPU=$CPU \
+        -DOPTIMIZED=ON \
+        -DHARDFP=$FPU \
+        -G "Ninja" ..
+    ninja
 
-        mv bin_dsp/**/*.a .
+    mv bin_dsp/**/*.a .
 
-        echo "Rearchive to $TARGET.a"
-        $PREFIX_PATH/bin/arm-none-eabi-ar -M <<EOM
-            CREATE $TARGET.a
-            ADDLIB libCMSISDSPComplexMath.a    
-            ADDLIB libCMSISDSPFiltering.a      
-            ADDLIB libCMSISDSPSVM.a
-            ADDLIB libCMSISDSPBasicMath.a      
-            ADDLIB libCMSISDSPController.a     
-            ADDLIB libCMSISDSPInterpolation.a  
-            ADDLIB libCMSISDSPStatistics.a
-            ADDLIB libCMSISDSPBayes.a          
-            ADDLIB libCMSISDSPDistance.a       
-            ADDLIB libCMSISDSPMatrix.a         
-            ADDLIB libCMSISDSPSupport.a
-            ADDLIB libCMSISDSPCommon.a         
-            ADDLIB libCMSISDSPFastMath.a       
-            ADDLIB libCMSISDSPQuaternionMath.a 
-            ADDLIB libCMSISDSPTransform.a
-            SAVE
-            END
+    echo "Rearchive to $TARGET.a"
+    $PREFIX_PATH/bin/arm-none-eabi-ar -M <<EOM
+        CREATE $TARGET.a
+        ADDLIB libCMSISDSPComplexMath.a    
+        ADDLIB libCMSISDSPFiltering.a      
+        ADDLIB libCMSISDSPSVM.a
+        ADDLIB libCMSISDSPBasicMath.a      
+        ADDLIB libCMSISDSPController.a     
+        ADDLIB libCMSISDSPInterpolation.a  
+        ADDLIB libCMSISDSPStatistics.a
+        ADDLIB libCMSISDSPBayes.a          
+        ADDLIB libCMSISDSPDistance.a       
+        ADDLIB libCMSISDSPMatrix.a         
+        ADDLIB libCMSISDSPSupport.a
+        ADDLIB libCMSISDSPCommon.a         
+        ADDLIB libCMSISDSPFastMath.a       
+        ADDLIB libCMSISDSPQuaternionMath.a 
+        ADDLIB libCMSISDSPTransform.a
+        SAVE
+        END
 EOM
-        mv $TARGET.a ..
-    done
+    mv $TARGET.a ..
 )
 rm -rf CMakeLists.txt $LIB_FOLDER_NAME
 mkdir $LIB_FOLDER_NAME && mv *.a $LIB_FOLDER_NAME

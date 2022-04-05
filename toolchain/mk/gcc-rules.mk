@@ -52,11 +52,11 @@ $(BUILD_DIR):
 $(OBJ_DIR):
 	$(Q)mkdir -p $@
 
-.PHONY: all
-all: main_build flash
-
 .PHONY: flash
 flash: $(BUILD_DIR)/$(TARGET).elf
+ifeq (,$(wildcard /usr/local/bin/JLinkExe))
+	@printf "  $(COLOR_RED)No flash utility was found on this machine; is this a docker environment?${NO_COLOR}\n"; exit 1
+endif
 	@echo
 	@echo "  ${COLOR_YELLOW}Flashing [${COLOR_GREEN}$(TARGET_DEVICE)${COLOR_YELLOW}]...${NO_COLOR}"
 	$(Q)/usr/local/bin/JLinkExe -Device $(TARGET_DEVICE) -NoGui -CommandFile ./cmd.jlink > /tmp/jlinktmpoutput || { if [[ $(V) -gt 2 ]];then cat /tmp/jlinktmpoutput; else printf "  $(COLOR_RED)Unable to flash. Setting V > 2 to check what was happenning.${NO_COLOR}\n"; fi; exit 1; }
