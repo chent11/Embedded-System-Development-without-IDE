@@ -1,0 +1,11 @@
+{
+    "recommendations": [
+        "zixuanwang.linkerscript",
+        "streetsidesoftware.code-spell-checker",
+        "ms-vscode.cpptools-extension-pack",
+        "dan-c-underwood.arm",
+        "marus25.cortex-debug",
+        "ms-vscode.hexeditor",
+        "mateuszchudyk.hexinspector"
+    ]
+}

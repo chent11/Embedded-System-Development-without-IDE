@@ -24,12 +24,12 @@ LTO_USE := 1
 # 2. Print what is compiling with only user code warning and error messages.
 # 3. Print what is compiling and all code warning and error messages.
 # 4. Print what the make is doing.
-V ?= 1
+V ?= 2
 
 ifneq ($(DEBUG_LEVEL), 0)
 LTO_USE := 0
 OPTIMIZATION_FLAG := -Og
-DEBUG_FLAGS := -g$(DEBUG_LEVEL) -ggdb -fno-builtin
+DEBUG_FLAGS := -g$(DEBUG_LEVEL) -ggdb$(DEBUG_LEVEL) -fno-builtin
 # What is the "no-builtin" option? -> https://stackoverflow.com/a/70857389
 endif
 ifeq ($(LTO_USE), 1)
