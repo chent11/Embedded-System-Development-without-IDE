@@ -1,3 +1,8 @@
 #!/bin/sh
 
-./docker-cmd arm-none-eabi-nm "$@"
+DOCKER_IMAGE=chent11/cross-compiler:cortex-m4-hf
+docker_cmd() {
+    docker container run --rm -v "$(PWD)":/$(PWD) -w "/$(PWD)" $DOCKER_IMAGE "$@"
+}
+
+docker_cmd arm-none-eabi-nm $@

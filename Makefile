@@ -78,7 +78,7 @@ source/hal
 #######################################
 # GCC CONFIG
 #######################################
-include toolchain/mk/gcc-config.mk
+include mk/gcc-config.mk
 
 #######################################
 # BUILD RULES
@@ -96,7 +96,7 @@ main_build:
 	@echo
 	$(Q)$(MAKE) $(TARGET) -j$(JOBS)
 
-include toolchain/mk/gcc-rules.mk
+include mk/gcc-rules.mk
 
 #######################################
 # DEPENDENCIES

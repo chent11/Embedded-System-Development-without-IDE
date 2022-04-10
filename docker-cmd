@@ -1,21 +1,6 @@
 #!/bin/bash
 
 if [ ! $# -eq 0 ]; then
-    if [ "$1" = "GDB DEBUG TOCKEN FOR CORTEX-DEBUG EXTENSION DEBUGGING" ]; then
-        shift
-        UNAME_S=$(uname -s)
-        VSCODE_EXTENSIONS_PATH=$HOME/.vscode/extensions
-        if [ "$UNAME_S" = "Linux" ]; then
-            HOST_LOCAL_IP=$(ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p')
-        elif [ "$UNAME_S" = "Darwin" ]; then
-            HOST_LOCAL_IP=$(ifconfig en0 | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p')
-        else
-            echo "Unknown local ip address, please set a value to HOST_LOCAL_IP in environment or $0 and run this script again."
-            exit 1
-        fi
-        docker container run --rm -i -p 50000-50010:50000-50010 --add-host=localhost:$HOST_LOCAL_IP -v $VSCODE_EXTENSIONS_PATH:$VSCODE_EXTENSIONS_PATH -v  "$(PWD)":/$(PWD) -w "/$(PWD)" chent11/cross-compiler:cortex-m4-hf "$@"
-        exit
-    fi
     docker container run --rm -it -v  "$(PWD)":/current-workspace -w "/current-workspace" chent11/cross-compiler:cortex-m4-hf "$@"
 else
     echo "Error: need a parameter"
