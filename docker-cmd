@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ ! $# -eq 0 ]; then
-    docker container run --rm -it -v  "$(PWD)":/current-workspace -w "/current-workspace" chent11/cross-compiler:cortex-m4-hf "$@"
+    docker container run --rm -it -v  "$(PWD)":/current-workspace -w "/current-workspace" chent11/cross-compiler:cortex_m4-nano_newlib-hf "$@"
 else
     echo "Error: need a parameter"
 fi

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-DOCKER_IMAGE=chent11/cross-compiler:cortex-m4-hf
+DOCKER_IMAGE=chent11/cross-compiler:cortex_m4-nano_newlib-hf
 docker_cmd() {
     docker container run --rm -v "$(PWD)":/$(PWD) -w "/$(PWD)" $DOCKER_IMAGE "$@"
 }
