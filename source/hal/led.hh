@@ -1,56 +1,60 @@
-#ifndef __LED_H
-#define __LED_H
+#ifndef LED_H_
+#define LED_H_
 
 #include "stm32f4xx_hal.h"
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wpadded"
 class Led {
-protected:
-    bool _isOn;
+  private:
     GPIO_TypeDef* const _gpioPort;
     const uint16_t _gpioPin;
-public:
+    uint16_t _padding_reserved{0};
+
+  public:
     Led(bool isOn, GPIO_TypeDef* port, uint16_t pin);
     ~Led();
 
-    void on();
-    void off();
-    void toggle();
+    Led(const Led&) = delete;
+    Led(Led&&) = delete;
+    Led& operator=(const Led& rhs) = delete;
+    Led& operator=(Led&& rhs) = delete;
+
+    void on() const;
+    void off() const;
+    void toggle() const;
 };
 
 class LedRed : public Led {
-public:
-    LedRed(void) : Led(false, GPIOB, GPIO_PIN_11) {}
-    LedRed(bool isOn) : Led(isOn, GPIOB, GPIO_PIN_11) {}
+  public:
+    LedRed() : Led(false, GPIOB, GPIO_PIN_11) {}                   // NOLINT(cppcoreguidelines-pro-type-cstyle-cast, performance-no-int-to-ptr)
+    explicit LedRed(bool isOn) : Led(isOn, GPIOB, GPIO_PIN_11) {}  // NOLINT(cppcoreguidelines-pro-type-cstyle-cast, performance-no-int-to-ptr)
 };
 
 class LedBlue : public Led {
-public:
-    LedBlue(void) : Led(false, GPIOB, GPIO_PIN_3) {}
-    LedBlue(bool isOn) : Led(isOn, GPIOB, GPIO_PIN_3) {}
+  public:
+    LedBlue() : Led(false, GPIOB, GPIO_PIN_3) {}                   // NOLINT(cppcoreguidelines-pro-type-cstyle-cast, performance-no-int-to-ptr)
+    explicit LedBlue(bool isOn) : Led(isOn, GPIOB, GPIO_PIN_3) {}  // NOLINT(cppcoreguidelines-pro-type-cstyle-cast, performance-no-int-to-ptr)
 };
 
 class LedGreen : public Led {
-public:
-    LedGreen(void) : Led(false, GPIOB, GPIO_PIN_1) {}
-    LedGreen(bool isOn) : Led(isOn, GPIOB, GPIO_PIN_1) {}
+  public:
+    LedGreen() : Led(false, GPIOB, GPIO_PIN_1) {}                   // NOLINT(cppcoreguidelines-pro-type-cstyle-cast, performance-no-int-to-ptr)
+    explicit LedGreen(bool isOn) : Led(isOn, GPIOB, GPIO_PIN_1) {}  // NOLINT(cppcoreguidelines-pro-type-cstyle-cast, performance-no-int-to-ptr)
 };
 
 class GpioPD14_FmuCH6 : public Led {
-public:
-    GpioPD14_FmuCH6(void) : Led(false, GPIOD, GPIO_PIN_14) {}
-    GpioPD14_FmuCH6(bool isOn) : Led(isOn, GPIOD, GPIO_PIN_14) {}
+  public:
+    GpioPD14_FmuCH6() : Led(false, GPIOD, GPIO_PIN_14) {}                   // NOLINT(cppcoreguidelines-pro-type-cstyle-cast, performance-no-int-to-ptr)
+    explicit GpioPD14_FmuCH6(bool isOn) : Led(isOn, GPIOD, GPIO_PIN_14) {}  // NOLINT(cppcoreguidelines-pro-type-cstyle-cast, performance-no-int-to-ptr)
 };
 class GpioPE14_FmuCH1 : public Led {
-public:
-    GpioPE14_FmuCH1(void) : Led(false, GPIOE, GPIO_PIN_14) {}
-    GpioPE14_FmuCH1(bool isOn) : Led(isOn, GPIOE, GPIO_PIN_14) {}
+  public:
+    GpioPE14_FmuCH1() : Led(false, GPIOE, GPIO_PIN_14) {}                   // NOLINT(cppcoreguidelines-pro-type-cstyle-cast, performance-no-int-to-ptr)
+    explicit GpioPE14_FmuCH1(bool isOn) : Led(isOn, GPIOE, GPIO_PIN_14) {}  // NOLINT(cppcoreguidelines-pro-type-cstyle-cast, performance-no-int-to-ptr)
 };
 class GpioPD13_FmuCH5 : public Led {
-public:
-    GpioPD13_FmuCH5(void) : Led(false, GPIOD, GPIO_PIN_13) {}
-    GpioPD13_FmuCH5(bool isOn) : Led(isOn, GPIOD, GPIO_PIN_13) {}
+  public:
+    GpioPD13_FmuCH5() : Led(false, GPIOD, GPIO_PIN_13) {}                   // NOLINT(cppcoreguidelines-pro-type-cstyle-cast, performance-no-int-to-ptr)
+    explicit GpioPD13_FmuCH5(bool isOn) : Led(isOn, GPIOD, GPIO_PIN_13) {}  // NOLINT(cppcoreguidelines-pro-type-cstyle-cast, performance-no-int-to-ptr)
 };
-#pragma GCC diagnostic pop
+
 #endif

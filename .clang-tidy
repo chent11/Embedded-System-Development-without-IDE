@@ -1,11 +1,13 @@
 ---
-Checks: '-*,
-    cppcoreguidelines*,
-    clang-analyzer*,
-    google*,
-    modernize*,
+Checks: '*,
+    -llvmlibc-implementation-in-namespace,
+    -llvmlibc-callee-namespace,
+    -llvmlibc-restrict-system-libc-headers,
+    -llvm-header-guard,
+    -altera-unroll-loops,
+    -cert-err58-cpp,
+    -cert-msc30-c,
+    -cert-msc50-cpp,
     -modernize-use-trailing-return-type,
-    performance*,
-    readability*,
-    misc*,
-    -misc-unused-parameters'
+    -misc-unused-parameters,
+    -clang-analyzer-security.insecureAPI.rand'
