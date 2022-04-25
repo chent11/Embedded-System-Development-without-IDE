@@ -1,13 +1,15 @@
 ---
 Checks: '*,
-    -llvmlibc-implementation-in-namespace,
-    -llvmlibc-callee-namespace,
-    -llvmlibc-restrict-system-libc-headers,
-    -llvm-header-guard,
     -altera-unroll-loops,
     -cert-err58-cpp,
     -cert-msc30-c,
     -cert-msc50-cpp,
-    -modernize-use-trailing-return-type,
+    -clang-analyzer-security.insecureAPI.rand,
+    -google-readability-todo,
+    -llvm-header-guard,
+    -llvmlibc-callee-namespace,
+    -llvmlibc-implementation-in-namespace,
+    -llvmlibc-restrict-system-libc-headers,
     -misc-unused-parameters,
-    -clang-analyzer-security.insecureAPI.rand'
+    -modernize-use-trailing-return-type,
+    '

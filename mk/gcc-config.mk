@@ -125,7 +125,7 @@ endif
 
 # Standard
 CFLAGS += -std=gnu99
-CXXFLAGS += -std=gnu++11
+CXXFLAGS += -std=gnu++14
 
 # Generate dependency information
 GEN_DEPS = -MMD -MP -MF"$(@:%.o=%.d)"

@@ -26,7 +26,7 @@ LTO_USE := 1
 V ?= 2
 # Debug information
 DEBUG_LEVEL ?= 0
-GENERATE_ASSEMBLY ?= 1
+GENERATE_ASSEMBLY ?= 0
 # TODO: add level control to generate user code assembly only
 
 #######################################
@@ -34,33 +34,37 @@ GENERATE_ASSEMBLY ?= 1
 #######################################
 # Build path
 BUILD_DIR := build
+# Sources path
+SOURCES := source
 # C sources
 C_SOURCES := \
-$(wildcard source/hal/*.c)
+$(wildcard $(SOURCES)/boot/*.c)
 # CXX sources
 CPP_SOURCES := \
-$(wildcard source/hal/*.cpp)
+$(wildcard $(SOURCES)/boot/*.cpp) \
+$(wildcard $(SOURCES)/hal/*.cpp) \
+$(wildcard $(SOURCES)/*.cpp)
 # ASM sources
-ASM_SOURCES := source/hal/startup_stm32f427xx.s
+ASM_SOURCES := $(SOURCES)/boot/startup_stm32f427xx.s
 # Lib sources
-MATH_LIB := modules/cmsis_dsp_lib/lib_cortexM4_fpu_cmsisdsp.a
-# MATH_LIB := modules/cmsis_dsp_lib/lib_cortexM4_cmsisdsp.a
+MATH_LIB := $(SOURCES)/modules/cmsis_dsp_lib/lib_cortexM4_fpu_cmsisdsp.a
+# MATH_LIB := $(SOURCES)/modules/cmsis_dsp_lib/lib_cortexM4_cmsisdsp.a
 LIB_SOURCES := \
-modules/cmsis_device_f4/Source/Templates/system_stm32f4xx.c \
-$(wildcard modules/stm32f4xx_hal_driver/Src/*.c) \
-$(wildcard modules/stm32f4xx_hal_driver/Src/Legacy/*.c)
-LIB_SOURCES := $(filter-out $(wildcard modules/stm32f4xx_hal_driver/Src/*template.c),$(LIB_SOURCES))
+$(SOURCES)/modules/cmsis_device_f4/Source/Templates/system_stm32f4xx.c \
+$(wildcard $(SOURCES)/modules/stm32f4xx_hal_driver/Src/*.c)
+LIB_SOURCES := $(filter-out $(wildcard $(SOURCES)/modules/stm32f4xx_hal_driver/Src/*template.c),$(LIB_SOURCES))
 
 # C include path
 # Separated user and lib include can suppress compiler's warnings for LIB include
 LIB_INCLUDE_PATH := \
-modules/cmsis_device_f4/Include \
-modules/stm32f4xx_hal_driver/Inc \
-modules/CMSIS_5/CMSIS/Core/Include \
-modules/CMSIS_5/CMSIS/DSP/Include
+$(SOURCES)/modules/cmsis_device_f4/Include \
+$(SOURCES)/modules/stm32f4xx_hal_driver/Inc \
+$(SOURCES)/modules/CMSIS_5/CMSIS/Core/Include \
+$(SOURCES)/modules/CMSIS_5/CMSIS/DSP/Include
 
 USER_INCLUDE_PATH := \
-source/hal
+source/boot \
+source
 
 INCLUDES := $(addprefix -I,$(USER_INCLUDE_PATH)) $(addprefix -isystem ,$(LIB_INCLUDE_PATH))
 

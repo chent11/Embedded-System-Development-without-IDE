@@ -58,12 +58,16 @@ void HAL_MspInit(void) {
 }
 
 void core_init(void) {
-    HAL_Init();
-    systemclock_config();
     // Enable External Clock GPIO Clock
     __HAL_RCC_GPIOH_CLK_ENABLE();  // NOLINT
     // Enable Debug GPIO Clock
     __HAL_RCC_GPIOA_CLK_ENABLE();  // NOLINT
+    HAL_Init();
+    systemclock_config();
+}
+
+void delay_ms(uint32_t time) {
+    HAL_Delay(time);
 }
 
 #ifdef USE_FULL_ASSERT
