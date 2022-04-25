@@ -70,6 +70,11 @@ void delay_ms(uint32_t time) {
     HAL_Delay(time);
 }
 
+// for size reducing https://stackoverflow.com/a/50616399
+int __attribute__((const)) __register_exitproc(void) {  // NOLINT
+    return 0;
+}
+
 #ifdef USE_FULL_ASSERT
 /**
  * @brief  Reports the name of the source file and the source line number

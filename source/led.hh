@@ -11,8 +11,8 @@ class Led : protected GPIO {
   public:
     Led(const Led&) = delete;
     Led(Led&&) = delete;
-    Led& operator=(const Led& rhs) = delete;
-    Led& operator=(Led&& rhs) = delete;
+    Led& operator=(const Led&) = delete;
+    Led& operator=(Led&&) = delete;
 
     using GPIO::toggle;
     void on() const { setHigh(); };

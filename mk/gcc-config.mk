@@ -96,11 +96,12 @@ endif
 GENERAL_FLAGS := $(COMPILER_DEFINES) $(CPU_FLAG) $(ARM_IS_FLAG) $(FPU_FLAG) $(FLOAT_ABI_FLAG) $(OPTIMIZATION_FLAG) $(GENERAL_WARNING_FLAGS) $(DEBUG_FLAGS) $(LTO_FLAG) \
 -fdata-sections \
 -ffunction-sections \
+-fipa-pta \
 -fmerge-all-constants \
 -fno-common \
 -fstack-usage \
--fipa-pta \
 -specs=nano.specs
+# -ffreestanding
 
 ASFLAGS := $(GENERAL_FLAGS)
 
@@ -140,6 +141,8 @@ LDSCRIPT := STM32F427VITx_FLASH.ld
 LIBS := $(MATH_LIB) \
 -lc_nano \
 -lnosys
+# -nodefaultlibs -nostartfiles -nostdlib
+# these can reduce the code size almost 300 bytes
 LIBDIR =
 LDFLAGS := $(GENERAL_FLAGS) -T$(LDSCRIPT) $(LIBDIR) $(LIBS) \
 -specs=nosys.specs \

@@ -82,8 +82,8 @@ class GPIO {
   public:
     GPIO(const GPIO&) = delete;
     GPIO(GPIO&&) = delete;
-    GPIO& operator=(const GPIO& rhs) = delete;
-    GPIO& operator=(GPIO&& rhs) = delete;
+    GPIO& operator=(const GPIO&) = delete;
+    GPIO& operator=(GPIO&&) = delete;
 
     void setHigh() const;
     void setLow() const;
