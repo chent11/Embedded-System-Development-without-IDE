@@ -75,10 +75,11 @@ class GPIO {
     const Port _port;
     const Pin _pin;
 
-  public:
+  protected:
     GPIO(Port port, Pin pin, Mode mode, Pull pull, Speed speed);
     ~GPIO();
 
+  public:
     GPIO(const GPIO&) = delete;
     GPIO(GPIO&&) = delete;
     GPIO& operator=(const GPIO& rhs) = delete;

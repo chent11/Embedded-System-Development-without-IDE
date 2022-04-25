@@ -4,11 +4,12 @@
 const uint32_t BOOT_LED_BLINK_TIMES = 10;
 const uint32_t BOOT_LED_BLINK_DELAY = 100;
 const uint32_t NORMAL_WORKING_BLINK_DELAY = 500;
+
 int main() {
     core_init();
 
-    const LedGreen ledGreen;
-    const LedRed ledRed;
+    const auto& ledGreen = LedGreen::getInstance();
+    const auto& ledRed = LedRed::getInstance();
 
     for (uint32_t i = 0; i < BOOT_LED_BLINK_TIMES; i++) {
         ledRed.toggle();
