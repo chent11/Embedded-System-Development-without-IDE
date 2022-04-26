@@ -25,8 +25,10 @@ LTO_USE := 1
 # 4. Print what the make is doing.
 V ?= 2
 # Debug information
-DEBUG_LEVEL ?= 0
+DEBUG ?= 0
+DEBUG_GDB_INFO ?= 0
 GENERATE_ASSEMBLY ?= 0
+GENERATE_COMPILER_DUMP ?= 0
 # TODO: add level control to generate user code assembly only
 
 #######################################

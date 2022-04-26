@@ -60,15 +60,20 @@ CXX_WARNING_FLAGS := \
 #######################################
 # CFLAGS
 #######################################
-# Debug level: 0-3
-ifneq ($(DEBUG_LEVEL), 0)
+# Debug
+ifneq ($(DEBUG), 0)
 LTO_USE := 0
 OPTIMIZATION_FLAG := -Og
-DEBUG_FLAGS := -g$(DEBUG_LEVEL) -ggdb$(DEBUG_LEVEL)
+DEBUG_FLAGS := -g3
+endif
+
+# Debug with GDB info
+ifneq ($(DEBUG_GDB_INFO), 0)
+DEBUG_FLAGS := $(DEBUG_FLAGS) -ggdb3
 endif
 
 # Generate preprocessed file and assembly
-ifeq ($(GENERATE_ASSEMBLY), 1)
+ifneq ($(GENERATE_ASSEMBLY), 0)
 DEBUG_FLAGS := $(DEBUG_FLAGS) -save-temps
 endif
 
@@ -122,6 +127,13 @@ CXXFLAGS := $(GENERAL_FLAGS) $(CXX_WARNING_FLAGS) $(INCLUDES) \
 LIB_FLAGS := $(CFLAGS)
 ifeq ($(shell test $(V) -lt 3; echo $$?),0)
 LIB_FLAGS := $(CFLAGS) -w
+endif
+
+# dump abstract syntax tree in .dot files
+# Put this after LIB_FLAGS prevent generate lib code's dump info
+ifeq ($(GENERATE_COMPILER_DUMP), 1)
+CFLAGS += -fdump-rtl-all-graph -fdump-tree-all-graph -fdump-ipa-all-graph
+CXXFLAGS += -fdump-rtl-all-graph -fdump-tree-all-graph -fdump-ipa-all-graph
 endif
 
 # Standard

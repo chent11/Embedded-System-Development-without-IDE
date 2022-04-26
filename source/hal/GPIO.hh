@@ -5,7 +5,7 @@
 
 class GPIO {
   public:
-    enum class Pin {
+    enum class Pin : uint16_t {
         P0,
         P1,
         P2,
@@ -23,7 +23,7 @@ class GPIO {
         P14,
         P15,
     };
-    enum class Port {
+    enum class Port : uint16_t {
         A,
         B,
         C,

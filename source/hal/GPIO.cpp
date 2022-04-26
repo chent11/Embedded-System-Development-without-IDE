@@ -2,7 +2,7 @@
 
 #include "stm32f4xx_hal.h"
 
-constexpr static GPIO_TypeDef* hardwareAddressOfGPIOPort(GPIO::Port port) {
+constexpr static GPIO_TypeDef* hardwareAddressOfGPIOPort(const GPIO::Port port) {
     switch (port) {
         case GPIO::Port::A:
             return GPIOA;  // NOLINT(cppcoreguidelines-pro-type-cstyle-cast, performance-no-int-to-ptr)
@@ -31,7 +31,7 @@ constexpr static GPIO_TypeDef* hardwareAddressOfGPIOPort(GPIO::Port port) {
             return nullptr;
     }
 }
-constexpr static uint16_t hardwarePinout(GPIO::Pin pin) {
+constexpr static uint16_t hardwarePinout(const GPIO::Pin pin) {
     switch (pin) {
         case GPIO::Pin::P0:
             return GPIO_PIN_0;
@@ -70,7 +70,7 @@ constexpr static uint16_t hardwarePinout(GPIO::Pin pin) {
             return 0;
     }
 }
-constexpr static uint32_t hardwareGPIOMode(GPIO::Mode mode) {
+constexpr static uint32_t hardwareGPIOMode(const GPIO::Mode mode) {
     switch (mode) {
         case GPIO::Mode::Input:
             return GPIO_MODE_INPUT;
@@ -101,7 +101,7 @@ constexpr static uint32_t hardwareGPIOMode(GPIO::Mode mode) {
             return 0;
     }
 }
-constexpr static uint32_t hardwareGPIOPull(GPIO::Pull pull) {
+constexpr static uint32_t hardwareGPIOPull(const GPIO::Pull pull) {
     switch (pull) {
         case GPIO::Pull::PullUp:
             return GPIO_PULLUP;
@@ -114,7 +114,7 @@ constexpr static uint32_t hardwareGPIOPull(GPIO::Pull pull) {
             return 0;
     }
 }
-constexpr static uint32_t hardwareGPIOSpeed(GPIO::Speed speed) {
+constexpr static uint32_t hardwareGPIOSpeed(const GPIO::Speed speed) {
     switch (speed) {
         case GPIO::Speed::Low:
             return GPIO_SPEED_FREQ_LOW;
