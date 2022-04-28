@@ -1,73 +1,82 @@
 #include "core_init.h"
 
-#include "stm32f4xx_hal.h"
-#include "stm32f4xx_it.h"
+#include "stm32f4xx_ll_bus.h"
+#include "stm32f4xx_ll_cortex.h"
+#include "stm32f4xx_ll_exti.h"
+#include "stm32f4xx_ll_pwr.h"
+#include "stm32f4xx_ll_rcc.h"
+#include "stm32f4xx_ll_system.h"
+#include "stm32f4xx_ll_utils.h"
 
-static void systemclock_config(void) {
-    RCC_OscInitTypeDef RCC_OscInitStruct = {0};
-    RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
-    RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
+#define PLLN  180
+#define CLOCK (PLLN * 1000000)
 
-    /** Configure the main internal regulator output voltage
-     */
-    __HAL_RCC_PWR_CLK_ENABLE();                                     // NOLINT
-    __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);  // NOLINT
-    /** Initializes the RCC Oscillators according to the specified parameters
-     * in the RCC_OscInitTypeDef structure.
-     */
-    RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
-    RCC_OscInitStruct.HSEState = RCC_HSE_ON;
-    RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-    RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
-    RCC_OscInitStruct.PLL.PLLM = 12;   // NOLINT
-    RCC_OscInitStruct.PLL.PLLN = 180;  // NOLINT
-    RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
-    RCC_OscInitStruct.PLL.PLLQ = 7;  // NOLINT
-    if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK) {
-        Error_Handler();
+static void pllClock_config(void) {
+    LL_FLASH_SetLatency(LL_FLASH_LATENCY_5);
+    while (LL_FLASH_GetLatency() != LL_FLASH_LATENCY_5) {
     }
-    /** Activate the Over-Drive mode
-     */
-    if (HAL_PWREx_EnableOverDrive() != HAL_OK) {
-        Error_Handler();
-    }
-    /** Initializes the CPU, AHB and APB buses clocks
-     */
-    RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
-    RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
-    RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-    RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
-    RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
+    LL_PWR_SetRegulVoltageScaling(LL_PWR_REGU_VOLTAGE_SCALE1);
+    LL_PWR_EnableOverDriveMode();
+    LL_RCC_HSE_Enable();
 
-    if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_5) != HAL_OK) {
-        Error_Handler();
+    /* Wait till HSE is ready */
+    while (LL_RCC_HSE_IsReady() != 1) {
     }
-    PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_TIM;
-    PeriphClkInitStruct.TIMPresSelection = RCC_TIMPRES_ACTIVATED;
-    if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK) {
-        Error_Handler();
-    }
-    /** Enables the Clock Security System
-     */
-    HAL_RCC_EnableCSS();
-}
+    LL_RCC_HSE_EnableCSS();
+    LL_RCC_PLL_ConfigDomain_SYS(LL_RCC_PLLSOURCE_HSE, LL_RCC_PLLM_DIV_12, PLLN, LL_RCC_PLLP_DIV_2);
+    LL_RCC_PLL_Enable();
 
-void HAL_MspInit(void) {
-    __HAL_RCC_SYSCFG_CLK_ENABLE();  // NOLINT
-    __HAL_RCC_PWR_CLK_ENABLE();     // NOLINT
+    /* Wait till PLL is ready */
+    while (LL_RCC_PLL_IsReady() != 1) {
+    }
+    LL_RCC_SetAHBPrescaler(LL_RCC_SYSCLK_DIV_1);
+    LL_RCC_SetAPB1Prescaler(LL_RCC_APB1_DIV_4);
+    LL_RCC_SetAPB2Prescaler(LL_RCC_APB2_DIV_2);
+    LL_RCC_SetSysClkSource(LL_RCC_SYS_CLKSOURCE_PLL);
+
+    /* Wait till System clock is ready */
+    while (LL_RCC_GetSysClkSource() != LL_RCC_SYS_CLKSOURCE_STATUS_PLL) {
+    }
+    LL_Init1msTick(CLOCK);
+    LL_SetSystemCoreClock(CLOCK);
+    LL_RCC_SetTIMPrescaler(LL_RCC_TIM_PRESCALER_TWICE);
 }
 
 void core_init(void) {
     // Enable External Clock GPIO Clock
-    __HAL_RCC_GPIOH_CLK_ENABLE();  // NOLINT
+    LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOH);
     // Enable Debug GPIO Clock
-    __HAL_RCC_GPIOA_CLK_ENABLE();  // NOLINT
-    HAL_Init();
-    systemclock_config();
+    LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOA);
+
+    LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_CCMDATARAM);
+
+    /* Configure Flash prefetch, Instruction cache, Data cache */
+    LL_FLASH_EnableInstCache();
+    LL_FLASH_EnableDataCache();
+    LL_FLASH_EnablePrefetch();
+
+    /* Set Interrupt Group Priority */
+    // NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_4);
+
+    // const uint32_t prioritygroup   = NVIC_GetPriorityGrouping();
+    // const uint32_t preemptPriority = 0;
+    // const uint32_t subPriority     = 0;
+    // NVIC_SetPriority(SysTick_IRQn, NVIC_EncodePriority(prioritygroup, preemptPriority, subPriority));
+
+    pllClock_config();
+
+    // /* Use systick as time base source and configure 1ms tick (default clock after Reset is HSI) */
+    // // LL_Init1msTick(SystemCoreClock);
+    // /* Configure the SysTick to have interrupt in 1ms time base */
+    // SysTick->LOAD = (uint32_t)((SystemCoreClock / 1000) - 1UL) + 18750; /* set reload register */
+    // SysTick->VAL  = 0UL;                                       /* Load the SysTick Counter Value */
+    // SysTick->CTRL = SysTick_CTRL_CLKSOURCE_Msk |
+    //                 SysTick_CTRL_ENABLE_Msk; /* Enable the Systick Timer */
 }
 
 void delay_ms(uint32_t time) {
-    HAL_Delay(time);
+    LL_mDelay(time);
+    // HAL_Delay(time);
 }
 
 // for size reducing https://stackoverflow.com/a/50616399

@@ -72,13 +72,8 @@ cppcheck: $(C_SOURCES) $(CPP_SOURCES)
 #######################################
 .PHONY: clang-tidy
 CLANG_TIDY := clang-tidy # the checking flags are written in the .clang-tidy config file
-CLANG_TIDY_CHECKED := $(addprefix $(BUILD_DIR)/,$(addsuffix .tidy,$(CPP_SOURCES) $(C_SOURCES)))
-clang-tidy: $(CLANG_TIDY_CHECKED)
-	@echo "All clang-tidy checks have passed!"
-$(BUILD_DIR)/%.tidy: %
-	$(Q)mkdir -p $(@D)
-	$(Q)$(CLANG_TIDY) --quiet $< --warnings-as-errors=* --header-filter=source/ -- $(INCLUDES) ${COMPILER_DEFINES}
-	$(Q)touch $@
+clang-tidy:
+	$(Q)$(CLANG_TIDY) --quiet $(CPP_SOURCES) $(C_SOURCES) --warnings-as-errors=* --header-filter=source/ -- $(INCLUDES) ${COMPILER_DEFINES}
 
 #######################################
 # FLASH
@@ -115,7 +110,8 @@ ccache-config:
 #######################################
 .PHONY: clean
 clean:
-	$(Q)rm -rf $(BUILD_DIR)/$(TARGET)* $(BUILD_DIR)/source $(BUILD_DIR)/disassembly.S
+	@rm $(BUILD_DIR)/* 2> /dev/null || true
+	@rm -rf $(BUILD_DIR)/source
 	@echo "  User build folder is deleted."
 
 .PHONY: distclean

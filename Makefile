@@ -73,8 +73,8 @@ INCLUDES := $(addprefix -I,$(USER_INCLUDE_PATH)) $(addprefix -isystem ,$(LIB_INC
 # Defines
 COMPILER_DEFINES := \
 -DSTM32F427xx \
--DUSE_HAL_DRIVER
-# -DUSE_FULL_LL_DRIVER
+-DUSE_HAL_DRIVER \
+-DUSE_FULL_LL_DRIVER
 
 #######################################
 # GCC CONFIG

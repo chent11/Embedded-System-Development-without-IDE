@@ -1,0 +1,12 @@
+AccessModifierOffset: -2
+AlignConsecutiveAssignments: AcrossEmptyLinesAndComments
+AlignConsecutiveBitFields: Consecutive
+AlignConsecutiveDeclarations: Consecutive
+AlignConsecutiveMacros: AcrossEmptyLinesAndComments
+BasedOnStyle: Google
+ColumnLimit: 0
+DerivePointerAlignment: False
+IndentWidth: 4
+PointerAlignment: Left
+TabWidth: 4
+UseTab: Never

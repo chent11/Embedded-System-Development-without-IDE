@@ -3,20 +3,21 @@
 
 #include "hal/GPIO.hh"
 
-class Led : protected GPIO {
+class Led : protected GPIODef<GPIO::Mode::Output> {
   protected:
-    Led(Port port, Pin pin) : GPIO(port, pin, Mode::OutputPushPull, Pull::NoPull, Speed::Low) { off(); };
+    Led(Port port, Pin pin)
+        : GPIODef(port, pin, Pull::NoPull, OutputType::PushPull, Speed::Low) { off(); };
     ~Led() { off(); };
 
   public:
     Led(const Led&) = delete;
-    Led(Led&&) = delete;
+    Led(Led&&)      = delete;
     Led& operator=(const Led&) = delete;
     Led& operator=(Led&&) = delete;
 
     using GPIO::toggle;
-    void on() const { setHigh(); };
-    void off() const { setLow(); };
+    void on() const { setLow(); };
+    void off() const { setHigh(); };
 };
 
 // singleton will increase code size because the compiler would link the atexit for destructing static method

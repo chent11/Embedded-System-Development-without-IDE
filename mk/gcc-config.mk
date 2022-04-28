@@ -30,6 +30,7 @@ GENERAL_WARNING_FLAGS := \
 -Wsuggest-attribute=malloc \
 -Wsuggest-attribute=noreturn \
 -Wsuggest-attribute=pure \
+-Wswitch-enum \
 -Wswitch-default \
 -Wundef
 # GENERAL_WARNING_FLAGS += -Werror # Make all warnings into errors
