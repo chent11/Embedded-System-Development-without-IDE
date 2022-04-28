@@ -6,6 +6,7 @@
         "dan-c-underwood.arm",
         "marus25.cortex-debug",
         "ms-vscode.hexeditor",
-        "mateuszchudyk.hexinspector"
+        "mateuszchudyk.hexinspector",
+        "dseight.disasexpl"
     ]
 }

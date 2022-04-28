@@ -131,7 +131,7 @@ constexpr static uint32_t hardwareGPIOSpeed(const GPIO::Speed speed) {
 }
 
 GPIO::GPIO(const Port port, const Pin pin, const Mode mode, const Pull pull, const Speed speed)
-    : _port(port), _pin(pin) {
+    : _port{port}, _pin{pin} {
     /* GPIO Ports Clock Enable */
     switch (_port) {
         case GPIO::Port::A:

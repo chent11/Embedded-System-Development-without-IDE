@@ -14,7 +14,7 @@ STACK_SIZE := $(shell printf "%d" 0xFA00) # Hex Format
 JOBS ?= $(shell nproc)
 CCACHE_USE := 1
 # Optimization
-OPTIMIZATION_FLAG := -Os
+OPTIMIZATION_FLAG := -Os -g
 # Link Time Optimization
 LTO_USE := 1
 # Verbose
@@ -26,8 +26,8 @@ LTO_USE := 1
 V ?= 2
 # Debug information
 DEBUG ?= 0
-DEBUG_GDB_INFO ?= 0
-GENERATE_ASSEMBLY ?= 0
+DEBUG_GDB_INFO ?= 1
+DEBUG_SAVE_TEMPS ?= 0
 GENERATE_COMPILER_DUMP ?= 0
 # TODO: add level control to generate user code assembly only
 
@@ -69,6 +69,12 @@ source/boot \
 source
 
 INCLUDES := $(addprefix -I,$(USER_INCLUDE_PATH)) $(addprefix -isystem ,$(LIB_INCLUDE_PATH))
+
+# Defines
+COMPILER_DEFINES := \
+-DSTM32F427xx \
+-DUSE_HAL_DRIVER
+# -DUSE_FULL_LL_DRIVER
 
 #######################################
 # GCC CONFIG

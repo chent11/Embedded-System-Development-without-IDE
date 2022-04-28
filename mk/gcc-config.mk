@@ -73,8 +73,10 @@ DEBUG_FLAGS := $(DEBUG_FLAGS) -ggdb3
 endif
 
 # Generate preprocessed file and assembly
-ifneq ($(GENERATE_ASSEMBLY), 0)
-DEBUG_FLAGS := $(DEBUG_FLAGS) -save-temps
+ifneq ($(DEBUG_SAVE_TEMPS), 0)
+LTO_USE := 0
+SAVE_TEMPS := -fverbose-asm -save-temps
+DEMANGLE_IF_GENERATE_ASSEMBLY = $(CXXFILT) < $(@:%.o=%.s) > $(@:%.o=%.demangled.s)
 endif
 
 # Cpu
@@ -86,11 +88,6 @@ FLOAT_ABI_FLAG := -mfloat-abi=hard
 
 # Instruction set
 ARM_IS_FLAG := -mthumb
-
-# Defines
-COMPILER_DEFINES := \
--DSTM32F427xx \
--DUSE_HAL_DRIVER
 
 # Link time optimization
 ifeq ($(LTO_USE), 1)
@@ -121,7 +118,7 @@ CXXFLAGS := $(GENERAL_FLAGS) $(CXX_WARNING_FLAGS) $(INCLUDES) \
 -fstrict-enums \
 -fvisibility=hidden
 # Options need to try
-# -fnothrow-opt  -fno-enforce-eh-specs
+# -fnothrow-opt  -fno-enforce-eh-specs -fno-stack-protector -fno-unwind-tables -fno-asynchronous-unwind-tables -fomit-frame-pointer
 
 # For controllable verbose information
 LIB_FLAGS := $(CFLAGS)
@@ -153,12 +150,12 @@ LDSCRIPT := STM32F427VITx_FLASH.ld
 LIBS := $(MATH_LIB) \
 -lc_nano \
 -lnosys
-# -nodefaultlibs -nostartfiles -nostdlib
-# these can reduce the code size almost 300 bytes
 LIBDIR =
 LDFLAGS := $(GENERAL_FLAGS) -T$(LDSCRIPT) $(LIBDIR) $(LIBS) \
 -specs=nosys.specs \
 -Wl,-Map=$(BUILD_DIR)/$(TARGET).map,--cref -Wl,--gc-sections,--print-memory-usage
+# -nodefaultlibs -nostartfiles -nostdlib
+# these can reduce the code size almost 300 bytes
 
 #######################################
 # TOOLCHAIN CONFIG
@@ -181,6 +178,9 @@ CC := $(PREFIX)gcc
 CXX := $(PREFIX)g++
 AS := $(PREFIX)g++
 SZ := $(PREFIX)size
+OBJDUMP := $(PREFIX)objdump
+
+CXXFILT := $(COMPILER_PREFIX)c++filt
 
 HEX := $(PREFIX)objcopy -O ihex
 BIN := $(PREFIX)objcopy -O binary -S

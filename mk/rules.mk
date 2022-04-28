@@ -10,12 +10,14 @@ OBJECTS := $(OBJECTS) $(addprefix $(BUILD_DIR)/,$(ASM_SOURCES:.s=.o))
 # list of lib objects. The purpose of creating a lib folder is to separate compiling options from user code and lib code, see line 20 below
 LIBOBJECTS := $(addprefix $(BUILD_DIR)/lib/,$(LIB_SOURCES:.c=.o))
 
-$(TARGET): $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin
+$(TARGET): $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin $(BUILD_DIR)/disassembly.S
 
 $(BUILD_DIR)/%.o: %.c
 	@mkdir -p $(@D)
 	@if [ $(V) -gt 1 ] && [ $(V) -lt 4 ];then echo "  CC        $<"; fi
-	$(Q)$(CC) -c $(CFLAGS) $(GEN_DEPS) $< -o $@
+	$(Q)$(CC) -c $(CFLAGS) $(GEN_DEPS) $(SAVE_TEMPS) $< -o $@
+	$(Q)$(DEMANGLE_IF_GENERATE_ASSEMBLY)
+
 # separate compiling options from user C code and lib C code
 $(BUILD_DIR)/lib/%.o: %.c
 	@mkdir -p $(@D)
@@ -25,7 +27,8 @@ $(BUILD_DIR)/lib/%.o: %.c
 $(BUILD_DIR)/%.o: %.cpp
 	@mkdir -p $(@D)
 	@if [ $(V) -gt 1 ] && [ $(V) -lt 4 ];then echo "  CXX       $<"; fi
-	$(Q)$(CXX) -c $(CXXFLAGS) $(GEN_DEPS) $< -o $@
+	$(Q)$(CXX) -c $(CXXFLAGS) $(GEN_DEPS) $(SAVE_TEMPS) $< -o $@
+	$(Q)$(DEMANGLE_IF_GENERATE_ASSEMBLY)
 
 $(BUILD_DIR)/%.o: %.s
 	@mkdir -p $(@D)
@@ -43,10 +46,13 @@ $(BUILD_DIR)/$(TARGET).elf: $(LIBOBJECTS) $(OBJECTS) $(LDSCRIPT)
 	@echo
 	@echo "  [${COLOR_GREEN}$(TARGET)${NO_COLOR}] has been built in ${COLOR_BLUE}$(BUILD_DIR)${NO_COLOR} folder."
 
-$(BUILD_DIR)/%.hex: $(BUILD_DIR)/%.elf
+$(BUILD_DIR)/disassembly.S: $(BUILD_DIR)/$(TARGET).elf
+	$(Q)$(OBJDUMP) -dlrwC $< > $@
+
+$(BUILD_DIR)/$(TARGET).hex: $(BUILD_DIR)/$(TARGET).elf
 	$(Q)$(HEX) $< $@
 
-$(BUILD_DIR)/%.bin: $(BUILD_DIR)/%.elf
+$(BUILD_DIR)/$(TARGET).bin: $(BUILD_DIR)/$(TARGET).elf
 	$(Q)$(BIN) $< $@
 
 #######################################
@@ -109,7 +115,7 @@ ccache-config:
 #######################################
 .PHONY: clean
 clean:
-	$(Q)rm -rf $(BUILD_DIR)/$(TARGET)* $(BUILD_DIR)/source
+	$(Q)rm -rf $(BUILD_DIR)/$(TARGET)* $(BUILD_DIR)/source $(BUILD_DIR)/disassembly.S
 	@echo "  User build folder is deleted."
 
 .PHONY: distclean
