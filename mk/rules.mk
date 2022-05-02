@@ -58,22 +58,37 @@ $(BUILD_DIR)/$(TARGET).bin: $(BUILD_DIR)/$(TARGET).elf
 #######################################
 # CPPCHECK
 #######################################
-.PHONY: cppcheck
+.PHONY: check-cppcheck
 CPPCHECK := cppcheck
 CPPCHECK_FLAGS := --enable=all --suppress=missingInclude --suppress=unusedFunction --suppress=unmatchedSuppression
 CPPCHECK_FLAGS += --inline-suppr ${COMPILER_DEFINES} $(INCLUDES)
-cppcheck: $(C_SOURCES) $(CPP_SOURCES)
+check-cppcheck:
 	$(Q)$(CPPCHECK) $(CPPCHECK_FLAGS) --addon=misra.json $(C_SOURCES)
 	$(Q)$(CPPCHECK) $(CPPCHECK_FLAGS) --addon=misra_cpp.json $(CPP_SOURCES)
-	@echo "All cppcheck checks have passed!"
+	@echo
+	@echo "All checks have passed!"
 
 #######################################
 # CLANG-TIDY
 #######################################
-.PHONY: clang-tidy
+.PHONY: check-clang-tidy
 CLANG_TIDY := clang-tidy # the checking flags are written in the .clang-tidy config file
-clang-tidy:
+check-clang-tidy:
 	$(Q)$(CLANG_TIDY) --quiet $(CPP_SOURCES) $(C_SOURCES) --warnings-as-errors=* --header-filter=source/ -- $(INCLUDES) ${COMPILER_DEFINES}
+	@echo
+	@echo "All checks have passed!"
+
+#######################################
+# FORMAT-CHECK
+#######################################
+.PHONY: check-format
+CLANG_FORMAT := clang-format # the checking flags are written in the .clang-tidy config file
+USER_INCLUDE_FILES := $(foreach includeDir,$(USER_INCLUDE_PATH),$(wildcard $(includeDir)/*.h))
+USER_INCLUDE_FILES += $(foreach includeDir,$(USER_INCLUDE_PATH),$(wildcard $(includeDir)/*.hh))
+check-format:
+	$(Q)$(CLANG_FORMAT) --dry-run --Werror $(CPP_SOURCES) $(C_SOURCES) $(USER_INCLUDE_FILES)
+	@echo
+	@echo "All checks have passed!"
 
 #######################################
 # FLASH

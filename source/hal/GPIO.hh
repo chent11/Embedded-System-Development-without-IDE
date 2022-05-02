@@ -83,16 +83,16 @@ class GPIO {
 
   private:
     const Port _port;
-    const Pin  _pin;
+    const Pin _pin;
     GPIO(Port port, Pin pin);  // delegate
 
   protected:
     GPIO(Port port, Pin pin, Pull pull);
     GPIO(Port port, Pin pin, Pull pull, OutputType outputType, Speed speed);
     GPIO(Port port, Pin pin, Pull pull, OutputType outputType, Speed speed, AlternateFunction alternateFunction);
-    void  setHigh() const;
-    void  setLow() const;
-    void  toggle() const;
+    void setHigh() const;
+    void setLow() const;
+    void toggle() const;
     State getState() const;
 };
 
