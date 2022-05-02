@@ -66,7 +66,7 @@ check-cppcheck:
 	$(Q)$(CPPCHECK) $(CPPCHECK_FLAGS) --addon=misra.json $(C_SOURCES)
 	$(Q)$(CPPCHECK) $(CPPCHECK_FLAGS) --addon=misra_cpp.json $(CPP_SOURCES)
 	@echo
-	@echo "All checks have passed!"
+	@echo "All cppcheck checks have passed!"
 
 #######################################
 # CLANG-TIDY
@@ -74,21 +74,29 @@ check-cppcheck:
 .PHONY: check-clang-tidy
 CLANG_TIDY := clang-tidy # the checking flags are written in the .clang-tidy config file
 check-clang-tidy:
-	$(Q)$(CLANG_TIDY) --quiet $(CPP_SOURCES) $(C_SOURCES) --warnings-as-errors=* --header-filter=source/ -- $(INCLUDES) ${COMPILER_DEFINES}
+	$(Q)$(CLANG_TIDY) --quiet $(C_SOURCES) --warnings-as-errors=* -extra-arg=$(C_STD) -- $(INCLUDES) ${COMPILER_DEFINES}
+	$(Q)$(CLANG_TIDY) --quiet $(CPP_SOURCES) --warnings-as-errors=* -extra-arg=$(CPP_STD) -- $(INCLUDES) ${COMPILER_DEFINES}
 	@echo
-	@echo "All checks have passed!"
+	@echo "All clang-tidy checks have passed!"
 
 #######################################
 # FORMAT-CHECK
 #######################################
 .PHONY: check-format
 CLANG_FORMAT := clang-format # the checking flags are written in the .clang-tidy config file
-USER_INCLUDE_FILES := $(foreach includeDir,$(USER_INCLUDE_PATH),$(wildcard $(includeDir)/*.h))
-USER_INCLUDE_FILES += $(foreach includeDir,$(USER_INCLUDE_PATH),$(wildcard $(includeDir)/*.hh))
+USER_INCLUDE_HEADERS := $(foreach includeDir,$(USER_INCLUDE_PATH),$(wildcard $(includeDir)/*.h))
+USER_INCLUDE_HEADERS += $(foreach includeDir,$(USER_INCLUDE_PATH),$(wildcard $(includeDir)/*.hh))
 check-format:
-	$(Q)$(CLANG_FORMAT) --dry-run --Werror $(CPP_SOURCES) $(C_SOURCES) $(USER_INCLUDE_FILES)
+	$(Q)$(CLANG_FORMAT) --dry-run --Werror $(CPP_SOURCES) $(C_SOURCES) $(USER_INCLUDE_HEADERS)
 	@echo
-	@echo "All checks have passed!"
+	@echo "All format checks have passed!"
+
+#######################################
+# CHECK-ALL
+#######################################
+# static analysis and format check
+.PHONY: check-all
+check-all: check-cppcheck check-clang-tidy check-format
 
 #######################################
 # FLASH

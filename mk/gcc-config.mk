@@ -80,6 +80,10 @@ SAVE_TEMPS := -fverbose-asm -save-temps
 DEMANGLE_IF_GENERATE_ASSEMBLY = $(CXXFILT) < $(@:%.o=%.s) > $(@:%.o=%.demangled.s)
 endif
 
+# Standard
+C_STD := -std=gnu99
+CPP_STD :=-std=gnu++14
+
 # Cpu
 CPU_FLAG := -mcpu=cortex-m4
 
@@ -108,9 +112,9 @@ GENERAL_FLAGS := $(COMPILER_DEFINES) $(CPU_FLAG) $(ARM_IS_FLAG) $(FPU_FLAG) $(FL
 
 ASFLAGS := $(GENERAL_FLAGS)
 
-CFLAGS := $(GENERAL_FLAGS) $(C_WARNING_FLAGS) $(INCLUDES)
+CFLAGS := $(GENERAL_FLAGS) $(C_STD) $(C_WARNING_FLAGS) $(INCLUDES)
 
-CXXFLAGS := $(GENERAL_FLAGS) $(CXX_WARNING_FLAGS) $(INCLUDES) \
+CXXFLAGS := $(GENERAL_FLAGS) $(CPP_STD) $(CXX_WARNING_FLAGS) $(INCLUDES) \
 -fcheck-new \
 -fno-exceptions \
 -fno-rtti \
@@ -133,10 +137,6 @@ ifeq ($(GENERATE_COMPILER_DUMP), 1)
 CFLAGS += -fdump-rtl-all-graph -fdump-tree-all-graph -fdump-ipa-all-graph
 CXXFLAGS += -fdump-rtl-all-graph -fdump-tree-all-graph -fdump-ipa-all-graph
 endif
-
-# Standard
-CFLAGS += -std=gnu99
-CXXFLAGS += -std=gnu++14
 
 # Generate dependency information
 GEN_DEPS = -MMD -MP -MF"$(@:%.o=%.d)"

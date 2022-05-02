@@ -1,5 +1,5 @@
-#include "core_init.h"
 #include "Leds.hh"
+#include "core_init.h"
 
 const uint32_t BOOT_LED_BLINK_TIMES       = 10;
 const uint32_t BOOT_LED_BLINK_DELAY       = 100;

@@ -13,3 +13,4 @@ Checks: '*,
     -misc-unused-parameters,
     -modernize-use-trailing-return-type,
     '
+HeaderFilterRegex: 'source/.*'
