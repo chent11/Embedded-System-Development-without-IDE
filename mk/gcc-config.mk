@@ -144,9 +144,6 @@ GEN_DEPS = -MMD -MP -MF"$(@:%.o=%.d)"
 #######################################
 # LDFLAGS
 #######################################
-# link script
-LDSCRIPT := STM32F427VITx_FLASH.ld
-
 # libraries
 LIBS := $(MATH_LIB) \
 -lc_nano \

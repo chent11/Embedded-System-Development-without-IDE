@@ -38,6 +38,8 @@ GENERATE_COMPILER_DUMP ?= 0
 BUILD_DIR := build
 # Sources path
 SOURCES := source
+# link script
+LDSCRIPT := $(SOURCES)/boot/cmsis_startup/gcc_arm.ld
 # C sources
 C_SOURCES := \
 $(wildcard $(SOURCES)/boot/*.c)
@@ -47,18 +49,20 @@ $(wildcard $(SOURCES)/boot/*.cpp) \
 $(wildcard $(SOURCES)/hal/*.cpp) \
 $(wildcard $(SOURCES)/*.cpp)
 # ASM sources
-ASM_SOURCES := $(SOURCES)/boot/startup_stm32f427xx.s
+ASM_SOURCES :=
 # Lib sources
 MATH_LIB := $(SOURCES)/modules/cmsis_dsp_lib/lib_cortexM4_fpu_cmsisdsp.a
 # MATH_LIB := $(SOURCES)/modules/cmsis_dsp_lib/lib_cortexM4_cmsisdsp.a
 LIB_SOURCES := \
-$(SOURCES)/modules/cmsis_device_f4/Source/Templates/system_stm32f4xx.c \
-$(wildcard $(SOURCES)/modules/stm32f4xx_hal_driver/Src/*.c)
-LIB_SOURCES := $(filter-out $(wildcard $(SOURCES)/modules/stm32f4xx_hal_driver/Src/*template.c),$(LIB_SOURCES))
+$(wildcard $(SOURCES)/boot/cmsis_startup/*.c) \
+$(SOURCES)/modules/stm32f4xx_hal_driver/Src/stm32f4xx_ll_rcc.c \
+$(SOURCES)/modules/stm32f4xx_hal_driver/Src/stm32f4xx_ll_utils.c \
+$(SOURCES)/modules/stm32f4xx_hal_driver/Src/stm32f4xx_ll_gpio.c
 
 # C include path
 # Separated user and lib include can suppress compiler's warnings for LIB include
 LIB_INCLUDE_PATH := \
+$(SOURCES)/boot/cmsis_startup \
 $(SOURCES)/modules/cmsis_device_f4/Include \
 $(SOURCES)/modules/stm32f4xx_hal_driver/Inc \
 $(SOURCES)/modules/CMSIS_5/CMSIS/Core/Include \
@@ -73,8 +77,8 @@ INCLUDES := $(addprefix -I,$(USER_INCLUDE_PATH)) $(addprefix -isystem ,$(LIB_INC
 # Defines
 COMPILER_DEFINES := \
 -DSTM32F427xx \
--DUSE_HAL_DRIVER \
--DUSE_FULL_LL_DRIVER
+-DUSE_FULL_LL_DRIVER \
+-DARMCM4_FP
 
 #######################################
 # GCC CONFIG
