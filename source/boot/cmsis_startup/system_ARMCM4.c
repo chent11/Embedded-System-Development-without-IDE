@@ -1,10 +1,10 @@
-/**************************************************************************/ /**
-                                                                              * @file     system_ARMCM4.c
-                                                                              * @brief    CMSIS Device System Source File for
-                                                                              *           ARMCM4 Device
-                                                                              * @version  V1.0.1
-                                                                              * @date     15. November 2019
-                                                                              ******************************************************************************/
+/******************************************************************************
+ * @file     system_ARMCM4.c
+ * @brief    CMSIS Device System Source File for
+ *           ARMCM4 Device
+ * @version  V1.0.1
+ * @date     15. November 2019
+ ******************************************************************************/
 /*
  * Copyright (c) 2009-2019 Arm Limited. All rights reserved.
  *
@@ -23,18 +23,12 @@
  * limitations under the License.
  */
 
-#if defined(ARMCM4)
-#include "ARMCM4.h"
-#elif defined(ARMCM4_FP)
-#include "ARMCM4_FP.h"
-#else
-#error device not specified!
-#endif
+#include "system_ARMCM4.h"
 
 /*----------------------------------------------------------------------------
   Define clocks
  *----------------------------------------------------------------------------*/
-#define XTAL         (24000000UL) /* Oscillator frequency */
+#define XTAL         (24000000U) /* Oscillator frequency */
 
 #define SYSTEM_CLOCK (XTAL)
 

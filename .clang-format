@@ -1,5 +1,5 @@
 AccessModifierOffset: -2
-AlignConsecutiveAssignments: AcrossEmptyLinesAndComments
+AlignConsecutiveAssignments: AcrossComments
 AlignConsecutiveBitFields: Consecutive
 # AlignConsecutiveDeclarations: Consecutive
 AlignConsecutiveMacros: AcrossEmptyLinesAndComments

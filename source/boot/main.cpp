@@ -23,13 +23,9 @@ int main() {
         delay_ms(BOOT_LED_BLINK_DELAY);
     }
     ledRed.off();
-    ledGreen.on();
     while (true) {
         // testPin.toggle();
-        ledGreen.on();
-        delay_ms(NORMAL_WORKING_BLINK_DELAY);
-        // testPin.toggle();
-        ledGreen.off();
+        ledGreen.toggle();
         delay_ms(NORMAL_WORKING_BLINK_DELAY);
     }
 }

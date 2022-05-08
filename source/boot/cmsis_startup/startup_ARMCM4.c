@@ -22,13 +22,7 @@
  * limitations under the License.
  */
 
-#if defined(ARMCM4)
-#include "ARMCM4.h"
-#elif defined(ARMCM4_FP)
-#include "ARMCM4_FP.h"
-#else
-#error device not specified!
-#endif
+#include "system_ARMCM4.h"
 
 /*----------------------------------------------------------------------------
   External References
@@ -56,17 +50,6 @@ void SVC_Handler(void) __attribute__((weak, alias("Default_Handler")));
 void DebugMon_Handler(void) __attribute__((weak, alias("Default_Handler")));
 void PendSV_Handler(void) __attribute__((weak, alias("Default_Handler")));
 void SysTick_Handler(void) __attribute__((weak, alias("Default_Handler")));
-
-void Interrupt0_Handler(void) __attribute__((weak, alias("Default_Handler")));
-void Interrupt1_Handler(void) __attribute__((weak, alias("Default_Handler")));
-void Interrupt2_Handler(void) __attribute__((weak, alias("Default_Handler")));
-void Interrupt3_Handler(void) __attribute__((weak, alias("Default_Handler")));
-void Interrupt4_Handler(void) __attribute__((weak, alias("Default_Handler")));
-void Interrupt5_Handler(void) __attribute__((weak, alias("Default_Handler")));
-void Interrupt6_Handler(void) __attribute__((weak, alias("Default_Handler")));
-void Interrupt7_Handler(void) __attribute__((weak, alias("Default_Handler")));
-void Interrupt8_Handler(void) __attribute__((weak, alias("Default_Handler")));
-void Interrupt9_Handler(void) __attribute__((weak, alias("Default_Handler")));
 
 void WWDG_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void PVD_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
@@ -301,16 +284,16 @@ __NO_RETURN void Reset_Handler(void) {
   Hard Fault Handler
  *----------------------------------------------------------------------------*/
 void HardFault_Handler(void) {
-    while (1)
-        ;
+    while (1) {
+    }
 }
 
 /*----------------------------------------------------------------------------
   Default Handler for Exceptions / Interrupts
  *----------------------------------------------------------------------------*/
 void Default_Handler(void) {
-    while (1)
-        ;
+    while (1) {
+    }
 }
 
 #if defined(__ARMCC_VERSION) && (__ARMCC_VERSION >= 6010050)

@@ -7,7 +7,7 @@ class Led : protected GPIODef<GPIO::Mode::Output> {
   protected:
     Led(Port port, Pin pin)
         : GPIODef(port, pin, Pull::NoPull, OutputType::PushPull, Speed::Low) { off(); };
-    ~Led() { off(); };
+    ~Led() = default;
 
   public:
     Led(const Led&) = delete;
@@ -20,7 +20,7 @@ class Led : protected GPIODef<GPIO::Mode::Output> {
     void off() const { setHigh(); };
 };
 
-// singleton will increase code size because the compiler would link the atexit for destructing static method
+// static instance will increase code size
 class LedRed : public Led {
   public:
     static LedRed& getInstance() {

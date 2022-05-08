@@ -19,7 +19,7 @@ void __assert_func(const char* file,
 }
 #define assert_param(x) ((x) ? (void)0 : __assert_func(__FILE__, __LINE__, (char*)0, "REENT malloc succeeded"))
 #else
-#define assert_param(x) ((void)0)
+#define assert_param(x) ((void)0)  // NOLINT(cppcoreguidelines-macro-usage)
 #endif
 
 #ifdef __cplusplus

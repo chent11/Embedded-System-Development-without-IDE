@@ -10,7 +10,7 @@ OBJECTS := $(OBJECTS) $(addprefix $(BUILD_DIR)/,$(ASM_SOURCES:.s=.o))
 # list of lib objects. The purpose of creating a lib folder is to separate compiling options from user code and lib code, see line 20 below
 LIBOBJECTS := $(addprefix $(BUILD_DIR)/lib/,$(LIB_SOURCES:.c=.o))
 
-$(TARGET): $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin $(BUILD_DIR)/disassembly.S
+$(TARGET): $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin $(BUILD_DIR)/disassembly.S $(BUILD_DIR)/$(TARGET).file_sizeinfo
 
 $(BUILD_DIR)/%.o: %.c
 	@mkdir -p $(@D)
@@ -47,7 +47,13 @@ $(BUILD_DIR)/$(TARGET).elf: $(LIBOBJECTS) $(OBJECTS) $(LDSCRIPT)
 	@echo "  [${COLOR_GREEN}$(TARGET)${NO_COLOR}] has been built in ${COLOR_BLUE}$(BUILD_DIR)${NO_COLOR} folder."
 
 $(BUILD_DIR)/disassembly.S: $(BUILD_DIR)/$(TARGET).elf
-	$(Q)$(OBJDUMP) -dlrwC $< > $@
+	$(Q)$(OBJDUMP) --disassemble --line-numbers --reloc --wide --demangle $< > $@
+
+$(BUILD_DIR)/$(TARGET).symbol_info: $(BUILD_DIR)/$(TARGET).elf
+	$(Q)$(NM) --print-size --line-numbers --size-sort --demangle $< > $@
+
+$(BUILD_DIR)/$(TARGET).file_sizeinfo: $(BUILD_DIR)/$(TARGET).symbol_info
+	$(Q)python3 mk/print_size_info.py $< > $@
 
 $(BUILD_DIR)/$(TARGET).hex: $(BUILD_DIR)/$(TARGET).elf
 	$(Q)$(HEX) $< $@

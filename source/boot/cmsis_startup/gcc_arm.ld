@@ -32,9 +32,8 @@
     <o1> Heap Size (in Bytes) <0x0-0xFFFFFFFF:8>
   </h>
   -----------------------------------------------------------------------------*/
-__STACK_SIZE = 0x00000000;
+__STACK_SIZE = 0x0000FFF0;
 __HEAP_SIZE  = 0x00000C00;
-__INITIAL_SP = 0x1000FA00;
 /*
  *-------------------- <<< end of configuration section >>> -------------------
  */
@@ -262,16 +261,17 @@ SECTIONS
     __HeapLimit = .;
   } > RAM
 
-  .stack (ORIGIN(RAM) + LENGTH(RAM) - __STACK_SIZE) (COPY) :
+  .stack (ORIGIN(CCMRAM) + LENGTH(CCMRAM) - __STACK_SIZE) (COPY) :
   {
     . = ALIGN(8);
     __StackLimit = .;
     . = . + __STACK_SIZE;
     . = ALIGN(8);
     __StackTop = .;
-  } > RAM
+  } > CCMRAM
   PROVIDE(__stack = __StackTop);
 
   /* Check if data + heap + stack exceeds RAM limit */
-  ASSERT(__StackLimit >= __HeapLimit, "region RAM overflowed with stack")
+  /* ASSERT(__StackLimit >= __HeapLimit, "region RAM overflowed with stack") */
+  ASSERT(__StackLimit < LENGTH(CCMRAM), "region CCMRAM overflowed with stack")
 }

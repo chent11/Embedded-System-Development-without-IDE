@@ -29,8 +29,8 @@ static void pllClock_config(void) {
     while (LL_RCC_PLL_IsReady() != 1) {
     }
     LL_RCC_SetAHBPrescaler(LL_RCC_SYSCLK_DIV_1);
-    LL_RCC_SetAPB1Prescaler(LL_RCC_APB1_DIV_4);
-    LL_RCC_SetAPB2Prescaler(LL_RCC_APB2_DIV_2);
+    LL_RCC_SetAPB1Prescaler(LL_RCC_APB1_DIV_16);  // for power consumption optimization when not using APB1 clock
+    LL_RCC_SetAPB2Prescaler(LL_RCC_APB2_DIV_16);  // for power consumption optimization when not using APB2 clock
     LL_RCC_SetSysClkSource(LL_RCC_SYS_CLKSOURCE_PLL);
 
     /* Wait till System clock is ready */
@@ -42,6 +42,8 @@ static void pllClock_config(void) {
 }
 
 void core_init(void) {
+    // LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_PWR);
+
     // Enable External Clock GPIO Clock
     LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOH);
     // Enable Debug GPIO Clock
@@ -75,10 +77,9 @@ void core_init(void) {
 
 void delay_ms(uint32_t time) {
     LL_mDelay(time);
-    // HAL_Delay(time);
 }
 
 // for size reducing https://stackoverflow.com/a/50616399
-int __attribute__((const)) __register_exitproc(void) {  // NOLINT
-    return 0;
+int __attribute__((const)) __wrap_atexit(void __attribute__((unused)) (*function)(void)) {  // NOLINT
+    return -1;
 }

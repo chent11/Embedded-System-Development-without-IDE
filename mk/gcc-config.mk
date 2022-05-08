@@ -151,7 +151,7 @@ LIBS := $(MATH_LIB) \
 LIBDIR =
 LDFLAGS := $(GENERAL_FLAGS) -T$(LDSCRIPT) $(LIBDIR) $(LIBS) \
 -specs=nosys.specs \
--Wl,-Map=$(BUILD_DIR)/$(TARGET).map,--cref -Wl,--gc-sections,--print-memory-usage
+-Wl,-Map=$(BUILD_DIR)/$(TARGET).map,--cref -Wl,--gc-sections,--print-memory-usage -Wl,--wrap=atexit
 # -nodefaultlibs -nostartfiles -nostdlib
 # these can reduce the code size almost 300 bytes
 
@@ -161,27 +161,28 @@ LDFLAGS := $(GENERAL_FLAGS) -T$(LDSCRIPT) $(LIBDIR) $(LIBS) \
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S),Linux)
 MAKEFLAGS += --no-print-directory
-COMPILER_PREFIX := arm-none-eabi-
+PREFIX := arm-none-eabi-
 endif
 ifeq ($(UNAME_S),Darwin)
 # GCC 9 has some bugs that hardware cannot boot properly with with -flto option
-COMPILER_PREFIX := ~/Projects/C/Embedded/toolchains/gcc-arm-11.2-2022.02-arm-none-eabi/bin/arm-none-eabi-
+PREFIX := ~/Projects/C/Embedded/toolchains/gcc-arm-11.2-2022.02-arm-none-eabi/bin/arm-none-eabi-
 endif
 ifeq ($(CCACHE_USE), 1)
 CCACHE := CCACHE_DIR=.ccache ccache
 endif
-PREFIX := $(CCACHE) $(COMPILER_PREFIX)
+PREFIX_WITHCCACHE := $(CCACHE) $(PREFIX)
 
-CC := $(PREFIX)gcc
-CXX := $(PREFIX)g++
-AS := $(PREFIX)g++
-SZ := $(PREFIX)size
+CC := $(PREFIX_WITHCCACHE)gcc
+CXX := $(PREFIX_WITHCCACHE)g++
+AS := $(PREFIX_WITHCCACHE)g++
+SZ := $(PREFIX_WITHCCACHE)size
+
 OBJDUMP := $(PREFIX)objdump
+NM := $(PREFIX)nm
+CXXFILT := $(PREFIX)c++filt
 
-CXXFILT := $(COMPILER_PREFIX)c++filt
-
-HEX := $(PREFIX)objcopy -O ihex
-BIN := $(PREFIX)objcopy -O binary -S
+HEX := $(PREFIX_WITHCCACHE)objcopy -O ihex
+BIN := $(PREFIX_WITHCCACHE)objcopy -O binary -S
 
 ASC := $(CC) -S -fverbose-asm
 ASCXX := $(CXX) -S -fverbose-asm

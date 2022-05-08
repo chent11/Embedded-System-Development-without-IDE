@@ -78,10 +78,12 @@ INCLUDES := $(addprefix -I,$(USER_INCLUDE_PATH)) $(addprefix -isystem ,$(LIB_INC
 COMPILER_DEFINES := \
 -DSTM32F427xx \
 -DUSE_FULL_LL_DRIVER \
--DARMCM4_FP
+-DARMCM4_FP \
+-D__CHECK_DEVICE_DEFINES \
+-D__VTOR_PRESENT=1
 
 #######################################
-# GCC CONFIG
+# COMPILER CONFIG
 #######################################
 include mk/gcc-config.mk
 
