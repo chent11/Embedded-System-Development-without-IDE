@@ -69,8 +69,7 @@ $(SOURCES)/modules/CMSIS_5/CMSIS/Core/Include \
 $(SOURCES)/modules/CMSIS_5/CMSIS/DSP/Include
 
 USER_INCLUDE_PATH := \
-source/boot \
-source
+source/boot
 
 INCLUDES := $(addprefix -I,$(USER_INCLUDE_PATH)) $(addprefix -isystem ,$(LIB_INCLUDE_PATH))
 
@@ -78,7 +77,6 @@ INCLUDES := $(addprefix -I,$(USER_INCLUDE_PATH)) $(addprefix -isystem ,$(LIB_INC
 COMPILER_DEFINES := \
 -DSTM32F427xx \
 -DUSE_FULL_LL_DRIVER \
--DARMCM4_FP \
 -D__CHECK_DEVICE_DEFINES \
 -D__VTOR_PRESENT=1
 

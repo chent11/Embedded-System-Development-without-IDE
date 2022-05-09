@@ -107,8 +107,8 @@ GENERAL_FLAGS := $(COMPILER_DEFINES) $(CPU_FLAG) $(ARM_IS_FLAG) $(FPU_FLAG) $(FL
 -fmerge-all-constants \
 -fno-common \
 -fstack-usage \
--specs=nano.specs
-# -ffreestanding
+-specs=nano.specs \
+-ffreestanding
 
 ASFLAGS := $(GENERAL_FLAGS)
 
@@ -151,7 +151,7 @@ LIBS := $(MATH_LIB) \
 LIBDIR =
 LDFLAGS := $(GENERAL_FLAGS) -T$(LDSCRIPT) $(LIBDIR) $(LIBS) \
 -specs=nosys.specs \
--Wl,-Map=$(BUILD_DIR)/$(TARGET).map,--cref -Wl,--gc-sections,--print-memory-usage -Wl,--wrap=atexit
+-Wl,-Map=$(BUILD_DIR)/$(TARGET).map,--cref -Wl,--gc-sections,--print-memory-usage -nostartfiles
 # -nodefaultlibs -nostartfiles -nostdlib
 # these can reduce the code size almost 300 bytes
 

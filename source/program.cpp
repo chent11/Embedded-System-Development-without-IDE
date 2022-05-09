@@ -1,5 +1,5 @@
 #include "Leds.hh"
-#include "core_init.h"
+#include "boot/core_init.h"
 
 const uint32_t BOOT_LED_BLINK_TIMES       = 10;
 const uint32_t BOOT_LED_BLINK_DELAY       = 100;
@@ -11,9 +11,7 @@ const uint32_t NORMAL_WORKING_BLINK_DELAY = 500;
 //     GpioPE14FmuCH1() : GPIODef(Port::E, Pin::P14, Pull::NoPull, OutputType::PushPull, Speed::Medium) {}
 // };
 
-int main() {
-    core_init();
-
+void __attribute__((__noreturn__)) program() {
     const auto& ledGreen = LedGreen::getInstance();
     const auto& ledRed   = LedRed::getInstance();
     // const GpioPE14FmuCH1 testPin;

@@ -149,8 +149,8 @@ void DMA2D_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 #pragma GCC diagnostic ignored "-Wpedantic"
 #endif
 
-extern const VECTOR_TABLE_Type __VECTOR_TABLE[240];
-const VECTOR_TABLE_Type __VECTOR_TABLE[240] __VECTOR_TABLE_ATTRIBUTE = {
+extern const VECTOR_TABLE_Type __VECTOR_TABLE[];  // The NVIC supports up to 240 dynamically re-prioritizable interrupts
+const VECTOR_TABLE_Type __VECTOR_TABLE[] __VECTOR_TABLE_ATTRIBUTE = {
     (VECTOR_TABLE_Type)(&__INITIAL_SP), /*     Initial Stack Pointer */
 
     Reset_Handler,      /*     Reset Handler */

@@ -1,6 +1,9 @@
 #!/bin/sh
 
-DOCKER_IMAGE=chent11/cross-compiler:cortex_m4-nano_newlib-hf
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+DOCKER_IMAGE=`cat $SCRIPT_DIR/docker_image`
+echo $DOCKER_IMAGE
+exit
 docker_cmd() {
     UNAME_S=$(uname -s)
     VSCODE_EXTENSIONS_PATH=$HOME/.vscode/extensions

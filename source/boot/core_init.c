@@ -78,8 +78,3 @@ void core_init(void) {
 void delay_ms(uint32_t time) {
     LL_mDelay(time);
 }
-
-// for size reducing https://stackoverflow.com/a/50616399
-int __attribute__((const)) __wrap_atexit(void __attribute__((unused)) (*function)(void)) {  // NOLINT
-    return -1;
-}

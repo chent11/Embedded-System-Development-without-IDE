@@ -1,7 +1,8 @@
 #!/bin/bash
 
+DOCKER_IMAGE=`cat ./toolchain/docker_image`
 if [ ! $# -eq 0 ]; then
-    docker container run --rm -it -v  "$(PWD)":/$(PWD) -w "/$(PWD)" chent11/cross-compiler:cortex_m4-nano_newlib-hf "$@"
+    docker container run --rm -it -v  "$(PWD)":/$(PWD) -w "/$(PWD)" $DOCKER_IMAGE "$@"
 else
     echo "Error: need a parameter"
 fi
