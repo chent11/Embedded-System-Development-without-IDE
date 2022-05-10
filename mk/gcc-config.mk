@@ -82,7 +82,7 @@ endif
 
 # Standard
 C_STD := -std=gnu99
-CPP_STD :=-std=gnu++14
+CPP_STD :=-std=gnu++20
 
 # Cpu
 CPU_FLAG := -mcpu=cortex-m4

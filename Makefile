@@ -46,7 +46,7 @@ $(wildcard $(SOURCES)/boot/*.c)
 # CXX sources
 CPP_SOURCES := \
 $(wildcard $(SOURCES)/boot/*.cpp) \
-$(wildcard $(SOURCES)/hal/*.cpp) \
+$(wildcard $(SOURCES)/drivers/core_devices/*.cpp) \
 $(wildcard $(SOURCES)/*.cpp)
 # ASM sources
 ASM_SOURCES :=

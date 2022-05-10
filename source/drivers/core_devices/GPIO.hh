@@ -1,0 +1,151 @@
+#ifndef GPIO_H_
+#define GPIO_H_
+
+#include <cstdint>
+
+class GPIO {
+  public:
+    enum class Pin {
+        P0 = 0,
+        P1,
+        P2,
+        P3,
+        P4,
+        P5,
+        P6,
+        P7,
+        P8,
+        P9,
+        P10,
+        P11,
+        P12,
+        P13,
+        P14,
+        P15,
+    };
+    enum class Port {
+        A,
+        B,
+        C,
+        D,
+        E,
+        F,
+        G,
+        H,
+        I,
+        J,
+        K
+    };
+    enum class Mode {
+        Input,
+        Output,
+        Analog,
+        Alternate
+    };
+    enum class OutputType {
+        PushPull,
+        OpenDrain
+    };
+    enum class Speed {
+        Low = 0,
+        Medium,
+        High,
+        VeryHigh
+    };
+    enum class Pull {
+        NoPull,
+        PullUp,
+        PullDown
+    };
+    enum class State {
+        Low,
+        High
+    };
+    enum class AlternateFunction {
+        AF0,
+        AF1,
+        AF2,
+        AF3,
+        AF4,
+        AF5,
+        AF6,
+        AF7,
+        AF8,
+        AF9,
+        AF10,
+        AF11,
+        AF12,
+        AF13,
+        AF14,
+        AF15
+    };
+
+  private:
+    static void initOutputMode(Port port, Pin pin, Pull pull, OutputType outputType, Speed speed);
+    static void initInputMode(Port port, Pin pin, Pull pull);
+    static void initAlternateMode(Port port, Pin pin, Pull pull, OutputType outputType, Speed speed, AlternateFunction alternateFunction);
+    static void setHigh(Port port, Pin pin);
+    static void setLow(Port port, Pin pin);
+    static void toggle(Port port, Pin pin);
+    static State getState(Port port, Pin pin);
+
+    template <Port port, Pin pin, Mode mode>
+    class Base {
+      public:
+        void setHigh() const requires(mode == Mode::Output) {
+            setHigh(port, pin);
+        }
+
+        void setLow() const requires(mode == Mode::Output) {
+            setLow(port, pin);
+        }
+
+        void toggle() const requires(mode == Mode::Output) {
+            toggle(port, pin);
+        }
+
+        [[nodiscard]] State getState() const {
+            return getState(port, pin);
+        }
+
+      protected:
+        // output mode
+        Base() requires(mode == Mode::Output) {  // default output configuration
+            initOutputMode(port, pin, Pull::NoPull, OutputType::PushPull, Speed::Low);
+        }
+        Base(Pull pull, OutputType outputType, Speed speed) requires(mode == Mode::Output) {
+            initOutputMode(port, pin, pull, outputType, speed);
+        }
+
+        // input mode
+        Base() requires(mode == Mode::Input) {  // default input configuration
+            initInputMode(port, pin, Pull::PullUp);
+        }
+        explicit Base(Pull pull) requires(mode == Mode::Input) {
+            initInputMode(port, pin, pull);
+        }
+
+        // alternate
+        Base(Pull pull, OutputType outputType, Speed speed, AlternateFunction alternateFunction) requires(mode == Mode::Alternate) {
+            initAlternateMode(port, pin, pull, outputType, speed, alternateFunction);
+        }
+    };
+
+  public:
+    template <Port port, Pin pin>
+    class OutputMode : public Base<port, pin, Mode::Output> {
+      public:
+        OutputMode() : Base<port, pin, Mode::Output>{} {}
+        OutputMode(Pull pull, OutputType outputType, Speed speed) : Base<port, pin, Mode::Output>{pull, outputType, speed} {}
+    };
+
+    template <Port port, Pin pin>
+    class InputMode : public Base<port, pin, Mode::Input> {
+      public:
+        InputMode() : Base<port, pin, Mode::Input>{} {}
+        explicit InputMode(Pull pull) : Base<port, pin, Mode::Input>{pull} {}
+    };
+
+};  // namespace GPIO
+
+#endif

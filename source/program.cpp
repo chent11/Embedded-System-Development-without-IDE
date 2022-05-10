@@ -5,16 +5,13 @@ const uint32_t BOOT_LED_BLINK_TIMES       = 10;
 const uint32_t BOOT_LED_BLINK_DELAY       = 100;
 const uint32_t NORMAL_WORKING_BLINK_DELAY = 500;
 
-// class GpioPE14FmuCH1 : protected GPIODef<GPIO::Mode::Output> {
-//   public:
-//     using GPIO::toggle;
-//     GpioPE14FmuCH1() : GPIODef(Port::E, Pin::P14, Pull::NoPull, OutputType::PushPull, Speed::Medium) {}
-// };
-
 __NO_RETURN void program() {
     const auto& ledGreen = LedGreen::getInstance();
     const auto& ledRed   = LedRed::getInstance();
-    // const GpioPE14FmuCH1 testPin;
+    // const Led<GPIO::Port::B, GPIO::Pin::P1> ledRed;
+    // const Led<GPIO::Port::B, GPIO::Pin::P11> ledGreen;
+
+    // const GPIO::OutputMode<GPIO::Port::E, GPIO::Pin::P14> fmuCH1Pin;
 
     for (uint32_t i = 0; i < BOOT_LED_BLINK_TIMES; i++) {
         ledRed.toggle();
@@ -22,7 +19,7 @@ __NO_RETURN void program() {
     }
     ledRed.off();
     while (true) {
-        // testPin.toggle();
+        // fmuCH1Pin.toggle();
         ledGreen.toggle();
         delay_ms(NORMAL_WORKING_BLINK_DELAY);
     }

@@ -168,40 +168,40 @@ constexpr static uint32_t hardwareAddressSpeed(const GPIO::Speed speed) {
     }
 }
 
-GPIO::GPIO(const Port port, const Pin pin) : _port{port}, _pin{pin} {
+static void enableClock(const GPIO::Port port) {
     /* GPIO Ports Clock Enable */
-    switch (_port) {
-        case Port::A:
+    switch (port) {
+        case GPIO::Port::A:
             LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOA);  // NOLINT(cppcoreguidelines-pro-type-cstyle-cast, performance-no-int-to-ptr)
             break;
-        case Port::B:
+        case GPIO::Port::B:
             LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOB);  // NOLINT(cppcoreguidelines-pro-type-cstyle-cast, performance-no-int-to-ptr)
             break;
-        case Port::C:
+        case GPIO::Port::C:
             LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOC);  // NOLINT(cppcoreguidelines-pro-type-cstyle-cast, performance-no-int-to-ptr)
             break;
-        case Port::D:
+        case GPIO::Port::D:
             LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOD);  // NOLINT(cppcoreguidelines-pro-type-cstyle-cast, performance-no-int-to-ptr)
             break;
-        case Port::E:
+        case GPIO::Port::E:
             LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOE);  // NOLINT(cppcoreguidelines-pro-type-cstyle-cast, performance-no-int-to-ptr)
             break;
-        case Port::F:
+        case GPIO::Port::F:
             LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOF);  // NOLINT(cppcoreguidelines-pro-type-cstyle-cast, performance-no-int-to-ptr)
             break;
-        case Port::G:
+        case GPIO::Port::G:
             LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOG);  // NOLINT(cppcoreguidelines-pro-type-cstyle-cast, performance-no-int-to-ptr)
             break;
-        case Port::H:
+        case GPIO::Port::H:
             LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOH);  // NOLINT(cppcoreguidelines-pro-type-cstyle-cast, performance-no-int-to-ptr)
             break;
-        case Port::I:
+        case GPIO::Port::I:
             LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOI);  // NOLINT(cppcoreguidelines-pro-type-cstyle-cast, performance-no-int-to-ptr)
             break;
-        case Port::J:
+        case GPIO::Port::J:
             LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOJ);  // NOLINT(cppcoreguidelines-pro-type-cstyle-cast, performance-no-int-to-ptr)
             break;
-        case Port::K:
+        case GPIO::Port::K:
             LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOK);  // NOLINT(cppcoreguidelines-pro-type-cstyle-cast, performance-no-int-to-ptr)
             break;
         default:
@@ -210,8 +210,9 @@ GPIO::GPIO(const Port port, const Pin pin) : _port{port}, _pin{pin} {
     }
 }
 
-GPIO::GPIO(const Port port, const Pin pin, const Pull pull, OutputType outputType, const Speed speed)
-    : GPIO(port, pin) {
+void GPIO::initOutputMode(const Port port, const Pin pin,
+                          const Pull pull, OutputType outputType, const Speed speed) {
+    enableClock(port);
     /* Configure compensation cell for high speed IO */
     if (speed >= Speed::High) {
         // if compensation cell is disabled
@@ -232,8 +233,9 @@ GPIO::GPIO(const Port port, const Pin pin, const Pull pull, OutputType outputTyp
     LL_GPIO_Init(hardwareAddressPort(port), &gpioInitStruct);
 }
 
-GPIO::GPIO(const Port port, const Pin pin, const Pull pull)
-    : GPIO(port, pin) {
+void GPIO::initInputMode(const Port port, const Pin pin,
+                         const Pull pull) {
+    enableClock(port);
     /* Configure GPIO pins */
     LL_GPIO_InitTypeDef gpioInitStruct{};
     gpioInitStruct.Pin  = hardwareAddressPinout(pin);
@@ -243,8 +245,9 @@ GPIO::GPIO(const Port port, const Pin pin, const Pull pull)
     LL_GPIO_Init(hardwareAddressPort(port), &gpioInitStruct);
 }
 
-GPIO::GPIO(const Port port, const Pin pin, const Pull pull, const OutputType outputType, const Speed speed, const AlternateFunction alternateFunction)
-    : GPIO(port, pin) {
+void GPIO::initAlternateMode(const Port port, const Pin pin,
+                             const Pull pull, const OutputType outputType, const Speed speed, const AlternateFunction alternateFunction) {
+    enableClock(port);
     /* Configure GPIO pins */
     LL_GPIO_InitTypeDef gpioInitStruct{};
     gpioInitStruct.Pin        = hardwareAddressPinout(pin);
@@ -257,19 +260,19 @@ GPIO::GPIO(const Port port, const Pin pin, const Pull pull, const OutputType out
     LL_GPIO_Init(hardwareAddressPort(port), &gpioInitStruct);
 }
 
-void GPIO::setHigh() const {
-    LL_GPIO_SetOutputPin(hardwareAddressPort(_port), hardwareAddressPinout(_pin));
+void GPIO::setHigh(const Port port, const Pin pin) {
+    LL_GPIO_SetOutputPin(hardwareAddressPort(port), hardwareAddressPinout(pin));
 }
 
-void GPIO::setLow() const {
-    LL_GPIO_ResetOutputPin(hardwareAddressPort(_port), hardwareAddressPinout(_pin));
+void GPIO::setLow(const Port port, const Pin pin) {
+    LL_GPIO_ResetOutputPin(hardwareAddressPort(port), hardwareAddressPinout(pin));
 }
 
-void GPIO::toggle() const {
-    LL_GPIO_TogglePin(hardwareAddressPort(_port), hardwareAddressPinout(_pin));
+void GPIO::toggle(const Port port, const Pin pin) {
+    LL_GPIO_TogglePin(hardwareAddressPort(port), hardwareAddressPinout(pin));
 }
 
-GPIO::State GPIO::getState() const {
-    uint32_t state = LL_GPIO_IsInputPinSet(hardwareAddressPort(_port), hardwareAddressPinout(_pin));
+GPIO::State GPIO::getState(const Port port, const Pin pin) {
+    uint32_t state = LL_GPIO_IsInputPinSet(hardwareAddressPort(port), hardwareAddressPinout(pin));
     return (state == 1) ? State::High : State::Low;
 }

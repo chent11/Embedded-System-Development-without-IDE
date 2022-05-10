@@ -1,23 +1,20 @@
 #ifndef LED_H_
 #define LED_H_
 
-#include "hal/GPIO.hh"
+#include "drivers/core_devices/GPIO.hh"
 
-class Led : protected GPIODef<GPIO::Mode::Output> {
-  protected:
-    Led(Port port, Pin pin)
-        : GPIODef(port, pin, Pull::NoPull, OutputType::PushPull, Speed::Low) { off(); };
-
+template <GPIO::Port port, GPIO::Pin pin>
+class Led : public GPIO::OutputMode<port, pin> {
   public:
-    using GPIO::toggle;
-    void on() const { setLow(); };
-    void off() const { setHigh(); };
+    Led() : GPIO::OutputMode<port, pin>{} { off(); };
+    void on() const { GPIO::OutputMode<port, pin>::setLow(); };
+    void off() const { GPIO::OutputMode<port, pin>::setHigh(); };
 };
 
 // static instance will increase code size
-class LedRed : public Led {
+class LedRed : public Led<GPIO::Port::B, GPIO::Pin::P11> {
   private:
-    LedRed() : Led(Port::B, Pin::P11) {}
+    LedRed() = default;
 
   public:
     static LedRed& getInstance() {
@@ -33,9 +30,9 @@ class LedRed : public Led {
     LedRed& operator=(LedRed&&) = delete;
 };
 
-class LedBlue : public Led {
+class LedBlue : public Led<GPIO::Port::B, GPIO::Pin::P3> {
   private:
-    LedBlue() : Led(Port::B, Pin::P3) {}
+    LedBlue() = default;
 
   public:
     static LedBlue& getInstance() {
@@ -51,9 +48,9 @@ class LedBlue : public Led {
     LedBlue& operator=(LedBlue&&) = delete;
 };
 
-class LedGreen : public Led {
+class LedGreen : public Led<GPIO::Port::B, GPIO::Pin::P1> {
   private:
-    LedGreen() : Led(Port::B, Pin::P1) {}
+    LedGreen() = default;
 
   public:
     static LedGreen& getInstance() {
@@ -68,5 +65,4 @@ class LedGreen : public Led {
     LedGreen& operator=(const LedGreen&) = delete;
     LedGreen& operator=(LedGreen&&) = delete;
 };
-
 #endif
