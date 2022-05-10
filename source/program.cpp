@@ -11,7 +11,7 @@ const uint32_t NORMAL_WORKING_BLINK_DELAY = 500;
 //     GpioPE14FmuCH1() : GPIODef(Port::E, Pin::P14, Pull::NoPull, OutputType::PushPull, Speed::Medium) {}
 // };
 
-void __attribute__((__noreturn__)) program() {
+__NO_RETURN void program() {
     const auto& ledGreen = LedGreen::getInstance();
     const auto& ledRed   = LedRed::getInstance();
     // const GpioPE14FmuCH1 testPin;

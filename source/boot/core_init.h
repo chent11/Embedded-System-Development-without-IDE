@@ -6,6 +6,8 @@ extern "C" {
 #endif
 #include <stdint.h>  // NOLINT(hicpp-deprecated-headers,modernize-deprecated-headers)
 
+#include "cmsis_compiler.h"
+
 void core_init(void);
 void delay_ms(uint32_t time);
 
@@ -17,7 +19,7 @@ void __assert_func(const char* file,
     while (1) {
     }
 }
-#define assert_param(x) ((x) ? (void)0 : __assert_func(__FILE__, __LINE__, (char*)0, "REENT malloc succeeded"))
+#define assert_param(x) ((x) ? (void)0 : __assert_func(__FILE__, __LINE__, (char*)0, ""))
 #else
 #define assert_param(x) ((void)0)  // NOLINT(cppcoreguidelines-macro-usage)
 #endif

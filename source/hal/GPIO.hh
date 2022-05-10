@@ -99,15 +99,15 @@ class GPIO {
 template <GPIO::Mode mode>
 class GPIODef : protected GPIO {
   public:
-    template <Mode _mode = mode, typename std::enable_if_t<_mode == Mode::Output, int> = 0>  // Require(mode == Mode::Output)
+    template <Mode _mode = mode, typename std::enable_if_t<_mode == Mode::Output, int> = 0>  // Require(mode == Mode::Output) in c++20
     GPIODef(Port port, Pin pin, Pull pull, OutputType outputType, Speed speed)
         : GPIO(port, pin, pull, outputType, speed) {}
 
-    template <Mode _mode = mode, typename std::enable_if_t<_mode == Mode::Input, int> = 0>  // Require(mode == Mode::Input)
+    template <Mode _mode = mode, typename std::enable_if_t<_mode == Mode::Input, int> = 0>  // Require(mode == Mode::Input) in c++20
     GPIODef(Port port, Pin pin, Pull pull)
         : GPIO(port, pin, pull) {}
 
-    template <Mode _mode = mode, typename std::enable_if_t<_mode == Mode::Alternate, int> = 0>  // Require(mode == Mode::Alternate)
+    template <Mode _mode = mode, typename std::enable_if_t<_mode == Mode::Alternate, int> = 0>  // Require(mode == Mode::Alternate) in c++20
     GPIODef(Port port, Pin pin, Pull pull, OutputType outputType, Speed speed, AlternateFunction alternateFunction)
         : GPIO(port, pin, pull, outputType, speed, alternateFunction) {}
 };
