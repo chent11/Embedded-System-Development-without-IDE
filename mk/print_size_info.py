@@ -19,6 +19,8 @@ def getTypeMeaning(type):
         "T": "Text symbol, global",
         "t": "Text symbol, local (static)",
         "U": "Undefined symbol",
+        "V": "Weak object",
+        "W": "Weak symbol",
     }[type]
 
 

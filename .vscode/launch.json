@@ -14,8 +14,7 @@
             "servertype": "jlink",
             "device": "stm32f427vi",
             "interface": "swd",
-            // "runToEntryPoint": "Reset_Handler",
-            "runToEntryPoint": "main",
+            "runToEntryPoint": "Reset_Handler",
             "svdFile": "${workspaceRoot}/STM32F427.svd",
             "gdbPath": "${workspaceRoot}/toolchain/docker-gdb"
         }

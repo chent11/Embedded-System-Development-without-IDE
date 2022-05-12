@@ -215,8 +215,8 @@ void GPIO::initOutputMode(const Port port, const Pin pin,
     enableClock(port);
     /* Configure compensation cell for high speed IO */
     if (speed >= Speed::High) {
-        // if compensation cell is disabled
         if (!static_cast<bool>(LL_SYSCFG_IsActiveFlag_CMPCR())) {
+            // if compensation cell is disabled
             LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_SYSCFG);
             LL_SYSCFG_EnableCompensationCell();
         }

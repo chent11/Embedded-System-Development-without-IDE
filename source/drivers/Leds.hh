@@ -1,7 +1,7 @@
 #ifndef LED_H_
 #define LED_H_
 
-#include "drivers/core_devices/GPIO.hh"
+#include "core_devices/GPIO.hh"
 
 template <GPIO::Port port, GPIO::Pin pin>
 class Led : public GPIO::OutputMode<port, pin> {

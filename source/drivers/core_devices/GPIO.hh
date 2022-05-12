@@ -80,6 +80,8 @@ class GPIO {
         AF15
     };
 
+    GPIO() = delete;
+
   private:
     static void initOutputMode(Port port, Pin pin, Pull pull, OutputType outputType, Speed speed);
     static void initInputMode(Port port, Pin pin, Pull pull);
@@ -93,41 +95,41 @@ class GPIO {
     class Base {
       public:
         void setHigh() const requires(mode == Mode::Output) {
-            setHigh(port, pin);
+            GPIO::setHigh(port, pin);
         }
 
         void setLow() const requires(mode == Mode::Output) {
-            setLow(port, pin);
+            GPIO::setLow(port, pin);
         }
 
         void toggle() const requires(mode == Mode::Output) {
-            toggle(port, pin);
+            GPIO::toggle(port, pin);
         }
 
         [[nodiscard]] State getState() const {
-            return getState(port, pin);
+            return GPIO::getState(port, pin);
         }
 
       protected:
         // output mode
         Base() requires(mode == Mode::Output) {  // default output configuration
-            initOutputMode(port, pin, Pull::NoPull, OutputType::PushPull, Speed::Low);
+            GPIO::initOutputMode(port, pin, Pull::NoPull, OutputType::PushPull, Speed::Low);
         }
         Base(Pull pull, OutputType outputType, Speed speed) requires(mode == Mode::Output) {
-            initOutputMode(port, pin, pull, outputType, speed);
+            GPIO::initOutputMode(port, pin, pull, outputType, speed);
         }
 
         // input mode
         Base() requires(mode == Mode::Input) {  // default input configuration
-            initInputMode(port, pin, Pull::PullUp);
+            GPIO::initInputMode(port, pin, Pull::PullUp);
         }
         explicit Base(Pull pull) requires(mode == Mode::Input) {
-            initInputMode(port, pin, pull);
+            GPIO::initInputMode(port, pin, pull);
         }
 
         // alternate
         Base(Pull pull, OutputType outputType, Speed speed, AlternateFunction alternateFunction) requires(mode == Mode::Alternate) {
-            initAlternateMode(port, pin, pull, outputType, speed, alternateFunction);
+            GPIO::initAlternateMode(port, pin, pull, outputType, speed, alternateFunction);
         }
     };
 

@@ -64,7 +64,7 @@ CXX_WARNING_FLAGS := \
 # Debug
 ifneq ($(DEBUG), 0)
 LTO_USE := 0
-OPTIMIZATION_FLAG := -Og
+OPTIMIZATION_FLAG := -O0 -Og
 DEBUG_FLAGS := -g3
 endif
 

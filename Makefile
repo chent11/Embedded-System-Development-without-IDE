@@ -54,7 +54,8 @@ ASM_SOURCES :=
 MATH_LIB := $(SOURCES)/modules/cmsis_dsp_lib/lib_cortexM4_fpu_cmsisdsp.a
 # MATH_LIB := $(SOURCES)/modules/cmsis_dsp_lib/lib_cortexM4_cmsisdsp.a
 LIB_SOURCES := \
-$(wildcard $(SOURCES)/boot/cmsis_startup/*.c) \
+$(SOURCES)/boot/cmsis_startup/startup_ARMCM4.c \
+$(SOURCES)/boot/cmsis_startup/system_ARMCM4.c \
 $(SOURCES)/modules/stm32f4xx_hal_driver/Src/stm32f4xx_ll_rcc.c \
 $(SOURCES)/modules/stm32f4xx_hal_driver/Src/stm32f4xx_ll_utils.c \
 $(SOURCES)/modules/stm32f4xx_hal_driver/Src/stm32f4xx_ll_gpio.c
