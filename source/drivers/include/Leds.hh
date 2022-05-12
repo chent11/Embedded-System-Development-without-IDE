@@ -23,9 +23,8 @@ class LedRed : public Led<GPIO::Port::B, GPIO::Pin::P11> {
     }
 
     ~LedRed() = default;
-
     LedRed(const LedRed&) = delete;
-    LedRed(LedRed&&)      = delete;
+    LedRed(LedRed&&) = delete;
     LedRed& operator=(const LedRed&) = delete;
     LedRed& operator=(LedRed&&) = delete;
 };
@@ -41,9 +40,8 @@ class LedBlue : public Led<GPIO::Port::B, GPIO::Pin::P3> {
     }
 
     ~LedBlue() = default;
-
     LedBlue(const LedBlue&) = delete;
-    LedBlue(LedBlue&&)      = delete;
+    LedBlue(LedBlue&&) = delete;
     LedBlue& operator=(const LedBlue&) = delete;
     LedBlue& operator=(LedBlue&&) = delete;
 };
@@ -59,9 +57,8 @@ class LedGreen : public Led<GPIO::Port::B, GPIO::Pin::P1> {
     }
 
     ~LedGreen() = default;
-
     LedGreen(const LedGreen&) = delete;
-    LedGreen(LedGreen&&)      = delete;
+    LedGreen(LedGreen&&) = delete;
     LedGreen& operator=(const LedGreen&) = delete;
     LedGreen& operator=(LedGreen&&) = delete;
 };

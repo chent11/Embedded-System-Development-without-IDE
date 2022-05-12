@@ -1,13 +1,13 @@
+#include "Leds.hh"
 #include "core_init.h"
-#include "drivers/Leds.hh"
 
-const uint32_t BOOT_LED_BLINK_TIMES       = 10;
-const uint32_t BOOT_LED_BLINK_DELAY       = 100;
+const uint32_t BOOT_LED_BLINK_TIMES = 10;
+const uint32_t BOOT_LED_BLINK_DELAY = 100;
 const uint32_t NORMAL_WORKING_BLINK_DELAY = 500;
 
 __NO_RETURN void program() {
     const auto& ledGreen = LedGreen::getInstance();
-    const auto& ledRed   = LedRed::getInstance();
+    const auto& ledRed = LedRed::getInstance();
     // const Led<GPIO::Port::B, GPIO::Pin::P11> ledRed;
     // const Led<GPIO::Port::B, GPIO::Pin::P1> ledGreen;
 

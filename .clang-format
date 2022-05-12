@@ -1,7 +1,4 @@
 AccessModifierOffset: -2
-AlignConsecutiveAssignments: AcrossComments
-AlignConsecutiveBitFields: Consecutive
-# AlignConsecutiveDeclarations: Consecutive
 AlignConsecutiveMacros: AcrossEmptyLinesAndComments
 BasedOnStyle: Google
 ColumnLimit: 0

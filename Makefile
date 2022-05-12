@@ -70,7 +70,8 @@ $(SOURCES)/modules/CMSIS_5/CMSIS/Core/Include \
 $(SOURCES)/modules/CMSIS_5/CMSIS/DSP/Include
 
 USER_INCLUDE_PATH := \
-source/boot
+source/boot \
+source/drivers/include \
 
 INCLUDES := $(addprefix -I,$(USER_INCLUDE_PATH)) $(addprefix -isystem ,$(LIB_INCLUDE_PATH))
 

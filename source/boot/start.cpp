@@ -12,7 +12,7 @@ extern unsigned int __bss_start__;
 extern unsigned int __bss_end__;
 
 // Iterate over all the preinit/init routines (mainly static constructors).
-static inline void init_array(void) {
+static inline void call_init_array(void) {
     long count = __preinit_array_end - __preinit_array_start;
     for (long i = 0; i < count; i++) {
         __preinit_array_start[i]();
@@ -24,7 +24,7 @@ static inline void init_array(void) {
     }
 }
 
-__STATIC_FORCEINLINE void init_bss() {
+__STATIC_FORCEINLINE void clear_bss() {
     unsigned int* p = &__bss_start__;
     while (p < &__bss_end__) {
         *p++ = 0;
@@ -35,8 +35,9 @@ __STATIC_FORCEINLINE void init_bss() {
 extern void program() __NO_RETURN;
 
 __NO_RETURN void _start() {
-    init_bss();
-    init_array();
+    clear_bss();
+    call_init_array();
+    // TODO: Do I need to initialize stack and heap?
     core_init();
     program();
     while (true) {

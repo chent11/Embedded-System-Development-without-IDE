@@ -1,4 +1,4 @@
-#include "GPIO.hh"
+#include "core_devices/GPIO.hh"
 
 #include "core_init.h"
 #include "stm32f4xx_ll_bus.h"
@@ -210,8 +210,11 @@ static void enableClock(const GPIO::Port port) {
     }
 }
 
-void GPIO::initOutputMode(const Port port, const Pin pin,
-                          const Pull pull, OutputType outputType, const Speed speed) {
+void GPIO::initOutputMode(const Port port,
+                          const Pin pin,
+                          const Pull pull,
+                          OutputType outputType,
+                          const Speed speed) {
     enableClock(port);
     /* Configure compensation cell for high speed IO */
     if (speed >= Speed::High) {
@@ -224,11 +227,11 @@ void GPIO::initOutputMode(const Port port, const Pin pin,
 
     /* Configure GPIO pins */
     LL_GPIO_InitTypeDef gpioInitStruct{};
-    gpioInitStruct.Pin        = hardwareAddressPinout(pin);
-    gpioInitStruct.Mode       = hardwareAddressMode(Mode::Output);
+    gpioInitStruct.Pin = hardwareAddressPinout(pin);
+    gpioInitStruct.Mode = hardwareAddressMode(Mode::Output);
     gpioInitStruct.OutputType = hardwareAddressOutputType(outputType);
-    gpioInitStruct.Pull       = hardwareAddressPull(pull);
-    gpioInitStruct.Speed      = hardwareAddressSpeed(speed);
+    gpioInitStruct.Pull = hardwareAddressPull(pull);
+    gpioInitStruct.Speed = hardwareAddressSpeed(speed);
 
     LL_GPIO_Init(hardwareAddressPort(port), &gpioInitStruct);
 }
@@ -238,24 +241,28 @@ void GPIO::initInputMode(const Port port, const Pin pin,
     enableClock(port);
     /* Configure GPIO pins */
     LL_GPIO_InitTypeDef gpioInitStruct{};
-    gpioInitStruct.Pin  = hardwareAddressPinout(pin);
+    gpioInitStruct.Pin = hardwareAddressPinout(pin);
     gpioInitStruct.Mode = hardwareAddressMode(Mode::Input);
     gpioInitStruct.Pull = hardwareAddressPull(pull);
 
     LL_GPIO_Init(hardwareAddressPort(port), &gpioInitStruct);
 }
 
-void GPIO::initAlternateMode(const Port port, const Pin pin,
-                             const Pull pull, const OutputType outputType, const Speed speed, const AlternateFunction alternateFunction) {
+void GPIO::initAlternateMode(const Port port,
+                             const Pin pin,
+                             const Pull pull,
+                             const OutputType outputType,
+                             const Speed speed,
+                             const AlternateFunction alternateFunction) {
     enableClock(port);
     /* Configure GPIO pins */
     LL_GPIO_InitTypeDef gpioInitStruct{};
-    gpioInitStruct.Pin        = hardwareAddressPinout(pin);
-    gpioInitStruct.Mode       = hardwareAddressMode(Mode::Alternate);
-    gpioInitStruct.Alternate  = hardwareAddressAlternateFunction(alternateFunction);
+    gpioInitStruct.Pin = hardwareAddressPinout(pin);
+    gpioInitStruct.Mode = hardwareAddressMode(Mode::Alternate);
+    gpioInitStruct.Alternate = hardwareAddressAlternateFunction(alternateFunction);
     gpioInitStruct.OutputType = hardwareAddressOutputType(outputType);
-    gpioInitStruct.Pull       = hardwareAddressPull(pull);
-    gpioInitStruct.Speed      = hardwareAddressSpeed(speed);
+    gpioInitStruct.Pull = hardwareAddressPull(pull);
+    gpioInitStruct.Speed = hardwareAddressSpeed(speed);
 
     LL_GPIO_Init(hardwareAddressPort(port), &gpioInitStruct);
 }
