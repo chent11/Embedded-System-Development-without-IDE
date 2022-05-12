@@ -1,6 +1,6 @@
 eoe 1
 If SWD
-speed 4000
+speed 50000
 r
 loadfile build/led_test.hex
 rnh

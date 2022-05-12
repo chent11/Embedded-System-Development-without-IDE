@@ -83,8 +83,8 @@ class GPIO {
     GPIO() = delete;
 
   private:
-    static void initOutputMode(Port port, Pin pin, Pull pull, OutputType outputType, Speed speed);
     static void initInputMode(Port port, Pin pin, Pull pull);
+    static void initOutputMode(Port port, Pin pin, Pull pull, OutputType outputType, Speed speed);
     static void initAlternateMode(Port port, Pin pin, Pull pull, OutputType outputType, Speed speed, AlternateFunction alternateFunction);
     static void setHigh(Port port, Pin pin);
     static void setLow(Port port, Pin pin);
@@ -135,17 +135,40 @@ class GPIO {
 
   public:
     template <Port port, Pin pin>
-    class OutputMode : public Base<port, pin, Mode::Output> {
-      public:
-        OutputMode() : Base<port, pin, Mode::Output>{} {}
-        OutputMode(Pull pull, OutputType outputType, Speed speed) : Base<port, pin, Mode::Output>{pull, outputType, speed} {}
+    class OutputBase : public Base<port, pin, Mode::Output> {
+      protected:
+        OutputBase() : Base<port, pin, Mode::Output>{} {}
+        OutputBase(Pull pull, OutputType outputType, Speed speed) : Base<port, pin, Mode::Output>{pull, outputType, speed} {}
     };
 
     template <Port port, Pin pin>
-    class InputMode : public Base<port, pin, Mode::Input> {
+    class InputBase : public Base<port, pin, Mode::Input> {
+      protected:
+        InputBase() : Base<port, pin, Mode::Input>{} {}
+        explicit InputBase(Pull pull) : Base<port, pin, Mode::Input>{pull} {}
+    };
+
+    template <Port port, Pin pin>
+    class Output : public OutputBase<port, pin> {
       public:
-        InputMode() : Base<port, pin, Mode::Input>{} {}
-        explicit InputMode(Pull pull) : Base<port, pin, Mode::Input>{pull} {}
+        static Output& getInstance() {
+            static Output instance;
+            return instance;
+        }
+        static Output& getInstance(Pull pull, OutputType outputType, Speed speed) {
+            static Output instance{pull, outputType, speed};
+            return instance;
+        }
+
+        ~Output() = default;
+        Output(const Output&) = delete;
+        Output(Output&&) = delete;
+        Output& operator=(const Output&) = delete;
+        Output& operator=(Output&&) = delete;
+
+      protected:
+        Output() : OutputBase<port, pin>{} {}
+        Output(Pull pull, OutputType outputType, Speed speed) : OutputBase<port, pin>{pull, outputType, speed} {}
     };
 
 };  // namespace GPIO

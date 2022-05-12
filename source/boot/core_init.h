@@ -11,6 +11,9 @@ extern "C" {
 void core_init(void);
 void delay_ms(uint32_t time);
 
+void send_char_blocking(char ch);
+char get_char_blocking(void);
+
 #ifdef NEED_ASSERT_FUNC
 void __assert_func(const char* file,
                    int line,

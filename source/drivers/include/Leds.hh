@@ -4,11 +4,11 @@
 #include "core_devices/GPIO.hh"
 
 template <GPIO::Port port, GPIO::Pin pin>
-class Led : public GPIO::OutputMode<port, pin> {
+class Led : public GPIO::OutputBase<port, pin> {
   public:
-    Led() : GPIO::OutputMode<port, pin>{} { off(); };
-    void on() const { GPIO::OutputMode<port, pin>::setLow(); };
-    void off() const { GPIO::OutputMode<port, pin>::setHigh(); };
+    Led() : GPIO::OutputBase<port, pin>{} { off(); };
+    void on() const { GPIO::OutputBase<port, pin>::setLow(); };
+    void off() const { GPIO::OutputBase<port, pin>::setHigh(); };
 };
 
 // static instance will increase code size

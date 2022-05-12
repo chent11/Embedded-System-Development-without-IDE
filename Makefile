@@ -45,7 +45,6 @@ C_SOURCES := \
 $(wildcard $(SOURCES)/boot/*.c)
 # CXX sources
 CPP_SOURCES := \
-$(wildcard $(SOURCES)/boot/*.cpp) \
 $(wildcard $(SOURCES)/drivers/core_devices/*.cpp) \
 $(wildcard $(SOURCES)/*.cpp)
 # ASM sources
@@ -53,12 +52,18 @@ ASM_SOURCES :=
 # Lib sources
 MATH_LIB := $(SOURCES)/modules/cmsis_dsp_lib/lib_cortexM4_fpu_cmsisdsp.a
 # MATH_LIB := $(SOURCES)/modules/cmsis_dsp_lib/lib_cortexM4_cmsisdsp.a
-LIB_SOURCES := \
+LIB_C_SOURCES := \
 $(SOURCES)/boot/cmsis_startup/startup_ARMCM4.c \
 $(SOURCES)/boot/cmsis_startup/system_ARMCM4.c \
 $(SOURCES)/modules/stm32f4xx_hal_driver/Src/stm32f4xx_ll_rcc.c \
 $(SOURCES)/modules/stm32f4xx_hal_driver/Src/stm32f4xx_ll_utils.c \
-$(SOURCES)/modules/stm32f4xx_hal_driver/Src/stm32f4xx_ll_gpio.c
+$(SOURCES)/modules/stm32f4xx_hal_driver/Src/stm32f4xx_ll_gpio.c \
+$(SOURCES)/modules/stm32f4xx_hal_driver/Src/stm32f4xx_ll_usart.c
+
+LIB_CPP_SOURCES := \
+$(wildcard $(SOURCES)/boot/*.cpp)
+
+LIB_CC_SOURCES := $(SOURCES)/modules/fmt/src/format.cc
 
 # C include path
 # Separated user and lib include can suppress compiler's warnings for LIB include
@@ -67,11 +72,12 @@ $(SOURCES)/boot/cmsis_startup \
 $(SOURCES)/modules/cmsis_device_f4/Include \
 $(SOURCES)/modules/stm32f4xx_hal_driver/Inc \
 $(SOURCES)/modules/CMSIS_5/CMSIS/Core/Include \
-$(SOURCES)/modules/CMSIS_5/CMSIS/DSP/Include
+$(SOURCES)/modules/CMSIS_5/CMSIS/DSP/Include $(SOURCES)/modules/fmt/include
 
 USER_INCLUDE_PATH := \
 source/boot \
 source/drivers/include \
+source/utils/include
 
 INCLUDES := $(addprefix -I,$(USER_INCLUDE_PATH)) $(addprefix -isystem ,$(LIB_INCLUDE_PATH))
 

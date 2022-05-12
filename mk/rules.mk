@@ -8,7 +8,9 @@ OBJECTS := $(OBJECTS) $(addprefix $(BUILD_DIR)/,$(CPP_SOURCES:.cpp=.o))
 # list of asm objects
 OBJECTS := $(OBJECTS) $(addprefix $(BUILD_DIR)/,$(ASM_SOURCES:.s=.o))
 # list of lib objects. The purpose of creating a lib folder is to separate compiling options from user code and lib code, see line 20 below
-LIBOBJECTS := $(addprefix $(BUILD_DIR)/lib/,$(LIB_SOURCES:.c=.o))
+LIBOBJECTS := $(addprefix $(BUILD_DIR)/lib/,$(LIB_C_SOURCES:.c=.o))
+LIBOBJECTS += $(addprefix $(BUILD_DIR)/lib/,$(LIB_CC_SOURCES:.cc=.o))
+LIBOBJECTS += $(addprefix $(BUILD_DIR)/lib/,$(LIB_CPP_SOURCES:.cpp=.o))
 
 $(TARGET): $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin $(BUILD_DIR)/disassembly.S $(BUILD_DIR)/$(TARGET).file_sizeinfo
 
@@ -18,11 +20,21 @@ $(BUILD_DIR)/%.o: %.c
 	$(Q)$(CC) -c $(CFLAGS) $(GEN_DEPS) $(SAVE_TEMPS) $< -o $@
 	$(Q)$(DEMANGLE_IF_GENERATE_ASSEMBLY)
 
-# separate compiling options from user C code and lib C code
+# separate compiling options from user code and lib code
 $(BUILD_DIR)/lib/%.o: %.c
 	@mkdir -p $(@D)
 	@if [ $(V) -gt 1 ] && [ $(V) -lt 4 ];then echo "  CC (lib)  $<"; fi
-	$(Q)$(CC) -c $(filter-out -Werror,$(LIB_FLAGS)) $(GEN_DEPS) $< -o $@
+	$(Q)$(CC) -c $(filter-out -Werror,$(LIB_C_FLAGS)) $(GEN_DEPS) $< -o $@
+
+$(BUILD_DIR)/lib/%.o: %.cc
+	@mkdir -p $(@D)
+	@if [ $(V) -gt 1 ] && [ $(V) -lt 4 ];then echo "  CXX (lib)  $<"; fi
+	$(Q)$(CXX) -c $(filter-out -Werror,$(LIB_CXX_FLAGS)) $(GEN_DEPS) $< -o $@
+
+$(BUILD_DIR)/lib/%.o: %.cpp
+	@mkdir -p $(@D)
+	@if [ $(V) -gt 1 ] && [ $(V) -lt 4 ];then echo "  CXX (lib)  $<"; fi
+	$(Q)$(CXX) -c $(filter-out -Werror,$(LIB_CXX_FLAGS)) $(GEN_DEPS) $< -o $@
 
 $(BUILD_DIR)/%.o: %.cpp
 	@mkdir -p $(@D)
@@ -108,11 +120,7 @@ check-all: check-cppcheck check-clang-tidy check-format
 # FLASH
 #######################################
 .PHONY: flash
-flash:
-ifeq (,$(wildcard $(BUILD_DIR)/$(TARGET).elf))
-	@echo "  $(COLOR_RED)You need to build this project first${NO_COLOR}"
-	@exit 1
-endif
+flash: $(BUILD_DIR)/$(TARGET).elf
 ifeq (,$(wildcard /usr/local/bin/JLinkExe))
 	@printf "  $(COLOR_RED)No flash utility was found on this machine; is this a docker environment?${NO_COLOR}\n"; exit 1
 endif
@@ -153,5 +161,7 @@ distclean:
 #######################################
 DEPFILES := $(addprefix $(BUILD_DIR)/,$(C_SOURCES:.c=.d))
 DEPFILES += $(addprefix $(BUILD_DIR)/,$(CPP_SOURCES:.cpp=.d))
-DEPFILES += $(addprefix $(BUILD_DIR)/lib/,$(LIB_SOURCES:.c=.d))
+DEPFILES += $(addprefix $(BUILD_DIR)/lib/,$(LIB_C_SOURCES:.c=.d))
+DEPFILES += $(addprefix $(BUILD_DIR)/lib/,$(LIB_CPP_SOURCES:.cpp=.d))
+DEPFILES += $(addprefix $(BUILD_DIR)/lib/,$(LIB_CC_SOURCES:.cc=.d))
 -include $(DEPFILES)

@@ -126,13 +126,15 @@ CXXFLAGS := $(GENERAL_FLAGS) $(CPP_STD) $(CXX_WARNING_FLAGS) $(INCLUDES) \
 # -fnothrow-opt  -fno-enforce-eh-specs -fno-stack-protector -fno-unwind-tables -fno-asynchronous-unwind-tables -fomit-frame-pointer
 
 # For controllable verbose information
-LIB_FLAGS := $(CFLAGS)
+LIB_C_FLAGS := $(CFLAGS)
+LIB_CXX_FLAGS := $(CXXFLAGS)
 ifeq ($(shell test $(V) -lt 3; echo $$?),0)
-LIB_FLAGS := $(CFLAGS) -w
+LIB_C_FLAGS := $(CFLAGS) -w
+LIB_CXX_FLAGS := $(CXXFLAGS) -w
 endif
 
 # dump abstract syntax tree in .dot files
-# Put this after LIB_FLAGS prevent generate lib code's dump info
+# Put this after LIB_C_FLAGS prevent generate lib code's dump info
 ifeq ($(GENERATE_COMPILER_DUMP), 1)
 CFLAGS += -fdump-rtl-all-graph -fdump-tree-all-graph -fdump-ipa-all-graph
 CXXFLAGS += -fdump-rtl-all-graph -fdump-tree-all-graph -fdump-ipa-all-graph
