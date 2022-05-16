@@ -1,7 +1,7 @@
 AccessModifierOffset: -2
 AlignConsecutiveMacros: AcrossEmptyLinesAndComments
 BasedOnStyle: Google
-ColumnLimit: 0
+ColumnLimit: 120
 DerivePointerAlignment: False
 IndentWidth: 4
 PointerAlignment: Left

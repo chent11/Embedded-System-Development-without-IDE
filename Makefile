@@ -41,8 +41,7 @@ SOURCES := source
 # link script
 LDSCRIPT := $(SOURCES)/boot/cmsis_startup/gcc_arm.ld
 # C sources
-C_SOURCES := \
-$(wildcard $(SOURCES)/boot/*.c)
+C_SOURCES := $(SOURCES)/boot/core_init.c
 # CXX sources
 CPP_SOURCES := \
 $(wildcard $(SOURCES)/drivers/core_devices/*.cpp) \
@@ -60,10 +59,9 @@ $(SOURCES)/modules/stm32f4xx_hal_driver/Src/stm32f4xx_ll_utils.c \
 $(SOURCES)/modules/stm32f4xx_hal_driver/Src/stm32f4xx_ll_gpio.c \
 $(SOURCES)/modules/stm32f4xx_hal_driver/Src/stm32f4xx_ll_usart.c
 
-LIB_CPP_SOURCES := \
-$(wildcard $(SOURCES)/boot/*.cpp)
+LIB_CPP_SOURCES := $(SOURCES)/boot/start.cpp
 
-LIB_CC_SOURCES := $(SOURCES)/modules/fmt/src/format.cc
+LIB_CC_SOURCES :=
 
 # C include path
 # Separated user and lib include can suppress compiler's warnings for LIB include
@@ -72,7 +70,7 @@ $(SOURCES)/boot/cmsis_startup \
 $(SOURCES)/modules/cmsis_device_f4/Include \
 $(SOURCES)/modules/stm32f4xx_hal_driver/Inc \
 $(SOURCES)/modules/CMSIS_5/CMSIS/Core/Include \
-$(SOURCES)/modules/CMSIS_5/CMSIS/DSP/Include $(SOURCES)/modules/fmt/include
+$(SOURCES)/modules/CMSIS_5/CMSIS/DSP/Include
 
 USER_INCLUDE_PATH := \
 source/boot \

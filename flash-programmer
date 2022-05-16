@@ -1,0 +1,42 @@
+#!/bin/sh
+
+# flash-downloader ${downloader} ${target_device} ${binary}
+# example: ./flash-downloader jlink stm32f427vi abc.elf 0x08000000
+
+if [ $# = 0 ]; then
+    echo "  need arguments"
+    exit 1
+fi
+
+DOWNLOADER=$1
+TARGET_DEVICE=$2
+HEX="$3"
+
+commandsFile="$(mktemp)"
+outputFile="$(mktemp)"
+trap 'rm -f $commandsFile $outputFile' EXIT
+
+COLOR_RED="\033[38;5;124m"
+NO_COLOR="\033[0m"
+if [ "$DOWNLOADER" = "jlink" ]; then
+    if ! command -v JLinkExe &>/dev/null; then
+        echo "  ${COLOR_RED}JLinkExe could not be found${NO_COLOR}"
+        exit 1
+    fi
+
+    echo "
+    eoe 1
+    r
+    h
+    loadfile $HEX
+    rnh
+    exit " >$commandsFile
+    /usr/local/bin/JLinkExe -Device $TARGET_DEVICE -If SWD -Speed 50000 -NoGui -CommandFile $commandsFile >$outputFile
+    if [ $? != 0 ]; then
+        cat $outputFile
+        exit 1
+    fi
+else
+    echo "  $1 is an unknown flash programmer"
+    exit 1
+fi

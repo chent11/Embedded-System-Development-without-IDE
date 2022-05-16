@@ -13,6 +13,3 @@
 [submodule "source/modules/cmsis-svd"]
 	path = source/modules/cmsis-svd
 	url = https://github.com/posborne/cmsis-svd.git
-[submodule "source/modules/fmt"]
-	path = source/modules/fmt
-	url = https://github.com/fmtlib/fmt.git

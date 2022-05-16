@@ -60,6 +60,7 @@ $(BUILD_DIR)/$(TARGET).elf: $(LIBOBJECTS) $(OBJECTS) $(LDSCRIPT)
 
 $(BUILD_DIR)/disassembly.S: $(BUILD_DIR)/$(TARGET).elf
 	$(Q)$(OBJDUMP) --disassemble --line-numbers --reloc --wide --demangle $< > $@
+# $(Q)$(OBJDUMP) --source --no-show-raw-insn --disassemble --line-numbers --reloc --wide --demangle --no-addresses $< > $@
 
 $(BUILD_DIR)/$(TARGET).symbol_info: $(BUILD_DIR)/$(TARGET).elf
 	$(Q)$(NM) --print-size --line-numbers --size-sort --demangle $< > $@
@@ -119,15 +120,12 @@ check-all: check-cppcheck check-clang-tidy check-format
 #######################################
 # FLASH
 #######################################
-.PHONY: flash
-flash: $(BUILD_DIR)/$(TARGET).elf
-ifeq (,$(wildcard /usr/local/bin/JLinkExe))
-	@printf "  $(COLOR_RED)No flash utility was found on this machine; is this a docker environment?${NO_COLOR}\n"; exit 1
-endif
+.PHONY: upload
+upload: $(BUILD_DIR)/$(TARGET).hex
 	@echo
-	@echo "  ${COLOR_YELLOW}Flashing [${COLOR_GREEN}$(TARGET_DEVICE)${COLOR_YELLOW}]...${NO_COLOR}"
-	$(Q)/usr/local/bin/JLinkExe -Device $(TARGET_DEVICE) -NoGui -CommandFile ./cmd.jlink > /tmp/jlinktmpoutput || { if [[ $(V) -gt 2 ]];then cat /tmp/jlinktmpoutput; else printf "  $(COLOR_RED)Unable to flash. Setting V > 2 to check what was happenning.${NO_COLOR}\n"; fi; exit 1; }
-	@echo "  ${COLOR_YELLOW}Flashed successfully${NO_COLOR}"
+	@echo "  ${COLOR_YELLOW}Uploading ${COLOR_GREEN}$(TARGET)${COLOR_YELLOW} to device ${COLOR_GREEN}$(TARGET_DEVICE)${COLOR_YELLOW} ...${NO_COLOR}"
+	$(Q)./flash-programmer jlink $(TARGET_DEVICE) $(BUILD_DIR)/$(TARGET).hex
+	@echo "  ${COLOR_YELLOW}Upload success!${NO_COLOR}"
 
 #######################################
 # CCACHE

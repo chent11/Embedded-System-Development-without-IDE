@@ -1,5 +1,4 @@
-#ifndef CORE_INIT_H_
-#define CORE_INIT_H_
+#pragma once
 
 #ifdef __cplusplus
 extern "C" {
@@ -15,10 +14,7 @@ void send_char_blocking(char ch);
 char get_char_blocking(void);
 
 #ifdef NEED_ASSERT_FUNC
-void __assert_func(const char* file,
-                   int line,
-                   const char* func,
-                   const char* failedexpr) {
+void __assert_func(const char* file, int line, const char* func, const char* failedexpr) {
     while (1) {
     }
 }
@@ -29,6 +25,4 @@ void __assert_func(const char* file,
 
 #ifdef __cplusplus
 }
-#endif
-
 #endif

@@ -1,65 +1,63 @@
-#ifndef LED_H_
-#define LED_H_
+#pragma once
 
 #include "core_devices/GPIO.hh"
 
 template <GPIO::Port port, GPIO::Pin pin>
-class Led : public GPIO::OutputBase<port, pin> {
+class Led : public GPIO::Output<port, pin> {
   public:
-    Led() : GPIO::OutputBase<port, pin>{} { off(); };
-    void on() const { GPIO::OutputBase<port, pin>::setLow(); };
-    void off() const { GPIO::OutputBase<port, pin>::setHigh(); };
+    Led() : GPIO::Output<port, pin>{GPIO::DefaultState::High, GPIO::Pull::PullUp, GPIO::OutputType::OpenDrain} {};
+    void on() const { GPIO::Output<port, pin>::setLow(); };
+    void off() const { GPIO::Output<port, pin>::setHigh(); };
 };
 
 // static instance will increase code size
-class LedRed : public Led<GPIO::Port::B, GPIO::Pin::P11> {
+class LedRedInstance : public Led<GPIO::Port::B, GPIO::Pin::P11> {
   private:
-    LedRed() = default;
+    LedRedInstance() = default;
 
   public:
-    static LedRed& getInstance() {
-        static LedRed instance;
+    static LedRedInstance& get() {
+        static LedRedInstance instance;
         return instance;
     }
 
-    ~LedRed() = default;
-    LedRed(const LedRed&) = delete;
-    LedRed(LedRed&&) = delete;
-    LedRed& operator=(const LedRed&) = delete;
-    LedRed& operator=(LedRed&&) = delete;
+    ~LedRedInstance() = default;
+    LedRedInstance(const LedRedInstance&) = delete;
+    LedRedInstance(LedRedInstance&&) = delete;
+    LedRedInstance& operator=(const LedRedInstance&) = delete;
+    LedRedInstance& operator=(LedRedInstance&&) = delete;
 };
 
-class LedBlue : public Led<GPIO::Port::B, GPIO::Pin::P3> {
+class LedBlueInstance : public Led<GPIO::Port::B, GPIO::Pin::P3> {
   private:
-    LedBlue() = default;
+    LedBlueInstance() = default;
 
   public:
-    static LedBlue& getInstance() {
-        static LedBlue instance;
+    static LedBlueInstance& get() {
+        static LedBlueInstance instance;
         return instance;
     }
 
-    ~LedBlue() = default;
-    LedBlue(const LedBlue&) = delete;
-    LedBlue(LedBlue&&) = delete;
-    LedBlue& operator=(const LedBlue&) = delete;
-    LedBlue& operator=(LedBlue&&) = delete;
+    ~LedBlueInstance() = default;
+    LedBlueInstance(const LedBlueInstance&) = delete;
+    LedBlueInstance(LedBlueInstance&&) = delete;
+    LedBlueInstance& operator=(const LedBlueInstance&) = delete;
+    LedBlueInstance& operator=(LedBlueInstance&&) = delete;
 };
 
-class LedGreen : public Led<GPIO::Port::B, GPIO::Pin::P1> {
+class LedGreenInstance : public Led<GPIO::Port::B, GPIO::Pin::P1> {
   private:
-    LedGreen() = default;
+    LedGreenInstance() = default;
 
   public:
-    static LedGreen& getInstance() {
-        static LedGreen instance;
+    static LedGreenInstance& get() {
+        static LedGreenInstance instance;
         return instance;
     }
 
-    ~LedGreen() = default;
-    LedGreen(const LedGreen&) = delete;
-    LedGreen(LedGreen&&) = delete;
-    LedGreen& operator=(const LedGreen&) = delete;
-    LedGreen& operator=(LedGreen&&) = delete;
+    ~LedGreenInstance() = default;
+    LedGreenInstance(const LedGreenInstance&) = delete;
+    LedGreenInstance(LedGreenInstance&&) = delete;
+    LedGreenInstance& operator=(const LedGreenInstance&) = delete;
+    LedGreenInstance& operator=(LedGreenInstance&&) = delete;
 };
-#endif
