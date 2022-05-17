@@ -13,4 +13,4 @@ Checks: '*,
     -misc-unused-parameters,
     -modernize-use-trailing-return-type,
     '
-HeaderFilterRegex: 'source/.*'
+HeaderFilterRegex: "source/drivers/include/.*"

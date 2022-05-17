@@ -15,7 +15,7 @@
             "device": "stm32f427vi",
             "interface": "swd",
             "runToEntryPoint": "Reset_Handler",
-            "svdFile": "${workspaceRoot}/STM32F427.svd",
+            "svdFile": "${workspaceRoot}/source/modules/cmsis-svd/data/STMicro/STM32F427.svd",
             "gdbPath": "${workspaceRoot}/toolchain/docker-gdb"
         }
     ]

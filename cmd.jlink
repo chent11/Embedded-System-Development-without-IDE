@@ -1,7 +1,0 @@
-eoe 1
-If SWD
-speed 50000
-r
-loadfile build/led_test.hex
-rnh
-exit

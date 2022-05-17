@@ -1,5 +1,4 @@
 #include "core_devices/GPIO.hh"
-
 #include "core_init.h"
 #include "stm32f4xx_ll_bus.h"
 #include "stm32f4xx_ll_gpio.h"

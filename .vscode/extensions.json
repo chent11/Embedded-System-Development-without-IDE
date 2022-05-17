@@ -1,12 +1,15 @@
 {
     "recommendations": [
         "zixuanwang.linkerscript",
-        "streetsidesoftware.code-spell-checker",
         "ms-vscode.cpptools-extension-pack",
         "dan-c-underwood.arm",
         "marus25.cortex-debug",
         "ms-vscode.hexeditor",
         "mateuszchudyk.hexinspector",
-        "dseight.disasexpl"
+        "dseight.disasexpl",
+        "notskm.clang-tidy",
+        "eamodio.gitlens",
+        "trond-snekvik.gnu-mapfiles",
+        "joaompinto.vscode-graphviz"
     ]
 }

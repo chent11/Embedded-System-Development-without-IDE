@@ -79,11 +79,11 @@ $(BUILD_DIR)/$(TARGET).bin: $(BUILD_DIR)/$(TARGET).elf
 #######################################
 .PHONY: check-cppcheck
 CPPCHECK := cppcheck
-CPPCHECK_FLAGS := --enable=all --suppress=missingInclude --suppress=unusedFunction --suppress=unmatchedSuppression
+CPPCHECK_FLAGS := --enable=all --suppress=*:*$(SOURCES)/boot/cmsis_startup/* --suppress=missingInclude --suppress=unusedFunction --suppress=unmatchedSuppression
 CPPCHECK_FLAGS += --inline-suppr ${COMPILER_DEFINES} $(INCLUDES)
 check-cppcheck:
 	$(Q)$(CPPCHECK) $(CPPCHECK_FLAGS) --addon=misra.json $(C_SOURCES)
-	$(Q)$(CPPCHECK) $(CPPCHECK_FLAGS) --addon=misra_cpp.json $(filter-out %/start.cpp,$(CPP_SOURCES))
+	$(Q)$(CPPCHECK) $(CPPCHECK_FLAGS) --addon=misra_cpp.json $(CPP_SOURCES)
 	@echo
 	@echo "All cppcheck checks have passed!"
 
@@ -94,7 +94,7 @@ check-cppcheck:
 CLANG_TIDY := clang-tidy # the checking flags are written in the .clang-tidy config file
 check-clang-tidy:
 	$(Q)$(CLANG_TIDY) --quiet $(C_SOURCES) --warnings-as-errors=* -extra-arg=$(C_STD) -- $(INCLUDES) ${COMPILER_DEFINES}
-	$(Q)$(CLANG_TIDY) --quiet $(filter-out %/start.cpp,$(CPP_SOURCES)) --warnings-as-errors=* -extra-arg=$(CPP_STD) -- $(INCLUDES) ${COMPILER_DEFINES}
+	$(Q)$(CLANG_TIDY) --quiet $(CPP_SOURCES) --warnings-as-errors=* -extra-arg=$(CPP_STD) -- $(INCLUDES) ${COMPILER_DEFINES}
 	@echo
 	@echo "All clang-tidy checks have passed!"
 

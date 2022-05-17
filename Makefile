@@ -45,7 +45,7 @@ C_SOURCES := $(SOURCES)/boot/core_init.c
 # CXX sources
 CPP_SOURCES := \
 $(wildcard $(SOURCES)/drivers/core_devices/*.cpp) \
-$(wildcard $(SOURCES)/*.cpp)
+$(SOURCES)/program.cpp
 # ASM sources
 ASM_SOURCES :=
 # Lib sources
