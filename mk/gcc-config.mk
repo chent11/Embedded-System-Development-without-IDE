@@ -118,12 +118,12 @@ CXXFLAGS := $(GENERAL_FLAGS) $(CPP_STD) $(CXX_WARNING_FLAGS) $(INCLUDES) \
 -fcheck-new \
 -fno-exceptions \
 -fno-rtti \
--fno-threadsafe-statics \
 -fno-use-cxa-atexit \
 -fstrict-enums \
 -fvisibility=hidden
 # Options need to try
 # -fnothrow-opt  -fno-enforce-eh-specs -fno-stack-protector -fno-unwind-tables -fno-asynchronous-unwind-tables -fomit-frame-pointer
+# -fno-threadsafe-statics (bugprone-dynamic-static-initializers)
 
 # For controllable verbose information
 LIB_C_FLAGS := $(CFLAGS)

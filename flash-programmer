@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # flash-downloader ${downloader} ${target_device} ${binary}
-# example: ./flash-downloader jlink stm32f427vi abc.elf 0x08000000
+# example: ./flash-downloader jlink stm32f427vi abc.hex
 
 if [ $# = 0 ]; then
     echo "  need arguments"

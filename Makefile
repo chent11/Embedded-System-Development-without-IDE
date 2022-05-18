@@ -105,6 +105,6 @@ main_build:
 	@echo
 	@printf "  ${COLOR_YELLOW}Building${NO_COLOR} [${COLOR_GREEN}$(TARGET)${NO_COLOR}]...\n"
 	@echo
-	$(Q)$(MAKE) $(TARGET) -j$(JOBS)
+	$(Q)bear -- $(MAKE) $(TARGET) -j$(JOBS)
 
 include mk/rules.mk

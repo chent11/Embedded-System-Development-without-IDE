@@ -9,6 +9,7 @@
 *.pdf
 build
 cmsis_dsp_lib
+compile_commands.json
 Developing Note.md
 misra.txt
 other

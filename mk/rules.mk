@@ -17,35 +17,35 @@ $(TARGET): $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(
 $(BUILD_DIR)/%.o: %.c
 	@mkdir -p $(@D)
 	@if [ $(V) -gt 1 ] && [ $(V) -lt 4 ];then echo "  CC        $<"; fi
-	$(Q)$(CC) -c $(CFLAGS) $(GEN_DEPS) $(SAVE_TEMPS) $< -o $@
+	$(Q)$(CC) $(CFLAGS) $(GEN_DEPS) $(SAVE_TEMPS) -c $< -o $@
 	$(Q)$(DEMANGLE_IF_GENERATE_ASSEMBLY)
 
 # separate compiling options from user code and lib code
 $(BUILD_DIR)/lib/%.o: %.c
 	@mkdir -p $(@D)
 	@if [ $(V) -gt 1 ] && [ $(V) -lt 4 ];then echo "  CC (lib)  $<"; fi
-	$(Q)$(CC) -c $(filter-out -Werror,$(LIB_C_FLAGS)) $(GEN_DEPS) $< -o $@
+	$(Q)$(CC) $(filter-out -Werror,$(LIB_C_FLAGS)) $(GEN_DEPS) -c $< -o $@
 
 $(BUILD_DIR)/lib/%.o: %.cc
 	@mkdir -p $(@D)
 	@if [ $(V) -gt 1 ] && [ $(V) -lt 4 ];then echo "  CXX (lib)  $<"; fi
-	$(Q)$(CXX) -c $(filter-out -Werror,$(LIB_CXX_FLAGS)) $(GEN_DEPS) $< -o $@
+	$(Q)$(CXX) $(filter-out -Werror,$(LIB_CXX_FLAGS)) $(GEN_DEPS)  -c $< -o $@
 
 $(BUILD_DIR)/lib/%.o: %.cpp
 	@mkdir -p $(@D)
 	@if [ $(V) -gt 1 ] && [ $(V) -lt 4 ];then echo "  CXX (lib)  $<"; fi
-	$(Q)$(CXX) -c $(filter-out -Werror,$(LIB_CXX_FLAGS)) $(GEN_DEPS) $< -o $@
+	$(Q)$(CXX) $(filter-out -Werror,$(LIB_CXX_FLAGS)) $(GEN_DEPS)  -c $< -o $@
 
 $(BUILD_DIR)/%.o: %.cpp
 	@mkdir -p $(@D)
 	@if [ $(V) -gt 1 ] && [ $(V) -lt 4 ];then echo "  CXX       $<"; fi
-	$(Q)$(CXX) -c $(CXXFLAGS) $(GEN_DEPS) $(SAVE_TEMPS) $< -o $@
+	$(Q)$(CXX) $(CXXFLAGS) $(GEN_DEPS) $(SAVE_TEMPS)  -c $< -o $@
 	$(Q)$(DEMANGLE_IF_GENERATE_ASSEMBLY)
 
 $(BUILD_DIR)/%.o: %.s
 	@mkdir -p $(@D)
 	@if [ $(V) -gt 1 ] && [ $(V) -lt 4 ];then echo "  ASM       $<"; fi
-	$(Q)$(AS) -c $(ASFLAGS) $< -o $@
+	$(Q)$(AS) $(ASFLAGS)  -c $< -o $@
 
 $(BUILD_DIR)/$(TARGET).elf: $(LIBOBJECTS) $(OBJECTS) $(LDSCRIPT)
 	@mkdir -p $(@D)
@@ -93,8 +93,8 @@ check-cppcheck:
 .PHONY: check-clang-tidy
 CLANG_TIDY := clang-tidy # the checking flags are written in the .clang-tidy config file
 check-clang-tidy:
-	$(Q)$(CLANG_TIDY) --quiet $(C_SOURCES) --warnings-as-errors=* -extra-arg=$(C_STD) -- $(INCLUDES) ${COMPILER_DEFINES}
-	$(Q)$(CLANG_TIDY) --quiet $(CPP_SOURCES) --warnings-as-errors=* -extra-arg=$(CPP_STD) -- $(INCLUDES) ${COMPILER_DEFINES}
+	$(Q)$(CLANG_TIDY) --quiet $(C_SOURCES) --warnings-as-errors=* -extra-arg=$(C_STD) -- $(INCLUDES) ${COMPILER_DEFINES}  $(filter-out -fipa-pta -mcpu=cortex-m4 -mfloat-abi=hard -mfpu=fpv4-sp-d16 -mthumb -specs=nano.specs,$(CFLAGS))
+	$(Q)$(CLANG_TIDY) --quiet $(CPP_SOURCES) --warnings-as-errors=* -extra-arg=$(CPP_STD) -- $(INCLUDES) ${COMPILER_DEFINES} $(filter-out -fipa-pta -mcpu=cortex-m4 -mfloat-abi=hard -mfpu=fpv4-sp-d16 -mthumb -specs=nano.specs,$(CXXFLAGS))
 	@echo
 	@echo "All clang-tidy checks have passed!"
 
