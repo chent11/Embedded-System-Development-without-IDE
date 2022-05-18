@@ -53,7 +53,7 @@ class Hardware {
     static void setHigh(Port port, Pin pin);
     static void setLow(Port port, Pin pin);
     static void toggle(Port port, Pin pin);
-    static State getState(Port port, Pin pin);
+    [[nodiscard]] static State getState(Port port, Pin pin);
     static void init(Port port, Pin pin, DefaultState state, Mode mode, Pull pull, OutputType outputType, Speed speed,
                      AlternateFunction alternateFunction);
 };
@@ -93,7 +93,7 @@ class Output : public Base<port, pin, Mode::Output> {
     Output(DefaultState state, Pull pull, OutputType outputType, Speed speed)
         : Base<port, pin, Mode::Output>{state, pull, outputType, speed} {}
 
-    static void instancelessInit(DefaultState state) { Output{state}; }
+    static void lowLevelInit(DefaultState state) { Output{state}; }
 };
 
 template <Port port, Pin pin>
