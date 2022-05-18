@@ -202,48 +202,70 @@ static void enableClock(const GPIO::Port port) {
     /* GPIO Ports Clock Enable */
     switch (port) {
         case GPIO::Port::A:
-            LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOA);  // NOLINT(cppcoreguidelines-pro-type-cstyle-cast,
-                                                                  // performance-no-int-to-ptr)
+            if (!static_cast<bool>(LL_AHB1_GRP1_IsEnabledClock(LL_AHB1_GRP1_PERIPH_GPIOA))) {
+                LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOA);  // NOLINT(cppcoreguidelines-pro-type-cstyle-cast,
+                                                                      // performance-no-int-to-ptr)
+            }
             break;
         case GPIO::Port::B:
-            LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOB);  // NOLINT(cppcoreguidelines-pro-type-cstyle-cast,
-                                                                  // performance-no-int-to-ptr)
+            if (!static_cast<bool>(LL_AHB1_GRP1_IsEnabledClock(LL_AHB1_GRP1_PERIPH_GPIOB))) {
+                LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOB);  // NOLINT(cppcoreguidelines-pro-type-cstyle-cast,
+                                                                      // performance-no-int-to-ptr)
+            }
             break;
         case GPIO::Port::C:
-            LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOC);  // NOLINT(cppcoreguidelines-pro-type-cstyle-cast,
-                                                                  // performance-no-int-to-ptr)
+            if (!static_cast<bool>(LL_AHB1_GRP1_IsEnabledClock(LL_AHB1_GRP1_PERIPH_GPIOC))) {
+                LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOC);  // NOLINT(cppcoreguidelines-pro-type-cstyle-cast,
+                                                                      // performance-no-int-to-ptr)
+            }
             break;
         case GPIO::Port::D:
-            LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOD);  // NOLINT(cppcoreguidelines-pro-type-cstyle-cast,
-                                                                  // performance-no-int-to-ptr)
+            if (!static_cast<bool>(LL_AHB1_GRP1_IsEnabledClock(LL_AHB1_GRP1_PERIPH_GPIOD))) {
+                LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOD);  // NOLINT(cppcoreguidelines-pro-type-cstyle-cast,
+                                                                      // performance-no-int-to-ptr)
+            }
             break;
         case GPIO::Port::E:
-            LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOE);  // NOLINT(cppcoreguidelines-pro-type-cstyle-cast,
-                                                                  // performance-no-int-to-ptr)
+            if (!static_cast<bool>(LL_AHB1_GRP1_IsEnabledClock(LL_AHB1_GRP1_PERIPH_GPIOE))) {
+                LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOE);  // NOLINT(cppcoreguidelines-pro-type-cstyle-cast,
+                                                                      // performance-no-int-to-ptr)
+            }
             break;
         case GPIO::Port::F:
-            LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOF);  // NOLINT(cppcoreguidelines-pro-type-cstyle-cast,
-                                                                  // performance-no-int-to-ptr)
+            if (!static_cast<bool>(LL_AHB1_GRP1_IsEnabledClock(LL_AHB1_GRP1_PERIPH_GPIOF))) {
+                LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOF);  // NOLINT(cppcoreguidelines-pro-type-cstyle-cast,
+                                                                      // performance-no-int-to-ptr)
+            }
             break;
         case GPIO::Port::G:
-            LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOG);  // NOLINT(cppcoreguidelines-pro-type-cstyle-cast,
-                                                                  // performance-no-int-to-ptr)
+            if (!static_cast<bool>(LL_AHB1_GRP1_IsEnabledClock(LL_AHB1_GRP1_PERIPH_GPIOG))) {
+                LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOG);  // NOLINT(cppcoreguidelines-pro-type-cstyle-cast,
+                                                                      // performance-no-int-to-ptr)
+            }
             break;
         case GPIO::Port::H:
-            LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOH);  // NOLINT(cppcoreguidelines-pro-type-cstyle-cast,
-                                                                  // performance-no-int-to-ptr)
+            if (!static_cast<bool>(LL_AHB1_GRP1_IsEnabledClock(LL_AHB1_GRP1_PERIPH_GPIOH))) {
+                LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOH);  // NOLINT(cppcoreguidelines-pro-type-cstyle-cast,
+                                                                      // performance-no-int-to-ptr)
+            }
             break;
         case GPIO::Port::I:
-            LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOI);  // NOLINT(cppcoreguidelines-pro-type-cstyle-cast,
-                                                                  // performance-no-int-to-ptr)
+            if (!static_cast<bool>(LL_AHB1_GRP1_IsEnabledClock(LL_AHB1_GRP1_PERIPH_GPIOI))) {
+                LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOI);  // NOLINT(cppcoreguidelines-pro-type-cstyle-cast,
+                                                                      // performance-no-int-to-ptr)
+            }
             break;
         case GPIO::Port::J:
-            LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOJ);  // NOLINT(cppcoreguidelines-pro-type-cstyle-cast,
-                                                                  // performance-no-int-to-ptr)
+            if (!static_cast<bool>(LL_AHB1_GRP1_IsEnabledClock(LL_AHB1_GRP1_PERIPH_GPIOJ))) {
+                LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOJ);  // NOLINT(cppcoreguidelines-pro-type-cstyle-cast,
+                                                                      // performance-no-int-to-ptr)
+            }
             break;
         case GPIO::Port::K:
-            LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOK);  // NOLINT(cppcoreguidelines-pro-type-cstyle-cast,
-                                                                  // performance-no-int-to-ptr)
+            if (!static_cast<bool>(LL_AHB1_GRP1_IsEnabledClock(LL_AHB1_GRP1_PERIPH_GPIOK))) {
+                LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOK);  // NOLINT(cppcoreguidelines-pro-type-cstyle-cast,
+                                                                      // performance-no-int-to-ptr)
+            }
             break;
         default:
             assert_param(false);  // should NOT be executed. just for avoiding
@@ -258,6 +280,16 @@ namespace GPIO {
 void Hardware::init(const Port port, const Pin pin, const DefaultState state, const Mode mode, const Pull pull,
                     OutputType outputType, const Speed speed, const AlternateFunction alternateFunction) {
     enableClock(port);
+
+    /* Configure compensation cell for high speed IO */
+    if (speed >= Speed::High) {
+        if (!static_cast<bool>(LL_SYSCFG_IsActiveFlag_CMPCR())) {
+            // if compensation cell is disabled
+            LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_SYSCFG);
+            LL_SYSCFG_EnableCompensationCell();
+        }
+    }
+
     LL_GPIO_InitTypeDef gpioInitStruct{};
     gpioInitStruct.Pin = hardwareAddressPinout(pin);
     gpioInitStruct.Mode = hardwareAddressMode(mode);
