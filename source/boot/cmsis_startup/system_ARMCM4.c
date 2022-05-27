@@ -35,7 +35,7 @@
 /*----------------------------------------------------------------------------
   Exception / Interrupt Vector table
  *----------------------------------------------------------------------------*/
-extern const VECTOR_TABLE_Type __VECTOR_TABLE[];
+extern const VECTOR_TABLE_Type __VECTOR_TABLE[107];
 
 /*----------------------------------------------------------------------------
   System Core Clock Variable

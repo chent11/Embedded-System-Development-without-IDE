@@ -1,7 +1,6 @@
 {
     "recommendations": [
         "zixuanwang.linkerscript",
-        "ms-vscode.cpptools-extension-pack",
         "dan-c-underwood.arm",
         "marus25.cortex-debug",
         "ms-vscode.hexeditor",
@@ -10,6 +9,9 @@
         "notskm.clang-tidy",
         "eamodio.gitlens",
         "trond-snekvik.gnu-mapfiles",
-        "joaompinto.vscode-graphviz"
+        "joaompinto.vscode-graphviz",
+        "jeff-hykin.better-cpp-syntax",
+        "ms-vscode.cpptools",
+        "ms-vscode.cpptools-themes"
     ]
 }

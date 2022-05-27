@@ -1,4 +1,4 @@
-#include "core_init.h"
+#include "core.h"
 
 extern "C" {
 void _start(void);
@@ -13,13 +13,13 @@ extern unsigned int __bss_end__;
 
 // Iterate over all the preinit/init routines (mainly static or global constructors).
 __STATIC_FORCEINLINE void call_init_array(void) {
-    long count = __preinit_array_end - __preinit_array_start;
-    for (long i = 0; i < count; i++) {
+    uint32_t count = __preinit_array_end - __preinit_array_start;
+    for (uint32_t i = 0; i < count; i++) {
         __preinit_array_start[i]();
     }
 
     count = __init_array_end - __init_array_start;
-    for (long i = 0; i < count; i++) {
+    for (uint32_t i = 0; i < count; i++) {
         __init_array_start[i]();
     }
 }
@@ -33,7 +33,6 @@ __STATIC_FORCEINLINE void clear_bss() {
 }
 
 extern void program() __NO_RETURN;
-
 __NO_RETURN void _start() {
     clear_bss();
     core_init();

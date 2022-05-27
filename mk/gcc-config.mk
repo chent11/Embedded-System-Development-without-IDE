@@ -153,7 +153,7 @@ LIBS := $(MATH_LIB) \
 LIBDIR =
 LDFLAGS := $(GENERAL_FLAGS) -T$(LDSCRIPT) $(LIBDIR) $(LIBS) \
 -specs=nosys.specs \
--Wl,-Map=$(BUILD_DIR)/$(TARGET).map,--cref -Wl,--gc-sections,--print-memory-usage -nostartfiles
+-Wl,-Map=$(BUILD_DIR)/$(TARGET).map,--cref -Wl,--gc-sections,--print-memory-usage,--demangle -nostartfiles
 # -nodefaultlibs -nostartfiles -nostdlib
 # these can reduce the code size almost 300 bytes
 

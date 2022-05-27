@@ -1,26 +1,31 @@
-#!/bin/sh
+#!/bin/bash
 
-# flash-downloader ${downloader} ${target_device} ${binary}
-# example: ./flash-downloader jlink stm32f427vi abc.hex
-
+# flash-programmer ${programmer} ${target_device} ${hex} ${binary}
+# example: ./flash-programmer jlink stm32f427vi abc.hex abc.elf
+#          ./flash-programmer openocd-stlink stm32f4x abc.hex abc.elf
 if [ $# = 0 ]; then
     echo "  need arguments"
     exit 1
 fi
 
-DOWNLOADER=$1
+PROGRAMMER=$1
 TARGET_DEVICE=$2
 HEX="$3"
+BINARY="$4"
 
 commandsFile="$(mktemp)"
 outputFile="$(mktemp)"
 trap 'rm -f $commandsFile $outputFile' EXIT
 
-COLOR_RED="\033[38;5;124m"
-NO_COLOR="\033[0m"
-if [ "$DOWNLOADER" = "jlink" ]; then
-    if ! command -v JLinkExe &>/dev/null; then
-        echo "  ${COLOR_RED}JLinkExe could not be found${NO_COLOR}"
+function print_err() {
+    local COLOR_RED="\033[38;5;124m"
+    local NO_COLOR="\033[0m"
+    printf "  ${COLOR_RED}$1${NO_COLOR}\n"
+}
+
+if [ "$PROGRAMMER" = "jlink" ]; then
+    if ! command -v JLinkExe1 &>/dev/null; then
+        print_err "JLinkExe could not be found"
         exit 1
     fi
 
@@ -31,12 +36,31 @@ if [ "$DOWNLOADER" = "jlink" ]; then
     loadfile $HEX
     rnh
     exit " >$commandsFile
-    /usr/local/bin/JLinkExe -Device $TARGET_DEVICE -If SWD -Speed 50000 -NoGui -CommandFile $commandsFile >$outputFile
+    JLinkExe -Device $TARGET_DEVICE -If SWD -Speed 50000 -NoGui -CommandFile $commandsFile >$outputFile 2>&1
     if [ $? != 0 ]; then
         cat $outputFile
         exit 1
     fi
+elif [ "${PROGRAMMER:0:7}" = "openocd" ]; then
+    if ! command -v openocd &>/dev/null; then
+        print_err "openocd could not be found"
+        exit 1
+    fi
+
+    case ${PROGRAMMER#"openocd-"} in
+    stlink)
+        openocd -f interface/stlink.cfg -f target/$TARGET_DEVICE.cfg -c "program $BINARY verify reset exit" >$outputFile 2>&1
+        if [ $? != 0 ]; then
+            cat $outputFile
+            exit 1
+        fi
+        ;;
+    *)
+        print_err "${PROGRAMMER#"openocd-"} is an unsupported openocd programmer"
+        exit 1
+        ;;
+    esac
 else
-    echo "  $1 is an unknown flash programmer"
+    print_err "$PROGRAMMER is an unknown flash programmer"
     exit 1
 fi

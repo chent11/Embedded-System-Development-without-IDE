@@ -25,7 +25,7 @@ enum class Mode { Input, Output, Analog, Alternate };
 enum class OutputType { None, PushPull, OpenDrain };
 enum class Speed { None = 0, Low, Medium, High, VeryHigh };
 enum class Pull { NoPull, PullUp, PullDown };
-enum class State { Low, High };
+enum class State { Default, Low, High };
 using DefaultState = State;  // alias for readability
 enum class AlternateFunction {
     None,
@@ -55,7 +55,7 @@ class Hardware {
     static void toggle(Port port, Pin pin);
     [[nodiscard]] static State getState(Port port, Pin pin);
     static void init(Port port, Pin pin, DefaultState state, Mode mode, Pull pull, OutputType outputType, Speed speed,
-                     AlternateFunction alternateFunction);
+                     AlternateFunction af);
 };
 
 template <Port port, Pin pin, Mode mode>
@@ -78,8 +78,8 @@ class Base {
 
     // alternate mode
     Base(DefaultState state, Pull pull, OutputType outputType, Speed speed,
-         AlternateFunction alternateFunction) requires(mode == Mode::Alternate) {
-        Hardware::init(port, pin, state, mode, pull, outputType, speed, alternateFunction);
+         AlternateFunction af) requires(mode == Mode::Alternate) {
+        Hardware::init(port, pin, state, mode, pull, outputType, speed, af);
     }
 };
 
@@ -88,12 +88,15 @@ class Output : public Base<port, pin, Mode::Output> {
   public:
     explicit Output(DefaultState state)
         : Base<port, pin, Mode::Output>{state, Pull::NoPull, OutputType::PushPull, Speed::Low} {}
+    Output(DefaultState state, Pull pull)
+        : Base<port, pin, Mode::Output>{state, pull, OutputType::PushPull, Speed::Low} {}
     Output(DefaultState state, Pull pull, OutputType outputType)
         : Base<port, pin, Mode::Output>{state, pull, outputType, Speed::Low} {}
     Output(DefaultState state, Pull pull, OutputType outputType, Speed speed)
         : Base<port, pin, Mode::Output>{state, pull, outputType, speed} {}
 
     static void lowLevelInit(DefaultState state) { Output{state}; }
+    static void lowLevelInit(DefaultState state, Pull pull) { Output{state, pull}; }
 };
 
 template <Port port, Pin pin>
@@ -101,6 +104,16 @@ class Input : public Base<port, pin, Mode::Input> {
   public:
     Input() : Base<port, pin, Mode::Input>{} {}
     explicit Input(Pull pull) : Base<port, pin, Mode::Input>{pull} {}
+};
+
+template <Port port, Pin pin>
+class Alternate {
+  public:
+    Alternate() = default;
+    static void lowLevelInit(AlternateFunction af, Speed speed) {
+        Hardware::init(port, pin, DefaultState::Default, Mode::Alternate, Pull::NoPull, OutputType::PushPull, speed,
+                       af);
+    }
 };
 
 template <Port port, Pin pin>

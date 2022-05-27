@@ -1,7 +1,7 @@
 #!/bin/sh
 
-SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-DOCKER_IMAGE=`cat $SCRIPT_DIR/docker_image`
+SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
+DOCKER_IMAGE=$(cat $SCRIPT_DIR/docker_image)
 docker_cmd() {
     docker container run --rm -v "$(PWD)":/$(PWD) -w "/$(PWD)" $DOCKER_IMAGE "$@"
 }

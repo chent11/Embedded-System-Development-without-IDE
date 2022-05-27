@@ -2,7 +2,8 @@
 # TARGET
 ######################################
 TARGET := led_test
-TARGET_DEVICE := stm32f427vi
+PROGRAMMER_TOOL := openocd-stlink
+TARGET_DEVICE := stm32f4x
 # Stack size
 STACK_SIZE := $(shell printf "%d" 0xFA00) # Hex Format
 # STACK_SIZE := 64000 # Decimal Format
@@ -41,7 +42,7 @@ SOURCES := source
 # link script
 LDSCRIPT := $(SOURCES)/boot/cmsis_startup/gcc_arm.ld
 # C sources
-C_SOURCES := $(SOURCES)/boot/core_init.c
+C_SOURCES := $(SOURCES)/boot/core.c
 # CXX sources
 CPP_SOURCES := \
 $(wildcard $(SOURCES)/drivers/core_devices/*.cpp) \
@@ -74,8 +75,7 @@ $(SOURCES)/modules/CMSIS_5/CMSIS/DSP/Include
 
 USER_INCLUDE_PATH := \
 source/boot \
-source/drivers/include \
-source/utils/include
+source/drivers/include
 
 INCLUDES := $(addprefix -I,$(USER_INCLUDE_PATH)) $(addprefix -isystem ,$(LIB_INCLUDE_PATH))
 
@@ -99,12 +99,17 @@ COLOR_GREEN := \033[38;5;2m
 COLOR_RED := \033[38;5;124m
 COLOR_YELLOW := \033[38;5;226m
 NO_COLOR := \033[0m
+PRINT_ERR = @printf "${COLOR_RED}$(1)${NO_COLOR}\n"
 
 .PHONY: main_build
 main_build:
 	@echo
 	@printf "  ${COLOR_YELLOW}Building${NO_COLOR} [${COLOR_GREEN}$(TARGET)${NO_COLOR}]...\n"
 	@echo
-	$(Q)bear -- $(MAKE) $(TARGET) -j$(JOBS)
+	$(Q)$(MAKE) $(TARGET) -j$(JOBS)
 
+## Build rules
 include mk/rules.mk
+
+## Code Checking rules
+include mk/code-check-rules.mk

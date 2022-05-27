@@ -1,5 +1,5 @@
+#include "core.h"
 #include "core_devices/GPIO.hh"
-#include "core_init.h"
 #include "stm32f4xx_ll_bus.h"
 #include "stm32f4xx_ll_gpio.h"
 #include "stm32f4xx_ll_system.h"
@@ -278,7 +278,7 @@ static void enableClock(const GPIO::Port port) {
 namespace GPIO {
 
 void Hardware::init(const Port port, const Pin pin, const DefaultState state, const Mode mode, const Pull pull,
-                    OutputType outputType, const Speed speed, const AlternateFunction alternateFunction) {
+                    OutputType outputType, const Speed speed, const AlternateFunction af) {
     enableClock(port);
 
     /* Configure compensation cell for high speed IO */
@@ -296,9 +296,20 @@ void Hardware::init(const Port port, const Pin pin, const DefaultState state, co
     gpioInitStruct.OutputType = hardwareAddressOutputType(outputType);
     gpioInitStruct.Pull = hardwareAddressPull(pull);
     gpioInitStruct.Speed = hardwareAddressSpeed(speed);
-    gpioInitStruct.Alternate = hardwareAddressAlternateFunction(alternateFunction);
+    gpioInitStruct.Alternate = hardwareAddressAlternateFunction(af);
     LL_GPIO_Init(hardwareAddressPort(port), &gpioInitStruct);
-    (state == State::High) ? setHigh(port, pin) : setLow(port, pin);
+
+    switch (state) {
+        case DefaultState::Low:
+            setLow(port, pin);
+            break;
+        case DefaultState::High:
+            setHigh(port, pin);
+            break;
+        case DefaultState::Default:
+        default:
+            break;
+    }
 }
 
 void Hardware::setHigh(const Port port, const Pin pin) {

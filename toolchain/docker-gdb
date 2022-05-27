@@ -1,10 +1,10 @@
 #!/bin/sh
 
-SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-DOCKER_IMAGE=`cat $SCRIPT_DIR/docker_image`
+SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
+DOCKER_IMAGE=$(cat $SCRIPT_DIR/docker_image)
 docker_cmd() {
     UNAME_S=$(uname -s)
-    VSCODE_EXTENSIONS_PATH=$HOME/.vscode/extensions
+    VSCODE_EXTENSIONS_PATH=/Users/clydechen/.vscode/extensions
     if [ "$UNAME_S" = "Linux" ]; then
         HOST_LOCAL_IP=$(ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p')
     elif [ "$UNAME_S" = "Darwin" ]; then
@@ -13,7 +13,7 @@ docker_cmd() {
         echo "Unknown local ip address, please set a value to HOST_LOCAL_IP in environment or $0 and run this script again."
         exit 1
     fi
-    docker container run --rm -i -p 50000-50010:50000-50010 --add-host=localhost:$HOST_LOCAL_IP -v $VSCODE_EXTENSIONS_PATH:$VSCODE_EXTENSIONS_PATH -v  "$(PWD)":/$(PWD) -w "/$(PWD)" $DOCKER_IMAGE "$@"
+    docker container run --rm -i --add-host=localhost:$HOST_LOCAL_IP -v $VSCODE_EXTENSIONS_PATH:$VSCODE_EXTENSIONS_PATH -v "$(PWD)":/$(PWD) -w "/$(PWD)" $DOCKER_IMAGE "$@"
 }
 
 docker_cmd arm-none-eabi-gdb $@

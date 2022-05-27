@@ -1,4 +1,4 @@
-#include "core_init.h"
+#include "core.h"
 
 #include "stm32f4xx_ll_bus.h"
 #include "stm32f4xx_ll_cortex.h"
@@ -24,6 +24,7 @@ static void pllClock_config(void) {
     while (LL_RCC_HSE_IsReady() != 1) {
     }
     LL_RCC_HSE_EnableCSS();
+    // LL_RCC_ConfigMCO(LL_RCC_MCO1SOURCE_HSI, LL_RCC_MCO1_DIV_4);
     LL_RCC_PLL_ConfigDomain_SYS(LL_RCC_PLLSOURCE_HSE, LL_RCC_PLLM_DIV_12, PLLN, LL_RCC_PLLP_DIV_2);
     LL_RCC_PLL_Enable();
 
@@ -49,7 +50,7 @@ void core_init(void) {
     // LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_PWR);
 
     // Enable External Clock GPIO Clock
-    LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOH);
+    // LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOH);
     // Enable Debug GPIO Clock
     LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOA);
 

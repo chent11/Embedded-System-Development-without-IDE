@@ -7,6 +7,26 @@
         {
             "type": "cortex-debug",
             "request": "launch",
+            "name": "Debug Openocd",
+            "cwd": "${workspaceRoot}",
+            "executable": "${workspaceRoot}/build/led_test.elf",
+            "servertype": "openocd",
+            "configFiles": [
+                "interface/stlink.cfg",
+                "target/stm32f4x.cfg"
+            ],
+            "openOCDLaunchCommands": [
+                "gdb_breakpoint_override hard",
+                "bindto 0.0.0.0"
+            ],
+            "interface": "swd",
+            "runToEntryPoint": "Reset_Handler",
+            "svdFile": "${workspaceRoot}/source/modules/cmsis-svd/data/STMicro/STM32F427.svd",
+            "gdbPath": "${workspaceRoot}/toolchain/docker-gdb"
+        },
+        {
+            "type": "cortex-debug",
+            "request": "launch",
             "name": "Debug J-Link",
             "cwd": "${workspaceRoot}",
             "executable": "${workspaceRoot}/build/led_test.elf",
@@ -16,7 +36,8 @@
             "interface": "swd",
             "runToEntryPoint": "Reset_Handler",
             "svdFile": "${workspaceRoot}/source/modules/cmsis-svd/data/STMicro/STM32F427.svd",
-            "gdbPath": "${workspaceRoot}/toolchain/docker-gdb"
+            "gdbPath": "${workspaceRoot}/toolchain/docker-gdb",
+            // "gdbPath": "/Users/clydechen/Projects/C/Embedded/toolchains/gcc-arm-11.2-2022.02-arm-none-eabi/bin/arm-none-eabi-gdb",
         }
     ]
 }

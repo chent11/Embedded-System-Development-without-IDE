@@ -12,5 +12,6 @@ Checks: '*,
     -llvmlibc-restrict-system-libc-headers,
     -misc-unused-parameters,
     -modernize-use-trailing-return-type,
+    -clang-diagnostic-unused-variable,
     '
 HeaderFilterRegex: "source/drivers/include/.*"
