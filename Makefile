@@ -4,6 +4,7 @@
 TARGET := led_test
 PROGRAMMER_TOOL := openocd-stlink
 TARGET_DEVICE := stm32f4x
+FLASH_ADDR := 0x8000000
 # Stack size
 STACK_SIZE := $(shell printf "%d" 0xFA00) # Hex Format
 # STACK_SIZE := 64000 # Decimal Format
@@ -15,7 +16,7 @@ STACK_SIZE := $(shell printf "%d" 0xFA00) # Hex Format
 JOBS ?= $(shell nproc)
 CCACHE_USE := 1
 # Optimization
-OPTIMIZATION_FLAG := -Os -g
+OPTIMIZATION_FLAG := -Os
 # Link Time Optimization
 LTO_USE := 1
 # Verbose

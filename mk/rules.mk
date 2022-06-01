@@ -52,6 +52,7 @@ $(BUILD_DIR)/$(TARGET).elf: $(OBJECTS) $(LDSCRIPT)
 	@echo "  ${COLOR_YELLOW}Linking objects...${NO_COLOR}"
 	@echo
 	$(Q)$(CXX) $(OBJECTS) $(LDFLAGS) -o $@
+	$(Q)$(CXXFILT) < $(BUILD_DIR)/$(TARGET).map > $(BUILD_DIR)/$(TARGET).tmp && mv $(BUILD_DIR)/$(TARGET).tmp $(BUILD_DIR)/$(TARGET).map # demangle map file
 	@echo
 	$(Q)$(SZ) $@
 	@echo
@@ -77,10 +78,10 @@ $(BUILD_DIR)/$(TARGET).bin: $(BUILD_DIR)/$(TARGET).elf
 # FLASH
 #######################################
 .PHONY: upload
-upload: $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).elf
+upload: $(BUILD_DIR)/$(TARGET).bin
 	@echo
 	@echo "  ${COLOR_YELLOW}Uploading ${COLOR_GREEN}$(TARGET)${COLOR_YELLOW} to device ${COLOR_GREEN}$(TARGET_DEVICE)${COLOR_YELLOW} ...${NO_COLOR}"
-	$(Q)./flash-programmer $(PROGRAMMER_TOOL) $(TARGET_DEVICE) $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).elf
+	$(Q)./flash-programmer $(PROGRAMMER_TOOL) $(TARGET_DEVICE) $(BUILD_DIR)/$(TARGET).bin $(FLASH_ADDR)
 	@echo "  ${COLOR_YELLOW}Upload success!${NO_COLOR}"
 
 #######################################

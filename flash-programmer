@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# flash-programmer ${programmer} ${target_device} ${hex} ${binary}
-# example: ./flash-programmer jlink stm32f427vi abc.hex abc.elf
-#          ./flash-programmer openocd-stlink stm32f4x abc.hex abc.elf
+# flash-programmer ${PROGRAMMER} ${TARGET_DEVICE} ${BINARY} ${FLASH_ADDRESS}
+# example: ./flash-programmer jlink stm32f427vi abc.bin 0x8000000
+#          ./flash-programmer openocd-stlink stm32f4x abc.bin 0x8000000
 if [ $# = 0 ]; then
     echo "  need arguments"
     exit 1
@@ -10,8 +10,8 @@ fi
 
 PROGRAMMER=$1
 TARGET_DEVICE=$2
-HEX="$3"
-BINARY="$4"
+BINARY="$3"
+FLASH_ADDRESS=$4
 
 commandsFile="$(mktemp)"
 outputFile="$(mktemp)"
@@ -24,7 +24,7 @@ function print_err() {
 }
 
 if [ "$PROGRAMMER" = "jlink" ]; then
-    if ! command -v JLinkExe1 &>/dev/null; then
+    if ! command -v JLinkExe &>/dev/null; then
         print_err "JLinkExe could not be found"
         exit 1
     fi
@@ -33,7 +33,7 @@ if [ "$PROGRAMMER" = "jlink" ]; then
     eoe 1
     r
     h
-    loadfile $HEX
+    loadfile $BINARY,$FLASH_ADDRESS
     rnh
     exit " >$commandsFile
     JLinkExe -Device $TARGET_DEVICE -If SWD -Speed 50000 -NoGui -CommandFile $commandsFile >$outputFile 2>&1
@@ -47,19 +47,25 @@ elif [ "${PROGRAMMER:0:7}" = "openocd" ]; then
         exit 1
     fi
 
-    case ${PROGRAMMER#"openocd-"} in
+    programmer=${PROGRAMMER#"openocd-"}
+    case $programmer in
     stlink)
-        openocd -f interface/stlink.cfg -f target/$TARGET_DEVICE.cfg -c "program $BINARY verify reset exit" >$outputFile 2>&1
-        if [ $? != 0 ]; then
-            cat $outputFile
-            exit 1
-        fi
+        transport=hla_swd
+        ;;
+    jlink)
+        transport=swd
         ;;
     *)
-        print_err "${PROGRAMMER#"openocd-"} is an unsupported openocd programmer"
+        print_err "$programmer is an unsupported openocd programmer"
         exit 1
         ;;
     esac
+
+    openocd -f interface/$programmer.cfg -c "transport select $transport" -f target/$TARGET_DEVICE.cfg -c "program $BINARY verify reset exit $FLASH_ADDRESS" >$outputFile 2>&1
+    if [ $? != 0 ]; then
+        cat $outputFile
+        exit 1
+    fi
 else
     print_err "$PROGRAMMER is an unknown flash programmer"
     exit 1
