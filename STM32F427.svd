@@ -63138,34 +63138,124 @@ xs:noNamespaceSchemaLocation="CMSIS-SVD_Schema_1_1.xsd">
           <resetValue>0x00000000</resetValue>
           <fields>
             <field>
-              <name>NUMCOMP</name>
-              <description>Number of comparators implemented.</description>
+              <name>CYCCNTENA</name>
+              <description>Enables CYCCNT</description>
               <bitOffset>0</bitOffset>
+              <bitWidth>1</bitWidth>
+            </field>
+            <field>
+              <name>POSTPRESET</name>
+              <description>Reload value for the POSTCNT counter</description>
+              <bitOffset>1</bitOffset>
               <bitWidth>4</bitWidth>
+            </field>
+            <field>
+              <name>POSTINIT</name>
+              <description>Initial value for the POSTCNT counter</description>
+              <bitOffset>5</bitOffset>
+              <bitWidth>4</bitWidth>
+            </field>
+            <field>
+              <name>CYCTAP</name>
+              <description>Selects the position of the POSTCNT tap on the CYCCNT counter</description>
+              <bitOffset>9</bitOffset>
+              <bitWidth>1</bitWidth>
+            </field>
+            <field>
+              <name>SYNCTAP</name>
+              <description>Selects the position of the synchronization packet counter tap on the CYCCNT counter</description>
+              <bitOffset>10</bitOffset>
+              <bitWidth>2</bitWidth>
+            </field>
+            <field>
+              <name>PCSAMPLENA</name>
+              <description>Enables use of POSTCNT counter as a timer for Periodic PC sample packet generation</description>
+              <bitOffset>12</bitOffset>
+              <bitWidth>1</bitWidth>
+            </field>
+            <field>
+              <name>Reserved</name>
+              <description>Reserved</description>
+              <bitOffset>13</bitOffset>
+              <bitWidth>3</bitWidth>
+            </field>
+            <field>
+              <name>EXCTRCENA</name>
+              <description>Enables generation of exception trace</description>
+              <bitOffset>16</bitOffset>
+              <bitWidth>1</bitWidth>
+            </field>
+            <field>
+              <name>CPIEVTENA</name>
+              <description>Enables generation of the CPI counter overflow event</description>
+              <bitOffset>17</bitOffset>
+              <bitWidth>1</bitWidth>
+            </field>
+            <field>
+              <name>EXCEVTENA</name>
+              <description>Enables generation of the Exception overhead counter overflow event</description>
+              <bitOffset>18</bitOffset>
+              <bitWidth>1</bitWidth>
+            </field>
+            <field>
+              <name>SLEEPEVTENA</name>
+              <description>Enables generation of the Sleep counter overflow event</description>
+              <bitOffset>19</bitOffset>
+              <bitWidth>1</bitWidth>
+            </field>
+            <field>
+              <name>LSUEVTENA</name>
+              <description>Enables generation of the LSU counter overflow event</description>
+              <bitOffset>20</bitOffset>
+              <bitWidth>1</bitWidth>
+            </field>
+            <field>
+              <name>FOLDEVTENA</name>
+              <description>Enables generation of the Folded-instruction counter overflow event</description>
+              <bitOffset>21</bitOffset>
+              <bitWidth>1</bitWidth>
+            </field>
+            <field>
+              <name>CYCEVTENA</name>
+              <description>Enables POSTCNT underflow Event counter packets generation</description>
+              <bitOffset>22</bitOffset>
+              <bitWidth>1</bitWidth>
+            </field>
+            <field>
+              <name>Reserved</name>
+              <description>Reserved</description>
+              <bitOffset>23</bitOffset>
+              <bitWidth>1</bitWidth>
+            </field>
+            <field>
+              <name>NOPRFCNT</name>
+              <description>Shows whether the implementation supports the profiling counters</description>
+              <bitOffset>24</bitOffset>
+              <bitWidth>1</bitWidth>
+            </field>
+            <field>
+              <name>NOCYCCNT</name>
+              <description>Shows whether the implementation supports a cycle counter</description>
+              <bitOffset>25</bitOffset>
+              <bitWidth>1</bitWidth>
+            </field>
+            <field>
+              <name>NOEXTTRIG</name>
+              <description>Shows whether the implementation includes external match signals</description>
+              <bitOffset>26</bitOffset>
+              <bitWidth>1</bitWidth>
             </field>
             <field>
               <name>NOTRCPKT</name>
               <description>Shows whether the implementation supports trace sampling and exception tracing</description>
-              <bitOffset>4</bitOffset>
+              <bitOffset>27</bitOffset>
               <bitWidth>1</bitWidth>
             </field>
             <field>
-              <name>TBD</name>
-              <description>TBD</description>
-              <bitOffset>2</bitOffset>
-              <bitWidth>1</bitWidth>
-            </field>
-            <field>
-              <name>TBD</name>
-              <description>TBD</description>
-              <bitOffset>8</bitOffset>
-              <bitWidth>1</bitWidth>
-            </field>
-            <field>
-              <name>TBD</name>
-              <description>TBD</description>
-              <bitOffset>9</bitOffset>
-              <bitWidth>1</bitWidth>
+              <name>NUMCOMP</name>
+              <description>Number of comparators implemented</description>
+              <bitOffset>28</bitOffset>
+              <bitWidth>4</bitWidth>
             </field>
           </fields>
         </register>
