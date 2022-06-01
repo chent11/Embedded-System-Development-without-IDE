@@ -21,10 +21,11 @@ endif
 .PHONY: check-clang-tidy
 CLANG_TIDY := clang-tidy # the checking flags are written in the .clang-tidy config file
 CLANG_TIDY_EXISTS := $(shell which $(CLANG_TIDY))
+CLANG_TIDY_ERROR := *,-clang-diagnostic-unused-function,-cppcoreguidelines-avoid-magic-numbers,-readability-magic-numbers
 check-clang-tidy:
 ifdef CLANG_TIDY_EXISTS
-	$(Q)$(CLANG_TIDY) --quiet $(C_SOURCES) --warnings-as-errors=* -extra-arg=$(C_STD) -- $(INCLUDES) ${COMPILER_DEFINES}  $(filter-out -fipa-pta -mcpu=cortex-m4 -mfloat-abi=hard -mfpu=fpv4-sp-d16 -mthumb -specs=nano.specs,$(CFLAGS))
-	$(Q)$(CLANG_TIDY) --quiet $(CPP_SOURCES) --warnings-as-errors=* -extra-arg=$(CPP_STD) -- $(INCLUDES) ${COMPILER_DEFINES} $(filter-out -fipa-pta -mcpu=cortex-m4 -mfloat-abi=hard -mfpu=fpv4-sp-d16 -mthumb -specs=nano.specs,$(CXXFLAGS))
+	$(Q)$(CLANG_TIDY) --quiet $(C_SOURCES) --warnings-as-errors=$(CLANG_TIDY_ERROR) -extra-arg=$(C_STD) -- $(INCLUDES) ${COMPILER_DEFINES}  $(filter-out -fipa-pta -mcpu=cortex-m4 -mfloat-abi=hard -mfpu=fpv4-sp-d16 -mthumb -specs=nano.specs,$(CFLAGS))
+	$(Q)$(CLANG_TIDY) --quiet $(CPP_SOURCES) --warnings-as-errors=$(CLANG_TIDY_ERROR) -extra-arg=$(CPP_STD) -- $(INCLUDES) ${COMPILER_DEFINES} $(filter-out -fipa-pta -mcpu=cortex-m4 -mfloat-abi=hard -mfpu=fpv4-sp-d16 -mthumb -specs=nano.specs,$(CXXFLAGS))
 	@echo
 	@echo "All clang-tidy checks have passed!"
 else

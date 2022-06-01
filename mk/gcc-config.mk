@@ -64,13 +64,13 @@ CXX_WARNING_FLAGS := \
 # Debug
 ifneq ($(DEBUG), 0)
 LTO_USE := 0
-OPTIMIZATION_FLAG := -O0 -Og
+OPTIMIZATION_FLAG := -Og
 DEBUG_FLAGS := -g3
 endif
 
 # Debug with GDB info
 ifneq ($(DEBUG_GDB_INFO), 0)
-DEBUG_FLAGS := $(DEBUG_FLAGS) -ggdb3
+DEBUG_FLAGS := -g -ggdb3 $(DEBUG_FLAGS)
 endif
 
 # Generate preprocessed file and assembly
@@ -153,7 +153,7 @@ LIBS := $(MATH_LIB) \
 LIBDIR =
 LDFLAGS := $(GENERAL_FLAGS) -T$(LDSCRIPT) $(LIBDIR) $(LIBS) \
 -specs=nosys.specs \
--Wl,-Map=$(BUILD_DIR)/$(TARGET).map,--cref -Wl,--gc-sections,--print-memory-usage,--demangle -nostartfiles
+-Wl,-Map=$(BUILD_DIR)/$(TARGET).map,--cref -Wl,--gc-sections,--print-memory-usage -nostartfiles
 # -nodefaultlibs -nostartfiles -nostdlib
 # these can reduce the code size almost 300 bytes
 
