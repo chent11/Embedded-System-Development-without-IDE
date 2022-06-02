@@ -6,7 +6,7 @@ PROGRAMMER_TOOL := openocd-stlink
 TARGET_DEVICE := stm32f4x
 FLASH_ADDR := 0x8000000
 # Stack size
-STACK_SIZE := $(shell printf "%d" 0xFA00) # Hex Format
+STACK_SIZE := $(shell printf "%d" 0xFFFF) # Hex Format
 # STACK_SIZE := 64000 # Decimal Format
 
 ######################################
@@ -47,7 +47,7 @@ C_SOURCES := $(SOURCES)/boot/core.c
 # CXX sources
 CPP_SOURCES := \
 $(wildcard $(SOURCES)/drivers/core_devices/*.cpp) \
-$(SOURCES)/program.cpp
+$(wildcard $(SOURCES)/*.cpp)
 # ASM sources
 ASM_SOURCES :=
 # Lib sources

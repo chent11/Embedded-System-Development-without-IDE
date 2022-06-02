@@ -3,9 +3,8 @@
 
 const uint32_t BOOT_LED_BLINK_TIMES = 10;
 const uint32_t BOOT_LED_BLINK_DELAY = 100;
-const uint32_t TOGGLE_DELAY = 100;
-
-__NO_RETURN void program() noexcept {
+const uint32_t TOGGLE_DELAY = 500;
+__NO_RETURN void main() noexcept {
     using namespace GPIO;  // NOLINT(google-build-using-namespace)
 
     Output<Port::E, Pin::P3>::lowLevelInit(DefaultState::Low, Pull::PullDown);  // turn off sensors power

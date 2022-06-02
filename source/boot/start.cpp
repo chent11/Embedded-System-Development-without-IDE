@@ -30,7 +30,7 @@ __STATIC_FORCEINLINE void clear_bss() {
 }
 }
 
-extern void program() __NO_RETURN;
+extern void main() __NO_RETURN;
 __NO_RETURN void _start() {
     clear_bss();
     core_init();
@@ -38,7 +38,7 @@ __NO_RETURN void _start() {
     // problems from happening in hardware because some of the global constructors would initialize peripherals that
     // depend on the clock or other core configuration.
     call_init_array();
-    program();
+    main();
     while (true) {
     }
 }
