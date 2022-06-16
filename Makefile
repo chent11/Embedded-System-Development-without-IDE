@@ -51,7 +51,8 @@ $(wildcard $(SOURCES)/*.cpp)
 # ASM sources
 ASM_SOURCES :=
 # Lib sources
-MATH_LIB := $(SOURCES)/modules/cmsis_dsp_lib/lib_cortexM4_fpu_cmsisdsp.a
+MATH_LIB :=
+# MATH_LIB := $(SOURCES)/modules/cmsis_dsp_lib/lib_cortexM4_fpu_cmsisdsp.a
 # MATH_LIB := $(SOURCES)/modules/cmsis_dsp_lib/lib_cortexM4_cmsisdsp.a
 LIB_C_SOURCES := \
 $(SOURCES)/boot/cmsis_startup/startup_ARMCM4.c \
