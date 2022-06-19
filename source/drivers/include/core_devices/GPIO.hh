@@ -72,8 +72,9 @@ class Base {
     }
 
     // input mode
-    explicit Base(DefaultState state, Pull pull) requires(mode == Mode::Input) {
-        Hardware::init(port, pin, state, mode, pull, OutputType::None, Speed::None, AlternateFunction::None);
+    explicit Base(Pull pull) requires(mode == Mode::Input) {
+        Hardware::init(port, pin, DefaultState::Default, mode, pull, OutputType::None, Speed::None,
+                       AlternateFunction::None);
     }
 
     // alternate mode
@@ -102,7 +103,7 @@ class Output : public Base<port, pin, Mode::Output> {
 template <Port port, Pin pin>
 class Input : public Base<port, pin, Mode::Input> {
   public:
-    Input() : Base<port, pin, Mode::Input>{} {}
+    Input() : Base<port, pin, Mode::Input>{Pull::NoPull} {}
     explicit Input(Pull pull) : Base<port, pin, Mode::Input>{pull} {}
 };
 
