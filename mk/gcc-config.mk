@@ -118,6 +118,7 @@ CXXFLAGS := $(GENERAL_FLAGS) $(CPP_STD) $(CXX_WARNING_FLAGS) $(INCLUDES) \
 -fcheck-new \
 -fno-exceptions \
 -fno-rtti \
+-fno-threadsafe-statics \
 -fno-use-cxa-atexit \
 -fstrict-enums \
 -fvisibility=hidden
