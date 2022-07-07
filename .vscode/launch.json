@@ -7,19 +7,27 @@
         {
             "type": "cortex-debug",
             "request": "launch",
-            "name": "Debug Openocd",
+            "name": "Debug Openocd STlink",
             "cwd": "${workspaceRoot}",
             "executable": "${workspaceRoot}/build/led_test.elf",
             "servertype": "openocd",
             "configFiles": [
-                "interface/stlink.cfg",
-                "target/stm32f4x.cfg"
+                "${workspaceRoot}/toolchain/openocd-stlink.cfg"
             ],
-            "openOCDLaunchCommands": [
-                "gdb_breakpoint_override hard",
-                "bindto 0.0.0.0"
+            "runToEntryPoint": "Reset_Handler",
+            "svdFile": "${workspaceRoot}/STM32F427.svd",
+            "gdbPath": "${workspaceRoot}/toolchain/docker-gdb"
+        },
+        {
+            "type": "cortex-debug",
+            "request": "launch",
+            "name": "Debug Openocd Jlink",
+            "cwd": "${workspaceRoot}",
+            "executable": "${workspaceRoot}/build/led_test.elf",
+            "servertype": "openocd",
+            "configFiles": [
+                "${workspaceRoot}/toolchain/openocd-jlink.cfg"
             ],
-            "interface": "swd",
             "runToEntryPoint": "Reset_Handler",
             "svdFile": "${workspaceRoot}/STM32F427.svd",
             "gdbPath": "${workspaceRoot}/toolchain/docker-gdb"
@@ -35,9 +43,8 @@
             "device": "stm32f427vi",
             "interface": "swd",
             "runToEntryPoint": "Reset_Handler",
-            "svdFile": "${workspaceRoot}/source/modules/cmsis-svd/data/STMicro/STM32F427.svd",
-            "gdbPath": "${workspaceRoot}/toolchain/docker-gdb",
-            // "gdbPath": "/Users/clydechen/Projects/C/Embedded/toolchains/gcc-arm-11.2-2022.02-arm-none-eabi/bin/arm-none-eabi-gdb",
+            "svdFile": "${workspaceRoot}/STM32F427.svd",
+            "gdbPath": "${workspaceRoot}/toolchain/docker-gdb"
         }
     ]
 }
