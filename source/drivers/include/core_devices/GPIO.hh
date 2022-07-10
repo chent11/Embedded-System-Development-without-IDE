@@ -110,10 +110,9 @@ class Input : public Base<port, pin, Mode::Input> {
 template <Port port, Pin pin>
 class Alternate {
   public:
-    Alternate() = default;
-    static void lowLevelInit(AlternateFunction af, Speed speed) {
-        Hardware::init(port, pin, DefaultState::Default, Mode::Alternate, Pull::NoPull, OutputType::PushPull, speed,
-                       af);
+    Alternate() = delete;
+    static void lowLevelInit(AlternateFunction af, Pull pull, OutputType outputType, Speed speed) {
+        // Hardware::init(port, pin, DefaultState::Default, Mode::Alternate, pull, outputType, speed, af);
     }
 };
 
