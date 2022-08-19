@@ -2,7 +2,7 @@
 
 Gee is a framework for embedded system development in C++.
 
-## How to build?
+## Build
 
 1. Clone and update all submodules.
     ```
@@ -28,6 +28,35 @@ Gee is a framework for embedded system development in C++.
     cd source/modules
     ../docker-cmd ./build_cmsis_dsp_lib.sh
     ```
-5. Flash (TBD)
+5. Flash. You can modify the programmer in `Makefile`. Supported programmer are **jlink**, **openocd-jlink**, **openocd-stlink**.
+    ```
+    make upload
+    ```
 
-## How to debug? (TBD)
+## Code Check
+
+1. **Cpp Check**. This will check misra rules and some cppcheck default rules. You can modify these rules in `mk/rules.mk`
+    ```
+    make check-cppcheck
+    ```
+2. **Clang-tidy**. Checking rules in `.clang-tidy`.
+    ```
+    make check-clang-tidy
+    ```
+3. **Clang-format**. Checking rules in `clang-format`.
+    ```
+    make check-format
+    ```
+4. Checking all rules.
+    ```
+    make check-all
+    ```
+
+## Generate Compilation Database
+Because some compilation database generating tools have some bugs on MacOS, I wrote a simple script(`toolchain/generate_compilation_database.py`) to do so for me. You can use it like this:
+```
+make generate-complication-database
+```
+
+## Debug
+Open this repo with vscode and install extension [cortex-debug](https://github.com/Marus/cortex-debug), then switch to built-in debug side bar and choose a correct programmer type, click run button.

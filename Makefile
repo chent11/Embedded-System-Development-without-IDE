@@ -36,10 +36,12 @@ GENERATE_COMPILER_DUMP ?= 0
 #######################################
 # PATHS
 #######################################
+# Project Path
+ROOT_DIR := $(shell pwd)
 # Build path
-BUILD_DIR := build
+BUILD_DIR := $(ROOT_DIR)/build
 # Sources path
-SOURCES := source
+SOURCES := $(ROOT_DIR)/source
 # link script
 LDSCRIPT := $(SOURCES)/boot/cmsis_startup/gcc_arm.ld
 # C sources
@@ -77,8 +79,8 @@ $(SOURCES)/modules/CMSIS_5/CMSIS/Core/Include \
 $(SOURCES)/modules/CMSIS_5/CMSIS/DSP/Include
 
 USER_INCLUDE_PATH := \
-source/boot \
-source/drivers/include
+$(SOURCES)/boot \
+$(SOURCES)/drivers/include
 
 INCLUDES := $(addprefix -I,$(USER_INCLUDE_PATH)) $(addprefix -isystem ,$(LIB_INCLUDE_PATH))
 

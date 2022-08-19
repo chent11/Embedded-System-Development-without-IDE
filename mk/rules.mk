@@ -16,34 +16,34 @@ $(TARGET): $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(
 
 $(BUILD_DIR)/%.lib.o: %.c
 	@mkdir -p $(@D)
-	@if [ $(V) -gt 1 ] && [ $(V) -lt 4 ];then echo "  CC  (lib) $<"; fi
+	@if [ $(V) -gt 1 ] && [ $(V) -lt 4 ];then echo "  CC  (lib) $(<:$(SOURCES)/%=%)"; fi
 	$(Q)$(CC) $(filter-out -Werror,$(LIB_C_FLAGS)) $(GEN_DEPS) -c $< -o $@
 
 $(BUILD_DIR)/%.lib.o: %.cc
 	@mkdir -p $(@D)
-	@if [ $(V) -gt 1 ] && [ $(V) -lt 4 ];then echo "  CXX (lib) $<"; fi
+	@if [ $(V) -gt 1 ] && [ $(V) -lt 4 ];then echo "  CXX (lib) $(<:$(SOURCES)/%=%)"; fi
 	$(Q)$(CXX) $(filter-out -Werror,$(LIB_CXX_FLAGS)) $(GEN_DEPS)  -c $< -o $@
 
 $(BUILD_DIR)/%.lib.o: %.cpp
 	@mkdir -p $(@D)
-	@if [ $(V) -gt 1 ] && [ $(V) -lt 4 ];then echo "  CXX (lib) $<"; fi
+	@if [ $(V) -gt 1 ] && [ $(V) -lt 4 ];then echo "  CXX (lib) $(<:$(SOURCES)/%=%)"; fi
 	$(Q)$(CXX) $(filter-out -Werror,$(LIB_CXX_FLAGS)) $(GEN_DEPS)  -c $< -o $@
 
 $(BUILD_DIR)/%.o: %.c
 	@mkdir -p $(@D)
-	@if [ $(V) -gt 1 ] && [ $(V) -lt 4 ];then echo "  CC        $<"; fi
+	@if [ $(V) -gt 1 ] && [ $(V) -lt 4 ];then echo "  CC        $(<:$(SOURCES)/%=%)"; fi
 	$(Q)$(CC) $(CFLAGS) $(GEN_DEPS) $(SAVE_TEMPS) -c $< -o $@
 	$(Q)$(DEMANGLE_IF_GENERATE_ASSEMBLY)
 
 $(BUILD_DIR)/%.o: %.cpp
 	@mkdir -p $(@D)
-	@if [ $(V) -gt 1 ] && [ $(V) -lt 4 ];then echo "  CXX       $<"; fi
+	@if [ $(V) -gt 1 ] && [ $(V) -lt 4 ];then echo "  CXX       $(<:$(SOURCES)/%=%)"; fi
 	$(Q)$(CXX) $(CXXFLAGS) $(GEN_DEPS) $(SAVE_TEMPS)  -c $< -o $@
 	$(Q)$(DEMANGLE_IF_GENERATE_ASSEMBLY)
 
 $(BUILD_DIR)/%.o: %.s
 	@mkdir -p $(@D)
-	@if [ $(V) -gt 1 ] && [ $(V) -lt 4 ];then echo "  ASM       $<"; fi
+	@if [ $(V) -gt 1 ] && [ $(V) -lt 4 ];then echo "  ASM       $(<:$(SOURCES)/%=%)"; fi
 	$(Q)$(AS) $(ASFLAGS)  -c $< -o $@
 
 $(BUILD_DIR)/$(TARGET).elf: $(OBJECTS) $(LDSCRIPT)
@@ -54,9 +54,9 @@ $(BUILD_DIR)/$(TARGET).elf: $(OBJECTS) $(LDSCRIPT)
 	$(Q)$(CXX) $(OBJECTS) $(LDFLAGS) -o $@
 	$(Q)$(CXXFILT) < $(BUILD_DIR)/$(TARGET).map > $(BUILD_DIR)/$(TARGET).tmp && mv $(BUILD_DIR)/$(TARGET).tmp $(BUILD_DIR)/$(TARGET).map # demangle map file
 	@echo
-	$(Q)$(SZ) $@
+	$(Q)$(SZ) $(@:$(ROOT_DIR)/%=%)
 	@echo
-	@echo "  [${COLOR_GREEN}$(TARGET)${NO_COLOR}] has been built in ${COLOR_BLUE}$(BUILD_DIR)${NO_COLOR} folder."
+	@echo "  [${COLOR_GREEN}$(TARGET)${NO_COLOR}] has been built in ${COLOR_BLUE}$(BUILD_DIR:$(ROOT_DIR)/%=%)${NO_COLOR} folder."
 
 $(BUILD_DIR)/disassembly.S: $(BUILD_DIR)/$(TARGET).elf
 	$(Q)$(OBJDUMP) --disassemble --line-numbers --reloc --wide --demangle $< > $@
@@ -66,13 +66,25 @@ $(BUILD_DIR)/$(TARGET).symbol_info: $(BUILD_DIR)/$(TARGET).elf
 	$(Q)$(NM) --print-size --line-numbers --size-sort --demangle $< > $@
 
 $(BUILD_DIR)/$(TARGET).file_sizeinfo: $(BUILD_DIR)/$(TARGET).symbol_info
-	$(Q)python3 mk/print_size_info.py $< > $@
+	$(Q)python3 toolchain/print_size_info.py $< > $@
 
 $(BUILD_DIR)/$(TARGET).hex: $(BUILD_DIR)/$(TARGET).elf
 	$(Q)$(HEX) $< $@
 
 $(BUILD_DIR)/$(TARGET).bin: $(BUILD_DIR)/$(TARGET).elf
 	$(Q)$(BIN) $< $@
+
+#######################################
+# COMPILATION DATABASE
+#######################################
+.PHONY: generate-compile-commands
+generate-complication-database:
+	@echo "  ${COLOR_YELLOW}Generating compile_commands.json...${NO_COLOR}"
+	@$(eval TMPFILE := $(shell mktemp))
+	@$(MAKE) -B --dry-run > $(TMPFILE)
+	@python3 toolchain/generate_compilation_database.py ${ROOT_DIR} $(TMPFILE)
+	@rm $(TMPFILE)
+	@echo "  ${COLOR_YELLOW}Done!${NO_COLOR}"
 
 #######################################
 # FLASH
